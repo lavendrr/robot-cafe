@@ -30,8 +30,8 @@ namespace StarterAssets
 
         GameObject GrabCheck()
         {
-            // Sends a ray 3 meters out from the camera
-            if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward), out RaycastHit hit, 3f))
+            // Sends a ray 3 meters out from the camera & returns a valid grabbable object if possible.
+            if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward), out RaycastHit hit, 3f, LayerMask.GetMask("Interactable")))
             {
                 if (hit.collider.gameObject.CompareTag("Grabbable") && hit.collider.gameObject != grabbedObject)
                 {
@@ -55,11 +55,14 @@ namespace StarterAssets
                 grabbedObject = checkedObj;
                 grabbedObject.transform.SetParent(mainCamera.transform);
                 grabbedObject.GetComponent<Rigidbody>().isKinematic = true;
+                Debug.Log(LayerMask.GetMask("Grabbed"));
+                grabbedObject.layer = LayerMask.NameToLayer("Grabbed");
             }
             else if (grabbedObject != null)
             {
                 grabbedObject.GetComponent<Rigidbody>().isKinematic = false;
                 grabbedObject.transform.parent = null;
+                grabbedObject.layer = LayerMask.NameToLayer("Interactable");
                 grabbedObject = null;
             }
         }
