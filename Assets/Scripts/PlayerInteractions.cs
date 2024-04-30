@@ -85,7 +85,7 @@ namespace StarterAssets
                 else if (type == InteractableType.Slottable)
                 {
                     // Reparents the grabbed object to the slottable object, resets its transform, and removes it from the Grabbed layer
-                    grabbedObject.transform.SetParent(obj.transform);
+                    grabbedObject.transform.SetParent(obj.transform.Find("SlotRoot").transform);
                     grabbedObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
                     grabbedObject.layer = LayerMask.NameToLayer("Interactable");
                     grabbedObject = null;
