@@ -61,17 +61,12 @@ namespace StarterAssets
             GrabAttempt();
         }
 
-        void OnInteract()
-        {
-            SlotAttempt();
-        }
-
         void GrabAttempt()
         {
             var (type, obj) = InteractionCheck();
             if (type == InteractableType.Grabbable)
             {
-                // Stores the hit object, reparents it to the camera, and turns off its physics
+                // Grabs the held object
                 grabbedObject = obj;
                 grabbedObject.transform.SetParent(mainCamera.transform);
                 grabbedObject.GetComponent<Rigidbody>().isKinematic = true;
@@ -79,22 +74,22 @@ namespace StarterAssets
             }
             else if (grabbedObject != null)
             {
-                grabbedObject.GetComponent<Rigidbody>().isKinematic = false;
-                grabbedObject.transform.parent = null;
-                grabbedObject.layer = LayerMask.NameToLayer("Interactable");
-                grabbedObject = null;
-            }
-        }
-
-        void SlotAttempt()
-        {
-            var (type, obj) = InteractionCheck();
-            if (type == InteractableType.Slottable && grabbedObject != null)
-            {
-                grabbedObject.transform.SetParent(obj.transform);
-                grabbedObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                grabbedObject.layer = LayerMask.NameToLayer("Interactable");
-                grabbedObject = null;
+                if (type == InteractableType.None)
+                {
+                    // Drops the held object
+                    grabbedObject.GetComponent<Rigidbody>().isKinematic = false;
+                    grabbedObject.transform.parent = null;
+                    grabbedObject.layer = LayerMask.NameToLayer("Interactable");
+                    grabbedObject = null;
+                }
+                else if (type == InteractableType.Slottable)
+                {
+                    // Reparents the grabbed object to the slottable object, resets its transform, and removes it from the Grabbed layer
+                    grabbedObject.transform.SetParent(obj.transform);
+                    grabbedObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                    grabbedObject.layer = LayerMask.NameToLayer("Interactable");
+                    grabbedObject = null;
+                }
             }
         }
     }
