@@ -1,5 +1,3 @@
-using Cinemachine.Utility;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace StarterAssets
@@ -44,11 +42,11 @@ namespace StarterAssets
             if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward), out RaycastHit hit, 3f, LayerMask.GetMask("Interactable")))
             {
                 // Checks if the player isn't already holding something as well
-                if (hit.collider.gameObject.CompareTag("Grabbable") && hit.collider.gameObject != grabbedObject)
+                if (hit.collider.gameObject.CompareTag("Grabbable"))
                 {
                     return (InteractableType.Grabbable, hit.collider.gameObject);
                 }
-                else if (hit.collider.gameObject.CompareTag("Slottable") && grabbedObject != null)
+                else if (hit.collider.gameObject.CompareTag("Slottable"))
                 {
                     return (InteractableType.Slottable, hit.collider.gameObject);
                 }
@@ -64,15 +62,22 @@ namespace StarterAssets
         void GrabAttempt()
         {
             var (type, obj) = InteractionCheck();
-            if (type == InteractableType.Grabbable)
+            if (grabbedObject == null)
             {
-                // Grabs the held object
-                grabbedObject = obj;
-                grabbedObject.transform.SetParent(mainCamera.transform);
-                grabbedObject.GetComponent<Rigidbody>().isKinematic = true;
-                grabbedObject.layer = LayerMask.NameToLayer("Grabbed");
+                if (type == InteractableType.Grabbable)
+                {
+                    // Grabs the held object
+                    grabbedObject = obj;
+                    if (grabbedObject.transform.parent != null && grabbedObject.transform.parent.gameObject.name == "SlotRoot")
+                    {
+                        grabbedObject.transform.parent.gameObject.GetComponent<Slot>().RemoveObj();
+                    }
+                    grabbedObject.transform.SetParent(mainCamera.transform);
+                    grabbedObject.GetComponent<Rigidbody>().isKinematic = true;
+                    grabbedObject.layer = LayerMask.NameToLayer("Grabbed");
+                }
             }
-            else if (grabbedObject != null)
+            else
             {
                 if (type == InteractableType.None)
                 {
@@ -85,11 +90,23 @@ namespace StarterAssets
                 else if (type == InteractableType.Slottable)
                 {
                     // Reparents the grabbed object to the slottable object, resets its transform, and removes it from the Grabbed layer
-                    grabbedObject.transform.SetParent(obj.transform.Find("SlotRoot").transform);
-                    grabbedObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                    grabbedObject.layer = LayerMask.NameToLayer("Interactable");
+                    obj.transform.Find("SlotRoot").GetComponent<Slot>().InsertObj(grabbedObject);
                     grabbedObject = null;
                 }
+            }
+        }
+
+        void OnUse()
+        {
+            UseAttempt();
+        }
+
+        void UseAttempt()
+        {
+            var (type, obj) = InteractionCheck();
+            if (obj.name == "CoffeeMachine")
+            {
+                obj.GetComponent<CoffeeMachine>().FillCup();
             }
         }
     }
