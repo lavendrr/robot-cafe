@@ -204,7 +204,7 @@ GameObject:
   - component: {fileID: 635963300}
   - component: {fileID: 635963299}
   - component: {fileID: 635963303}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GrabbableCube
   m_TagString: Grabbable
   m_Icon: {fileID: 0}
@@ -772,9 +772,9 @@ GameObject:
   - component: {fileID: 1623863253}
   - component: {fileID: 1623863252}
   - component: {fileID: 1623863251}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Slottable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
