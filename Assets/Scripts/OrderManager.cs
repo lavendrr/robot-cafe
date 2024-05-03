@@ -17,9 +17,9 @@ namespace Orders
         public static OrderManager instance { get; private set; }
 
         [SerializeField]
-        private GameObject cupPrefab;
-        private GameObject cupSpawn;
-        public List<Order> orderList = new List<Order>();
+        private GameObject cupPrefab, customerPrefab;
+        private GameObject cupSpawn, customerRoot;
+        public List<GameObject> customerList = new();
         public int completedCounter = 0;
 
         private void Awake() 
@@ -34,25 +34,32 @@ namespace Orders
                 instance = this; 
             }
             cupSpawn = GameObject.Find("CupSpawn");
+            customerRoot = GameObject.Find("CustomerRoot");
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            orderList.Add(new Order());
+            NewCustomer();
+        }
+
+        public void NewCustomer()
+        {
+            customerList.Add(Instantiate(customerPrefab, customerRoot.transform));
         }
 
         public void FillOrder(GameObject cupObj)
         {
-            Order currentOrder = orderList[0];
-            if (currentOrder.orderType == cupObj.GetComponent<Cup>().GetFuelType())
+            Customer currentCustomer = customerList[0].GetComponent<Customer>();
+            if (currentCustomer.GetOrder().orderType == cupObj.GetComponent<Cup>().GetFuelType())
             {
                 // Remove the order from the list, add a new order, and spawn a new cup and delete the one used to fill the order
                 Debug.Log("Order filled!");
-                orderList.RemoveAt(0);
+                currentCustomer.Leave();
+                customerList.RemoveAt(0);
+                NewCustomer();
                 completedCounter++;
-                orderList.Add(new Order());
-                GameObject newCup = Instantiate(cupPrefab, cupSpawn.transform.position, Quaternion.identity);
+                Instantiate(cupPrefab, cupSpawn.transform.position, Quaternion.identity);
                 Destroy(cupObj);
             }
             else
@@ -71,6 +78,5 @@ namespace Orders
             orderType = (FuelType)Enum.GetValues(typeof(FuelType)).GetValue(UnityEngine.Random.Range(1, 4));
             Debug.Log("New order's type is " + orderType.ToString());
         }
-
     }
 }
