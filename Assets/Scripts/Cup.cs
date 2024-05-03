@@ -1,25 +1,35 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 
-public class Cup : MonoBehaviour
+namespace Orders
 {
-    private bool filled = false;
-
-    public bool GetFillState()
+    public class Cup : MonoBehaviour
     {
-        return filled;
-    }
+        private FuelType fuelType = FuelType.None;
 
-    public void Fill()
-    {
-        if (filled == false)
+        public FuelType GetFuelType()
         {
-            filled = true;
-            gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = true;
-            Debug.Log("Cup filled.");
+            return fuelType;
         }
-        else
+
+        public void Fill(FuelType fillType)
         {
-            Debug.Log("Cup already full.");
+            if (fuelType == FuelType.None)
+            {
+                gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = true;
+                fuelType = fillType;
+                Debug.Log("Filled cup with " + fuelType.ToString());
+            }
+            else
+            {
+                Debug.Log("Cup already full.");
+            }
+        }
+
+        public void Empty()
+        {
+            fuelType = FuelType.None;
+            gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = false;
         }
     }
 }

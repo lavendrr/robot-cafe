@@ -1,18 +1,23 @@
 using UnityEngine;
 
-public class CoffeeMachine : MonoBehaviour
+namespace Orders
 {
-    public void FillCup()
+    public class CoffeeMachine : MonoBehaviour
     {
-        Debug.Log("Trying to fill");
-        var cupObj = gameObject.GetComponentInChildren<Slot>().GetSlottedObj();
-        if (cupObj != null)
+        [SerializeField]
+        private FuelType coffeeMachineType;
+        public void FillCup()
         {
-            cupObj.GetComponent<Cup>().Fill();
-        }
-        else
-        {
-            Debug.Log("No cup in the machine.");
+            Debug.Log("Trying to fill");
+            var cupObj = gameObject.GetComponentInChildren<Slot>().GetSlottedObj();
+            if (cupObj != null)
+            {
+                cupObj.GetComponent<Cup>().Fill(coffeeMachineType);
+            }
+            else
+            {
+                Debug.Log("No cup in the machine.");
+            }
         }
     }
 }

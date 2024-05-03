@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace StarterAssets
+namespace Orders
 {
     public class PlayerInteractions : MonoBehaviour
     {
@@ -120,6 +120,10 @@ namespace StarterAssets
             if (obj.name == "CoffeeMachine")
             {
                 obj.GetComponent<CoffeeMachine>().FillCup();
+            }
+            else if (obj.name == "Delivery")
+            {
+                obj.GetComponent<Delivery>().Deliver();
             }
         }
     }
