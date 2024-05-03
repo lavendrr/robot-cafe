@@ -16,6 +16,9 @@ namespace Orders
     {
         public static OrderManager instance { get; private set; }
 
+        [SerializeField]
+        private GameObject cupPrefab;
+        private GameObject cupSpawn;
         public List<Order> orderList = new List<Order>();
         public int completedCounter = 0;
 
@@ -29,7 +32,8 @@ namespace Orders
             else 
             { 
                 instance = this; 
-            } 
+            }
+            cupSpawn = GameObject.Find("CupSpawn");
         }
 
         // Start is called before the first frame update
@@ -43,11 +47,13 @@ namespace Orders
             Order currentOrder = orderList[0];
             if (currentOrder.orderType == cupObj.GetComponent<Cup>().GetFuelType())
             {
+                // Remove the order from the list, add a new order, and spawn a new cup and delete the one used to fill the order
                 Debug.Log("Order filled!");
                 orderList.RemoveAt(0);
                 completedCounter++;
                 orderList.Add(new Order());
-                cupObj.GetComponent<Cup>().Empty();
+                GameObject newCup = Instantiate(cupPrefab, cupSpawn.transform.position, Quaternion.identity);
+                Destroy(cupObj);
             }
             else
             {
