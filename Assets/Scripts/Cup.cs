@@ -14,6 +14,7 @@ public class Cup : MonoBehaviour
         if (filled == false)
         {
             filled = true;
+            gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = true;
             Debug.Log("Cup filled.");
         }
         else
