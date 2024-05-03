@@ -73,7 +73,9 @@ namespace StarterAssets
                         grabbedObject.transform.parent.gameObject.GetComponent<Slot>().RemoveObj();
                     }
                     grabbedObject.transform.SetParent(mainCamera.transform);
+                    grabbedObject.transform.SetLocalPositionAndRotation(Vector3.zero + new Vector3(0.5f, -0.5f, 1.1f), Quaternion.identity);
                     grabbedObject.GetComponent<Rigidbody>().isKinematic = true;
+                    grabbedObject.GetComponent<BoxCollider>().enabled = false;
                     grabbedObject.layer = LayerMask.NameToLayer("Grabbed");
                 }
             }
@@ -83,6 +85,7 @@ namespace StarterAssets
                 {
                     // Drops the held object
                     grabbedObject.GetComponent<Rigidbody>().isKinematic = false;
+                    grabbedObject.GetComponent<BoxCollider>().enabled = true;
                     grabbedObject.transform.parent = null;
                     grabbedObject.layer = LayerMask.NameToLayer("Interactable");
                     grabbedObject = null;
