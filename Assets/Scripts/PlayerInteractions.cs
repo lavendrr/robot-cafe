@@ -83,7 +83,7 @@ namespace StarterAssets
                         grabbedObject.transform.parent.gameObject.GetComponent<Slot>().RemoveObj();
                     }
                     grabbedObject.transform.SetParent(mainCamera.transform);
-                    grabbedObject.transform.SetLocalPositionAndRotation(Vector3.zero + new Vector3(0.5f, -0.5f, 1.1f), Quaternion.identity);
+                    grabbedObject.transform.SetLocalPositionAndRotation(Vector3.zero + new Vector3(0.5f, -0.5f, 0.75f), Quaternion.identity);
                     grabbedObject.GetComponent<Rigidbody>().isKinematic = true;
                     grabbedObject.GetComponent<BoxCollider>().enabled = false;
                     grabbedObject.layer = LayerMask.NameToLayer("Grabbed");
