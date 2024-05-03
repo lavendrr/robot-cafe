@@ -7,6 +7,7 @@ namespace StarterAssets
         private GameObject mainCamera;
         private GameObject grabbedObject;
         private GameObject grabUI;
+        private GameObject slotUI;
 
         enum InteractableType
         {
@@ -21,6 +22,8 @@ namespace StarterAssets
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             grabUI = GameObject.Find("GrabUI");
             grabUI.SetActive(false);
+            slotUI = GameObject.Find("SlotUI");
+            slotUI.SetActive(false);
         }
 
         void Update()
@@ -29,10 +32,17 @@ namespace StarterAssets
             if (type == InteractableType.Grabbable)
             {
                 grabUI.SetActive(true);
+                slotUI.SetActive(false);
+            }
+            else if (type == InteractableType.Slottable && grabbedObject != null)
+            {
+                grabUI.SetActive(false);
+                slotUI.SetActive(true);
             }
             else
             {
                 grabUI.SetActive(false);
+                slotUI.SetActive(false);
             }
         }
 
