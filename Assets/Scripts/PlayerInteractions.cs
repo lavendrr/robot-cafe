@@ -60,6 +60,10 @@ namespace Orders
                 {
                     return (InteractableType.Slottable, hit.collider.gameObject);
                 }
+                else
+                {
+                    return (InteractableType.None, hit.collider.gameObject);
+                }
             }
             return (InteractableType.None, null);
         }
@@ -124,6 +128,10 @@ namespace Orders
             else if (obj.name == "Delivery")
             {
                 obj.GetComponent<Delivery>().Deliver();
+            }
+            else if (obj.name == "Trash")
+            {
+                obj.GetComponent<Trash>().TrashCup(grabbedObject);
             }
         }
     }
