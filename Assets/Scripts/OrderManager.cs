@@ -61,6 +61,7 @@ namespace Orders
                 UIManager.instance.SetOrderInfo("");
                 NewCustomer();
                 completedCounter++;
+                UIManager.instance.CompleteOrder(completedCounter);
                 Instantiate(cupPrefab, cupSpawn.transform.position, Quaternion.identity);
                 Destroy(cupObj);
             }

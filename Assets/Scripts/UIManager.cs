@@ -11,6 +11,11 @@ namespace Orders
 
         private Crosshair crosshair;
         private TextMeshProUGUI orderInfo;
+        private TextMeshProUGUI ordersCompleted;
+        private TextMeshProUGUI timerText;
+        private float timer = 180f;
+        private int minutes = 3;
+        private float seconds = 0f;
 
         private void Awake()
         {
@@ -30,12 +35,15 @@ namespace Orders
         {
             crosshair = new Crosshair(GameObject.Find("Crosshair"));
             orderInfo = GameObject.Find("OrderInfo").GetComponent<TextMeshProUGUI>();
+            timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
+            ordersCompleted = GameObject.Find("OrdersCompleted").GetComponent<TextMeshProUGUI>();
         }
 
         // Update is called once per frame
         void Update()
         {
             UpdateCrosshair();
+            UpdateTimer();
         }
 
         private void UpdateCrosshair()
@@ -59,9 +67,22 @@ namespace Orders
             }
         }
 
+        private void UpdateTimer()
+        {
+            timer -= Time.deltaTime;
+            seconds = timer % 60;
+            minutes = (int) timer / 60;
+            timerText.text = "Time: " + string.Format("{0}:{1:0.0}", minutes, seconds);
+        }
+
         public void SetOrderInfo(string order)
         {
             orderInfo.text = "Current Order: " + order;
+        }
+
+        public void CompleteOrder(int completed)
+        {
+            ordersCompleted.text = "Orders Completed: " + completed.ToString();
         }
     }
 
