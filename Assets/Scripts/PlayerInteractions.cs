@@ -121,17 +121,20 @@ namespace Orders
         void UseAttempt()
         {
             var (type, obj) = InteractionCheck();
-            if (obj.name == "CoffeeMachine")
+            if (obj != null)
             {
-                obj.GetComponent<CoffeeMachine>().FillCup();
-            }
-            else if (obj.name == "Delivery")
-            {
-                obj.GetComponent<Delivery>().Deliver();
-            }
-            else if (obj.name == "Trash")
-            {
-                obj.GetComponent<Trash>().TrashCup(grabbedObject);
+                if (obj.name == "CoffeeMachine")
+                {
+                    obj.GetComponent<CoffeeMachine>().FillCup();
+                }
+                else if (obj.name == "Delivery")
+                {
+                    obj.GetComponent<Delivery>().Deliver();
+                }
+                else if (obj.name == "Trash")
+                {
+                    obj.GetComponent<Trash>().TrashCup(grabbedObject);
+                }
             }
         }
     }
