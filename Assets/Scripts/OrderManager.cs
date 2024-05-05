@@ -33,6 +33,7 @@ namespace Orders
             { 
                 instance = this; 
             }
+
             cupSpawn = GameObject.Find("CupSpawn");
             customerRoot = GameObject.Find("CustomerRoot");
         }
@@ -57,6 +58,7 @@ namespace Orders
                 Debug.Log("Order filled!");
                 currentCustomer.Leave();
                 customerList.RemoveAt(0);
+                UIManager.instance.SetOrderInfo("");
                 NewCustomer();
                 completedCounter++;
                 Instantiate(cupPrefab, cupSpawn.transform.position, Quaternion.identity);
@@ -76,6 +78,7 @@ namespace Orders
         {
             // Randomly assign the order type from the available enums
             orderType = (FuelType)Enum.GetValues(typeof(FuelType)).GetValue(UnityEngine.Random.Range(1, 4));
+            UIManager.instance.SetOrderInfo(orderType.ToString());
             Debug.Log("New order's type is " + orderType.ToString());
         }
     }

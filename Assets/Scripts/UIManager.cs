@@ -5,20 +5,40 @@ using UnityEngine.UIElements;
 
 namespace Orders
 {
-    public class UI : MonoBehaviour
+    public class UIManager : MonoBehaviour
     {
-        private GameObject grabUI;
-        private GameObject slotUI;
+        public static UIManager instance { get; private set; }
+
         private Crosshair crosshair;
+        private TextMeshProUGUI orderInfo;
+
+        private void Awake()
+        {
+            // If there is an instance, and it's not me, delete myself.
+            if (instance != null && instance != this) 
+            { 
+                Destroy(this); 
+            } 
+            else 
+            { 
+                instance = this; 
+            }
+        }
 
         // Start is called before the first frame update
         void Start()
         {
             crosshair = new Crosshair(GameObject.Find("Crosshair"));
+            orderInfo = GameObject.Find("OrderInfo").GetComponent<TextMeshProUGUI>();
         }
 
         // Update is called once per frame
         void Update()
+        {
+            UpdateCrosshair();
+        }
+
+        private void UpdateCrosshair()
         {
             var (type, _) = PlayerInteractions.instance.InteractionCheck();
             if (type == InteractableType.Grabbable)
@@ -37,6 +57,11 @@ namespace Orders
             {
                 crosshair.SetNeutral();
             }
+        }
+
+        public void SetOrderInfo(string order)
+        {
+            orderInfo.text = "Current Order: " + order;
         }
     }
 
