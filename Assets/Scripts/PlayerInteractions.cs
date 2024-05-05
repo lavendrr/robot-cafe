@@ -2,51 +2,41 @@ using UnityEngine;
 
 namespace Orders
 {
+    public enum InteractableType
+    {
+        None,
+        Grabbable,
+        Slottable,
+        Usable
+    }
+
     public class PlayerInteractions : MonoBehaviour
     {
+        public static PlayerInteractions instance { get; private set; }
+
         private GameObject mainCamera;
         private GameObject grabbedObject;
-        private GameObject grabUI;
-        private GameObject slotUI;
 
-        enum InteractableType
+        private void Awake()
         {
-            None,
-            Grabbable,
-            Slottable
+            // If there is an instance, and it's not me, delete myself.
+            if (instance != null && instance != this) 
+            { 
+                Destroy(this); 
+            } 
+            else 
+            { 
+                instance = this; 
+            }
         }
 
         // Start is called before the first frame update
         void Start()
         {
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-            grabUI = GameObject.Find("GrabUI");
-            grabUI.SetActive(false);
-            slotUI = GameObject.Find("SlotUI");
-            slotUI.SetActive(false);
         }
 
-        void Update()
-        {
-            var (type, obj) = InteractionCheck();
-            if (type == InteractableType.Grabbable)
-            {
-                grabUI.SetActive(true);
-                slotUI.SetActive(false);
-            }
-            else if (type == InteractableType.Slottable && grabbedObject != null)
-            {
-                grabUI.SetActive(false);
-                slotUI.SetActive(true);
-            }
-            else
-            {
-                grabUI.SetActive(false);
-                slotUI.SetActive(false);
-            }
-        }
-
-        (InteractableType type, GameObject obj) InteractionCheck()
+        public (InteractableType type, GameObject obj) InteractionCheck()
         {
             // Sends a ray 3 meters out from the camera & returns the first interactable object's type and reference.
             if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward), out RaycastHit hit, 3f, LayerMask.GetMask("Interactable")))
@@ -59,6 +49,10 @@ namespace Orders
                 else if (hit.collider.gameObject.CompareTag("Slottable"))
                 {
                     return (InteractableType.Slottable, hit.collider.gameObject);
+                }
+                else if (hit.collider.gameObject.CompareTag("Usable"))
+                {
+                    return (InteractableType.Usable, hit.collider.gameObject);
                 }
                 else
                 {
@@ -113,6 +107,11 @@ namespace Orders
             }
         }
 
+        public bool GetGrabStatus()
+        {
+            return grabbedObject != null;
+        }
+
         void OnUse()
         {
             UseAttempt();
@@ -121,13 +120,13 @@ namespace Orders
         void UseAttempt()
         {
             var (type, obj) = InteractionCheck();
-            if (obj != null)
+            if (type == InteractableType.Usable)
             {
                 if (obj.name == "CoffeeMachine")
                 {
                     obj.GetComponent<CoffeeMachine>().FillCup();
                 }
-                else if (obj.name == "Delivery")
+                else if (obj.name == "Bell")
                 {
                     obj.GetComponent<Delivery>().Deliver();
                 }
