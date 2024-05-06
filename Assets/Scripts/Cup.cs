@@ -30,5 +30,17 @@ namespace Orders
             fuelType = FuelType.None;
             gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = false;
         }
+
+        void OnCollisionEnter(Collision other)
+        {
+            Debug.Log("Colliding");
+            if (other.gameObject.name == "ItemKillbox")
+            {
+                Debug.Log("Hit box");
+                OrderManager.instance.SpawnCup();
+                Debug.Log("Cup fell out of bounds and was replaced");
+                Destroy(gameObject);
+            }
+        }
     }
 }

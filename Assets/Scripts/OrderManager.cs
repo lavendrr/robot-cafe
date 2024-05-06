@@ -62,13 +62,18 @@ namespace Orders
                 NewCustomer();
                 completedCounter++;
                 UIManager.instance.CompleteOrder(completedCounter);
-                Instantiate(cupPrefab, cupSpawn.transform.position, Quaternion.identity);
+                SpawnCup();
                 Destroy(cupObj);
             }
             else
             {
                 Debug.Log("Incorrect order.");
             }
+        }
+
+        public void SpawnCup()
+        {
+            Instantiate(cupPrefab, cupSpawn.transform.position, Quaternion.identity);
         }
     }
 
