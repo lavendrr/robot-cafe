@@ -13,7 +13,7 @@ namespace Orders
         private GameObject gameUI, endMenu;
         private Crosshair crosshair;
         private TextMeshProUGUI orderInfo, ordersCompleted, timerText;
-        private float timer = 10f;
+        private float timer = 60f;
         private int minutes;
         private float seconds;
 
