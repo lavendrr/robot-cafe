@@ -6,13 +6,21 @@ namespace Orders
     {
         [SerializeField]
         private FuelType coffeeMachineType;
+        private Slot slot;
+
+        private void Start()
+        {
+            slot = GetComponentInChildren<Slot>();
+        }
+
         public void FillCup()
         {
             Debug.Log("Trying to fill");
-            var cupObj = gameObject.GetComponentInChildren<Slot>().GetSlottedObj();
+            var cupObj = slot.GetSlottedObj();
             if (cupObj != null)
             {
-                cupObj.GetComponent<Cup>().Fill(coffeeMachineType);
+                cupObj.GetComponent<Cup>().Fill(coffeeMachineType, slot.gameObject.transform.position);
+                AudioManager.instance.PlaySFX(AudioManager.instance.pourCoffee, transform.position);
             }
             else
             {

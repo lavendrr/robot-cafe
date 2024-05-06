@@ -9,7 +9,7 @@ public class Delivery : MonoBehaviour
         var cupObj = gameObject.transform.parent.gameObject.GetComponentInChildren<Slot>().GetSlottedObj();
         if (cupObj != null)
         {
-            OrderManager.instance.FillOrder(cupObj);
+            OrderManager.instance.FillOrder(cupObj, transform.position);
         }
     }
 }

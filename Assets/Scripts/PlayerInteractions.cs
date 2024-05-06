@@ -16,6 +16,7 @@ namespace Orders
 
         private GameObject mainCamera;
         private GameObject grabbedObject;
+        private AudioManager Audio;
 
         private void Awake()
         {
@@ -33,6 +34,7 @@ namespace Orders
         // Start is called before the first frame update
         void Start()
         {
+            Audio =  AudioManager.instance;
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         }
 
@@ -76,6 +78,7 @@ namespace Orders
                 {
                     // Grabs the held object
                     grabbedObject = obj;
+                    Audio.PlaySFX(Audio.pickUp, grabbedObject.transform.position);
                     if (grabbedObject.transform.parent != null && grabbedObject.transform.parent.gameObject.name == "SlotRoot")
                     {
                         grabbedObject.transform.parent.gameObject.GetComponent<Slot>().RemoveObj();

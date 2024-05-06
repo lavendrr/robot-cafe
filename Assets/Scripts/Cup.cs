@@ -11,10 +11,11 @@ namespace Orders
             return fuelType;
         }
 
-        public void Fill(FuelType fillType)
+        public void Fill(FuelType fillType, Vector3 position)
         {
             if (fuelType == FuelType.None)
             {
+                // AudioManager.instance.PlaySFX(AudioManager.instance.pourCoffee, position);
                 gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = true;
                 fuelType = fillType;
                 Debug.Log("Filled cup with " + fuelType.ToString());

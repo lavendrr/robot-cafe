@@ -26,8 +26,8 @@ MonoBehaviour:
       Value: 1
       HasValue: 1
     OverlayPosition:
-      Value: 0
-      HasValue: 0
+      Value: 3
+      HasValue: 1
     OverlayFontSize:
       Value: 0
       HasValue: 0
@@ -466,7 +466,7 @@ MonoBehaviour:
   sourceBankPath: FMOD/robot-cafe/Build
   sourceBankPathUnformatted: 
   BankRefreshCooldown: 5
-  ShowBankRefreshWindow: 1
+  ShowBankRefreshWindow: 0
   AutomaticEventLoading: 1
   BankLoadType: 0
   AutomaticSampleLoading: 0
@@ -484,7 +484,8 @@ MonoBehaviour:
   VirtualChannelSettings: []
   RealChannelSettings: []
   Plugins: []
-  MasterBanks: []
+  MasterBanks:
+  - Master
   Banks: []
   BanksToLoad: []
   LiveUpdatePort: 9264
