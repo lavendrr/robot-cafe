@@ -44,7 +44,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7634965264845135034}
-  m_Mesh: {fileID: -5076798556035486163, guid: 950f567eeaaffa74d9584e953231320c, type: 3}
+  m_Mesh: {fileID: -8442323073390163606, guid: 950f567eeaaffa74d9584e953231320c, type: 3}
 --- !u!23 &654862656359063569
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -65,6 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
+  - {fileID: 2100000, guid: 5d95e22c1cd1c4eb2a66695e04769b19, type: 2}
   - {fileID: 2100000, guid: 7d230d05151854429914522df4a40844, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -211,6 +212,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3698028916114631362, guid: 2d47e601091e5d04e81329ebbce94188, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 83988b3f505978a478b4a6b45100baab, type: 2}
     - target: {fileID: 919132149155446097, guid: 2d47e601091e5d04e81329ebbce94188, type: 3}
       propertyPath: m_Name
       value: SM_drink

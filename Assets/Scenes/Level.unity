@@ -2351,6 +2351,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 257629cc8bb084f558b9141ab51cf052, type: 2}
+    - target: {fileID: -7576525178409382746, guid: cd44de1ea28def04aa526c6d61837734, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9cb7bcf923421be47b9f298a5d595efc, type: 2}
     - target: {fileID: -7511558181221131132, guid: cd44de1ea28def04aa526c6d61837734, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -2363,10 +2367,18 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 257629cc8bb084f558b9141ab51cf052, type: 2}
+    - target: {fileID: -7435723844082187373, guid: cd44de1ea28def04aa526c6d61837734, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9cb7bcf923421be47b9f298a5d595efc, type: 2}
     - target: {fileID: -5146235575054470048, guid: cd44de1ea28def04aa526c6d61837734, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 257629cc8bb084f558b9141ab51cf052, type: 2}
+    - target: {fileID: -5146235575054470048, guid: cd44de1ea28def04aa526c6d61837734, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9cb7bcf923421be47b9f298a5d595efc, type: 2}
     - target: {fileID: -2065558796947674602, guid: cd44de1ea28def04aa526c6d61837734, type: 3}
       propertyPath: m_Name
       value: CoffeeMachine
