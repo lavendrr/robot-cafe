@@ -20,7 +20,6 @@ namespace Orders
             if (cupObj != null)
             {
                 cupObj.GetComponent<Cup>().Fill(coffeeMachineType, slot.gameObject.transform.position);
-                AudioManager.instance.PlaySFX(AudioManager.instance.pourCoffee, transform.position);
             }
             else
             {
