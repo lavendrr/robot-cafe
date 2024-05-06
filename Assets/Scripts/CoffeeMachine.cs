@@ -15,6 +15,7 @@ namespace Orders
 
         public void FillCup()
         {
+            // Attempt to fill the cup if one is present
             Debug.Log("Trying to fill");
             var cupObj = slot.GetSlottedObj();
             if (cupObj != null)

@@ -53,13 +53,13 @@ namespace Orders
 
         public bool FillOrder(GameObject cupObj, Vector3 position)
         {
+            // Check if the current customer's order matches the delivered order
             Customer currentCustomer = customerList[0].GetComponent<Customer>();
             if (currentCustomer.GetOrder().orderType == cupObj.GetComponent<Cup>().GetFuelType())
             {
-                // Remove the order from the list, add a new order, and spawn a new cup and delete the one used to fill the order
+                // Remove the order from the list, initialize a new customer, and spawn a new cup and delete the one used to fill the order
                 Debug.Log("Order filled!");
                 Audio.PlaySFX(Audio.bellDing, position);
-
 
                 currentCustomer.Leave();
                 customerList.RemoveAt(0);

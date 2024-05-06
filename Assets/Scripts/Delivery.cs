@@ -6,7 +6,7 @@ public class Delivery : MonoBehaviour
 {
     public void Deliver()
     {
-        Debug.Log("Trying to deliver");
+        // Try to deliver the order, and if it is successfully filled, animate the bell
         var cupObj = gameObject.transform.parent.gameObject.GetComponentInChildren<Slot>().GetSlottedObj();
         if (cupObj != null)
         {
@@ -17,6 +17,7 @@ public class Delivery : MonoBehaviour
         }
     }
 
+    // Function to animate the bell's ringer
     private IEnumerator RingBell()
     {
         Transform ringerTransform = transform.Find("SM_bell").Find("ringer");

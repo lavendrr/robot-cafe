@@ -6,6 +6,7 @@ public class Slot : MonoBehaviour
 
     public void InsertObj(GameObject obj)
     {
+        // Slots the object inside by reparenting it, re-enables its collider, makes it interactable again, and sends a message upwards in case the slottable object has special behavior
         slottedObj = obj;
         slottedObj.GetComponent<BoxCollider>().enabled = true;
         slottedObj.transform.SetParent(gameObject.transform);

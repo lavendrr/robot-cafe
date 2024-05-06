@@ -52,6 +52,7 @@ namespace Orders
 
         private void UpdateCrosshair()
         {
+            // Update crosshair state depending on what the player is looking at
             var (type, _) = PlayerInteractions.instance.InteractionCheck();
             if (type == InteractableType.Grabbable)
             {
@@ -73,6 +74,7 @@ namespace Orders
 
         private void UpdateTimer()
         {
+            // Update the timer each frame until it reaches 0, and format the string accordingly for the UI text
             if(!(timer < 0f))
             {
                 timer -= Time.deltaTime;
@@ -98,6 +100,7 @@ namespace Orders
 
         public void EndGame()
         {
+            // Disables player input, releases the player cursor, switches the UI to the game end UI, updates the high score, and sets the game end text
             GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().DeactivateInput();
             Cursor.lockState = CursorLockMode.None;
             gameUI.SetActive(false);
@@ -124,6 +127,7 @@ namespace Orders
         }
     }
 
+    // Class for the Crosshair UI element, containing methods to easily swap its tooltip text and color
     public class Crosshair
     {
         private GameObject obj;

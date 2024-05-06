@@ -14,12 +14,19 @@ namespace Orders
 
         public void Fill(FuelType fillType, Vector3 position)
         {
+            // Fill the cup if it's empty, or do nothing if it's already full
             if (fuelType == FuelType.None)
             {
+                // Make the cup un-interactable (until it is set to be interactive again by the animation function when finished)
                 gameObject.layer = LayerMask.NameToLayer("Grabbed");
+
+                // Animate the lever
                 var animator = transform.parent.parent.parent.gameObject.GetComponentInChildren<Animator>();
                 animator.SetTrigger("LeverPull");
+
                 AudioManager.instance.PlaySFX(AudioManager.instance.pourCoffee, position);
+
+                // Activate the drink mesh and animate it
                 gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = true;
                 StartCoroutine(ScaleUpCoffeeMesh());
                 fuelType = fillType;
@@ -31,6 +38,7 @@ namespace Orders
             }
         }
 
+        // Animation function for the drink mesh
         private IEnumerator ScaleUpCoffeeMesh()
         {
             float elapsedTime = 0f;
@@ -48,6 +56,7 @@ namespace Orders
 
             while (elapsedTime < duration)
             {
+                // Use linear interpolation to scale the mesh up
                 float t = elapsedTime / duration;
                 drinkMeshTransform.localScale = Vector3.Lerp(startScale, targetScale, t);
                 elapsedTime += Time.deltaTime;
@@ -55,6 +64,7 @@ namespace Orders
             }
 
             drinkMeshTransform.localScale = targetScale;
+            // Make the cup interactable again
             gameObject.layer = LayerMask.NameToLayer("Interactable");
         }
 

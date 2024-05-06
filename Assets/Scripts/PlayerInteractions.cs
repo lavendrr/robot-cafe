@@ -20,7 +20,7 @@ namespace Orders
 
         private void Awake()
         {
-            // If there is an instance, and it's not me, delete myself.
+            // If there is an instance, and it's not me, delete myself
             if (instance != null && instance != this) 
             { 
                 Destroy(this); 
@@ -76,7 +76,7 @@ namespace Orders
             {
                 if (type == InteractableType.Grabbable)
                 {
-                    // Grabs the held object
+                    // Grabs the held object, disables its physics, and removes it from the slot if it is currently in one
                     grabbedObject = obj;
                     Audio.PlaySFX(Audio.pickUp, grabbedObject.transform.position);
                     if (grabbedObject.transform.parent != null && grabbedObject.transform.parent.gameObject.name == "SlotRoot")
@@ -94,7 +94,7 @@ namespace Orders
             {
                 if (type == InteractableType.None)
                 {
-                    // Drops the held object
+                    // Drops the held object and re-enables physics
                     grabbedObject.GetComponent<Rigidbody>().isKinematic = false;
                     grabbedObject.GetComponent<BoxCollider>().enabled = true;
                     grabbedObject.transform.parent = null;
@@ -103,7 +103,7 @@ namespace Orders
                 }
                 else if (type == InteractableType.Slottable)
                 {
-                    // Reparents the grabbed object to the slottable object, resets its transform, and removes it from the Grabbed layer
+                    // Slots the object in
                     obj.transform.Find("SlotRoot").GetComponent<Slot>().InsertObj(grabbedObject);
                     grabbedObject = null;
                 }
