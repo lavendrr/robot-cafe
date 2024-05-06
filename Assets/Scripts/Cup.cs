@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 namespace Orders
 {
@@ -17,6 +18,7 @@ namespace Orders
             {
                 // AudioManager.instance.PlaySFX(AudioManager.instance.pourCoffee, position);
                 gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = true;
+                StartCoroutine(ScaleUpCoffeeMesh());
                 fuelType = fillType;
                 Debug.Log("Filled cup with " + fuelType.ToString());
             }
@@ -24,6 +26,32 @@ namespace Orders
             {
                 Debug.Log("Cup already full.");
             }
+        }
+
+        private IEnumerator ScaleUpCoffeeMesh()
+        {
+            float elapsedTime = 0f;
+            Vector3 startScale = new Vector3(0.81f, 0.094f, 0.81f);
+            Vector3 targetScale = Vector3.one;
+            float duration = 1.5f;
+
+            Transform drinkMeshTransform = transform.Find("SM_drink");
+            if (drinkMeshTransform == null)
+            {
+                Debug.LogError("Drink mesh transform not found.");
+                yield break;
+            }
+
+
+            while (elapsedTime < duration)
+            {
+                float t = elapsedTime / duration;
+                drinkMeshTransform.localScale = Vector3.Lerp(startScale, targetScale, t);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            drinkMeshTransform.localScale = targetScale;
         }
 
         public void Empty()

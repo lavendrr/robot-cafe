@@ -220,6 +220,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_drink
       objectReference: {fileID: 0}
+    - target: {fileID: 3894615377530851186, guid: 2d47e601091e5d04e81329ebbce94188, type: 3}
+      propertyPath: m_Name
+      value: CoffeeMesh
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
