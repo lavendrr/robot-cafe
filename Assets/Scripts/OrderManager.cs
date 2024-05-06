@@ -15,6 +15,7 @@ namespace Orders
     public class OrderManager : MonoBehaviour
     {
         public static OrderManager instance { get; private set; }
+        private AudioManager Audio;
 
         [SerializeField]
         private GameObject cupPrefab, customerPrefab;
@@ -41,6 +42,7 @@ namespace Orders
         // Start is called before the first frame update
         void Start()
         {
+            Audio = AudioManager.instance;
             NewCustomer();
         }
 
@@ -49,19 +51,24 @@ namespace Orders
             customerList.Add(Instantiate(customerPrefab, customerRoot.transform));
         }
 
-        public void FillOrder(GameObject cupObj)
+        public void FillOrder(GameObject cupObj, Vector3 position)
         {
             Customer currentCustomer = customerList[0].GetComponent<Customer>();
             if (currentCustomer.GetOrder().orderType == cupObj.GetComponent<Cup>().GetFuelType())
             {
                 // Remove the order from the list, add a new order, and spawn a new cup and delete the one used to fill the order
                 Debug.Log("Order filled!");
+                Audio.PlaySFX(Audio.bellDing, position);
+
                 currentCustomer.Leave();
                 customerList.RemoveAt(0);
-                UIManager.instance.SetOrderInfo("");
+
                 NewCustomer();
                 completedCounter++;
+
                 UIManager.instance.CompleteOrder(completedCounter);
+                UIManager.instance.SetOrderInfo("");
+
                 SpawnCup();
                 Destroy(cupObj);
             }

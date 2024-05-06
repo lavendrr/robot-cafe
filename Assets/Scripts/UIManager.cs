@@ -8,6 +8,7 @@ namespace Orders
     public class UIManager : MonoBehaviour
     {
         public static UIManager instance { get; private set; }
+        private AudioManager Audio;
 
         private GameObject gameUI, endMenu;
         private Crosshair crosshair;
@@ -32,6 +33,7 @@ namespace Orders
         // Start is called before the first frame update
         void Start()
         {
+            Audio = AudioManager.instance;
             gameUI = GameObject.Find("GameUI");
             endMenu = GameObject.Find("EndMenu");
             endMenu.SetActive(false);
