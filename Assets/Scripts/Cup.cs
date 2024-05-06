@@ -12,7 +12,7 @@ namespace Orders
             return fuelType;
         }
 
-        public void Fill(FuelType fillType, Vector3 position)
+        public void Fill(FuelType fillType, Vector3 position, Material fuelMaterial)
         {
             // Fill the cup if it's empty, or do nothing if it's already full
             if (fuelType == FuelType.None)
@@ -27,10 +27,19 @@ namespace Orders
                 AudioManager.instance.PlaySFX(AudioManager.instance.pourCoffee, position);
 
                 // Activate the drink mesh and animate it
-                gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = true;
-                StartCoroutine(ScaleUpCoffeeMesh());
-                fuelType = fillType;
-                Debug.Log("Filled cup with " + fuelType.ToString());
+                MeshRenderer drinkMeshRenderer = gameObject.GetComponentsInChildren<MeshRenderer>()[1];
+                if (drinkMeshRenderer != null)
+                {
+                    drinkMeshRenderer.enabled = true;
+                    drinkMeshRenderer.material = fuelMaterial;
+                    StartCoroutine(ScaleUpCoffeeMesh());
+                    fuelType = fillType;
+                    Debug.Log("Filled cup with " + fuelType.ToString());
+                }
+                else
+                {
+                    Debug.Log("Drink mesh renderer not found.");
+                }
             }
             else
             {

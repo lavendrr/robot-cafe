@@ -6,6 +6,8 @@ namespace Orders
     {
         [SerializeField]
         private FuelType coffeeMachineType;
+        [SerializeField]
+        private Material fuelMaterial;
         private Slot slot;
 
         private void Start()
@@ -20,7 +22,7 @@ namespace Orders
             var cupObj = slot.GetSlottedObj();
             if (cupObj != null)
             {
-                cupObj.GetComponent<Cup>().Fill(coffeeMachineType, slot.gameObject.transform.position);
+                cupObj.GetComponent<Cup>().Fill(coffeeMachineType, slot.gameObject.transform.position, fuelMaterial);
             }
             else
             {
