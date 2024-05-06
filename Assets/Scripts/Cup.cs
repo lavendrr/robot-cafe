@@ -16,7 +16,8 @@ namespace Orders
         {
             if (fuelType == FuelType.None)
             {
-                // AudioManager.instance.PlaySFX(AudioManager.instance.pourCoffee, position);
+                gameObject.layer = LayerMask.NameToLayer("Grabbed");
+                AudioManager.instance.PlaySFX(AudioManager.instance.pourCoffee, position);
                 gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = true;
                 StartCoroutine(ScaleUpCoffeeMesh());
                 fuelType = fillType;
@@ -52,6 +53,7 @@ namespace Orders
             }
 
             drinkMeshTransform.localScale = targetScale;
+            gameObject.layer = LayerMask.NameToLayer("Interactable");
         }
 
         public void Empty()
@@ -62,7 +64,6 @@ namespace Orders
 
         void OnCollisionEnter(Collision other)
         {
-            Debug.Log("Colliding");
             if (other.gameObject.name == "ItemKillbox")
             {
                 Debug.Log("Hit box");

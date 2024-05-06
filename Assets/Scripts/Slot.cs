@@ -10,6 +10,7 @@ public class Slot : MonoBehaviour
         slottedObj.GetComponent<BoxCollider>().enabled = true;
         slottedObj.transform.SetParent(gameObject.transform);
         slottedObj.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        SendMessageUpwards("OnSlotInsert", options: SendMessageOptions.DontRequireReceiver);
         slottedObj.layer = LayerMask.NameToLayer("Interactable");
     }
 
