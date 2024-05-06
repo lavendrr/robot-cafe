@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 namespace Orders
 {
@@ -9,13 +9,12 @@ namespace Orders
     {
         public static UIManager instance { get; private set; }
 
+        private GameObject gameUI, endMenu;
         private Crosshair crosshair;
-        private TextMeshProUGUI orderInfo;
-        private TextMeshProUGUI ordersCompleted;
-        private TextMeshProUGUI timerText;
+        private TextMeshProUGUI orderInfo, ordersCompleted, timerText;
         private float timer = 180f;
-        private int minutes = 3;
-        private float seconds = 0f;
+        private int minutes;
+        private float seconds;
 
         private void Awake()
         {
@@ -33,6 +32,9 @@ namespace Orders
         // Start is called before the first frame update
         void Start()
         {
+            gameUI = GameObject.Find("GameUI");
+            endMenu = GameObject.Find("EndMenu");
+            endMenu.SetActive(false);
             crosshair = new Crosshair(GameObject.Find("Crosshair"));
             orderInfo = GameObject.Find("OrderInfo").GetComponent<TextMeshProUGUI>();
             timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
@@ -69,10 +71,17 @@ namespace Orders
 
         private void UpdateTimer()
         {
-            timer -= Time.deltaTime;
-            seconds = timer % 60;
-            minutes = (int) timer / 60;
-            timerText.text = "Time: " + string.Format("{0}:{1:0.0}", minutes, seconds);
+            if(!(timer < 0f))
+            {
+                timer -= Time.deltaTime;
+                seconds = timer % 60;
+                minutes = (int) timer / 60;
+                timerText.text = "Time: " + string.Format("{0:00}:{1:00.0}", minutes, seconds);
+            }
+            else
+            {
+                EndGame();
+            }
         }
 
         public void SetOrderInfo(string order)
@@ -83,6 +92,25 @@ namespace Orders
         public void CompleteOrder(int completed)
         {
             ordersCompleted.text = "Orders Completed: " + completed.ToString();
+        }
+
+        public void EndGame()
+        {
+            GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().DeactivateInput();
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+            gameUI.SetActive(false);
+            endMenu.SetActive(true);
+            GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = "Orders Completed: " + OrderManager.instance.completedCounter.ToString();
+        }
+
+        public void RestartGame()
+        {
+            SceneManager.LoadScene("Level");
+        }
+
+        public void LoadStartScene()
+        {
+            SceneManager.LoadScene("Start");
         }
     }
 
