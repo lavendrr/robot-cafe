@@ -13,7 +13,7 @@ namespace Orders
         private GameObject gameUI, endMenu;
         private Crosshair crosshair;
         private TextMeshProUGUI orderInfo, ordersCompleted, timerText;
-        private float timer = 180f;
+        private float timer = 60f;
         private int minutes;
         private float seconds;
 
@@ -99,10 +99,18 @@ namespace Orders
         public void EndGame()
         {
             GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().DeactivateInput();
-            UnityEngine.Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.None;
             gameUI.SetActive(false);
             endMenu.SetActive(true);
-            GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = "Orders Completed: " + OrderManager.instance.completedCounter.ToString();
+
+            int score = OrderManager.instance.completedCounter;
+
+            if (PlayerPrefs.GetInt("highScore") < OrderManager.instance.completedCounter)
+            {
+                PlayerPrefs.SetInt("highScore", OrderManager.instance.completedCounter);
+            }
+
+            GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = "Orders Completed: " + score.ToString() + "\nHigh Score: " + PlayerPrefs.GetInt("highScore").ToString();
         }
 
         public void RestartGame()
