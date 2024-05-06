@@ -51,7 +51,7 @@ namespace Orders
             customerList.Add(Instantiate(customerPrefab, customerRoot.transform));
         }
 
-        public void FillOrder(GameObject cupObj, Vector3 position)
+        public bool FillOrder(GameObject cupObj, Vector3 position)
         {
             Customer currentCustomer = customerList[0].GetComponent<Customer>();
             if (currentCustomer.GetOrder().orderType == cupObj.GetComponent<Cup>().GetFuelType())
@@ -59,6 +59,7 @@ namespace Orders
                 // Remove the order from the list, add a new order, and spawn a new cup and delete the one used to fill the order
                 Debug.Log("Order filled!");
                 Audio.PlaySFX(Audio.bellDing, position);
+
 
                 currentCustomer.Leave();
                 customerList.RemoveAt(0);
@@ -71,10 +72,12 @@ namespace Orders
 
                 SpawnCup();
                 Destroy(cupObj);
+                return true;
             }
             else
             {
                 Debug.Log("Incorrect order.");
+                return false;
             }
         }
 

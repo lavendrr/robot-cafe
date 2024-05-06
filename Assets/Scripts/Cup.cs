@@ -17,6 +17,8 @@ namespace Orders
             if (fuelType == FuelType.None)
             {
                 gameObject.layer = LayerMask.NameToLayer("Grabbed");
+                var animator = transform.parent.parent.parent.gameObject.GetComponentInChildren<Animator>();
+                animator.SetTrigger("LeverPull");
                 AudioManager.instance.PlaySFX(AudioManager.instance.pourCoffee, position);
                 gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = true;
                 StartCoroutine(ScaleUpCoffeeMesh());
