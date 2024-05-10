@@ -70,6 +70,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4858d5f8276d34680929d6a8d57533fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  emotionMaterialMaps:
+  - emotion: 0
+    material: {fileID: 2100000, guid: 7cc15e4259f97d04b9fb710821cbdde9, type: 2}
+  - emotion: 1
+    material: {fileID: 2100000, guid: 9b118bc776456424aaaa00d7882f128a, type: 2}
+  - emotion: 2
+    material: {fileID: 2100000, guid: a09f2adaec1fd7e479557f7b1960c17e, type: 2}
+  - emotion: 3
+    material: {fileID: 2100000, guid: fae3e25fd59667c4790fa7de88cc09a0, type: 2}
 --- !u!95 &783792947216585505
 Animator:
   serializedVersion: 5
@@ -159,6 +168,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 257629cc8bb084f558b9141ab51cf052, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 87ca2dd15b416054583476b10e3240d5, type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9cb7bcf923421be47b9f298a5d595efc, type: 2}
     - target: {fileID: -7035158125780842655, guid: 87ca2dd15b416054583476b10e3240d5, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -168,9 +181,9 @@ PrefabInstance:
       value: SM_robot
       objectReference: {fileID: 0}
     - target: {fileID: 3611787407977981773, guid: 87ca2dd15b416054583476b10e3240d5, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 5d95e22c1cd1c4eb2a66695e04769b19, type: 2}
+      propertyPath: m_Materials.Array.size
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 3611787407977981773, guid: 87ca2dd15b416054583476b10e3240d5, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
@@ -179,10 +192,6 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[2]
       value: 
       objectReference: {fileID: 2100000, guid: 9cb7bcf923421be47b9f298a5d595efc, type: 2}
-    - target: {fileID: 3611787407977981773, guid: 87ca2dd15b416054583476b10e3240d5, type: 3}
-      propertyPath: m_Materials.Array.data[3]
-      value: 
-      objectReference: {fileID: 2100000, guid: 7cc15e4259f97d04b9fb710821cbdde9, type: 2}
     - target: {fileID: 6486065251852212024, guid: 87ca2dd15b416054583476b10e3240d5, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

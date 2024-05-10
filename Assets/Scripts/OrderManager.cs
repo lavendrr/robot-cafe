@@ -23,16 +23,16 @@ namespace Orders
         public List<GameObject> customerList = new();
         public int completedCounter = 0;
 
-        private void Awake() 
-        { 
+        private void Awake()
+        {
             // If there is an instance, and it's not me, delete myself.
-            if (instance != null && instance != this) 
-            { 
-                Destroy(this); 
-            } 
-            else 
-            { 
-                instance = this; 
+            if (instance != null && instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                instance = this;
             }
 
             cupSpawn = GameObject.Find("CupSpawn");
@@ -77,6 +77,7 @@ namespace Orders
             else
             {
                 Debug.Log("Incorrect order.");
+                currentCustomer.WrongOrder();
                 return false;
             }
         }
