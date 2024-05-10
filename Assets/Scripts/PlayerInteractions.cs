@@ -34,7 +34,7 @@ namespace Orders
         // Start is called before the first frame update
         void Start()
         {
-            Audio =  AudioManager.instance;
+            Audio = AudioManager.instance;
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         }
 
@@ -43,7 +43,6 @@ namespace Orders
             // Sends a ray 3 meters out from the camera & returns the first interactable object's type and reference.
             if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward), out RaycastHit hit, 3f, LayerMask.GetMask("Interactable")))
             {
-                // Checks if the player isn't already holding something as well
                 if (hit.collider.gameObject.CompareTag("Grabbable"))
                 {
                     return (InteractableType.Grabbable, hit.collider.gameObject);
