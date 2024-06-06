@@ -9,24 +9,25 @@ namespace Orders
     {
         public static UIManager instance { get; private set; }
         private AudioManager Audio;
+        private SaveManager SaveManager;
 
         private GameObject gameUI, endMenu;
         private Crosshair crosshair;
         private TextMeshProUGUI orderInfo, ordersCompleted, timerText;
-        private float timer = 60f;
+        private float timer = 15f;
         private int minutes;
         private float seconds;
 
         private void Awake()
         {
             // If there is an instance, and it's not me, delete myself.
-            if (instance != null && instance != this) 
-            { 
-                Destroy(this); 
-            } 
-            else 
-            { 
-                instance = this; 
+            if (instance != null && instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                instance = this;
             }
         }
 
@@ -34,6 +35,7 @@ namespace Orders
         void Start()
         {
             Audio = AudioManager.instance;
+            SaveManager = SaveManager.instance;
             gameUI = GameObject.Find("GameUI");
             endMenu = GameObject.Find("EndMenu");
             endMenu.SetActive(false);
@@ -75,11 +77,11 @@ namespace Orders
         private void UpdateTimer()
         {
             // Update the timer each frame until it reaches 0, and format the string accordingly for the UI text
-            if(!(timer < 0f))
+            if (!(timer < 0f))
             {
                 timer -= Time.deltaTime;
                 seconds = timer % 60;
-                minutes = (int) timer / 60;
+                minutes = (int)timer / 60;
                 timerText.text = "Time: " + string.Format("{0:00}:{1:00.0}", minutes, seconds);
             }
             else
@@ -108,12 +110,14 @@ namespace Orders
 
             int score = OrderManager.instance.completedCounter;
 
-            if (PlayerPrefs.GetInt("highScore") < OrderManager.instance.completedCounter)
+            if (SaveManager.GetHighScore() < score)
             {
-                PlayerPrefs.SetInt("highScore", OrderManager.instance.completedCounter);
+                SaveManager.SetHighScore(score);
             }
 
-            GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = "Orders Completed: " + score.ToString() + "\nHigh Score: " + PlayerPrefs.GetInt("highScore").ToString();
+            GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = "Orders Completed: " + score.ToString() + "\nHigh Score: " + SaveManager.GetHighScore().ToString();
+
+            SaveManager.Save();
         }
 
         public void RestartGame()
