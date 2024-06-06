@@ -8,7 +8,7 @@ namespace Orders
     public class UIManager : MonoBehaviour
     {
         public static UIManager instance { get; private set; }
-        private AudioManager Audio;
+
         private SaveManager SaveManager;
 
         private GameObject gameUI, endMenu;
@@ -17,6 +17,7 @@ namespace Orders
         private float timer = 15f;
         private int minutes;
         private float seconds;
+        private bool gameEnded = false;
 
         private void Awake()
         {
@@ -34,7 +35,6 @@ namespace Orders
         // Start is called before the first frame update
         void Start()
         {
-            Audio = AudioManager.instance;
             SaveManager = SaveManager.instance;
             gameUI = GameObject.Find("GameUI");
             endMenu = GameObject.Find("EndMenu");
@@ -84,7 +84,7 @@ namespace Orders
                 minutes = (int)timer / 60;
                 timerText.text = "Time: " + string.Format("{0:00}:{1:00.0}", minutes, seconds);
             }
-            else
+            else if (!gameEnded)
             {
                 EndGame();
             }
@@ -118,6 +118,7 @@ namespace Orders
             GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = "Orders Completed: " + score.ToString() + "\nHigh Score: " + SaveManager.GetHighScore().ToString();
 
             SaveManager.Save();
+            gameEnded = true;
         }
 
         public void RestartGame()
