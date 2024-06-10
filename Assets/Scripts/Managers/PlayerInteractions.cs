@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Orders
 {
@@ -14,20 +15,25 @@ namespace Orders
     {
         public static PlayerInteractions instance { get; private set; }
 
+        private PlayerInput playerInput;
+        private InputAction moveAction;
+        private AudioManager Audio;
+
         private GameObject mainCamera;
         private GameObject grabbedObject;
-        private AudioManager Audio;
+        private bool moveInput;
+
 
         private void Awake()
         {
             // If there is an instance, and it's not me, delete myself
-            if (instance != null && instance != this) 
-            { 
-                Destroy(this); 
-            } 
-            else 
-            { 
-                instance = this; 
+            if (instance != null && instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                instance = this;
             }
         }
 
@@ -36,6 +42,19 @@ namespace Orders
         {
             Audio = AudioManager.instance;
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+            playerInput = GetComponent<PlayerInput>();
+            moveAction = playerInput.actions["move"];
+        }
+
+        void Update()
+        {
+            moveAction.started += ctx => moveInput = true;
+            moveAction.canceled += ctx => moveInput = false;
+        }
+
+        public bool GetMoveInputState()
+        {
+            return moveInput;
         }
 
         public (InteractableType type, GameObject obj) InteractionCheck()
