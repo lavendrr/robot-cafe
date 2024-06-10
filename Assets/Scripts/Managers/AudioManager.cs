@@ -1,41 +1,56 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using FMODUnity;
 using FMOD.Studio;
 
 
-    public class AudioManager : MonoBehaviour
+public class AudioManager : MonoBehaviour
+{
+    public static AudioManager instance { get; private set; }
+
+    [SerializeField]
+    public EventReference bgm, pickUp, pourCoffee, bellDing, playerMove;
+    private EventInstance bgmInstance;
+
+    private bool playerActive = false;
+
+    private void Awake()
     {
-        public static AudioManager instance { get; private set; }
-
-        [SerializeField]
-        public EventReference bgm, pickUp, pourCoffee, bellDing, playerMove;
-        private EventInstance bgmInstance;
-
-        private void Awake()
+        // If there is an instance, and it's not me, delete myself
+        if (instance != null && instance != this)
         {
-            // If there is an instance, and it's not me, delete myself
-            if (instance != null && instance != this)
-            {
-                Destroy(this);
-            }
-            else
-            {
-                instance = this;
-            }
+            Destroy(this);
         }
-
-        private void Start()
+        else
         {
-            bgmInstance.getPlaybackState(out PLAYBACK_STATE state);
-            if (state == PLAYBACK_STATE.STOPPED)
-            {
-                bgmInstance = RuntimeManager.CreateInstance(bgm);
-                bgmInstance.start();
-            }
+            instance = this;
+        }
+        // Subscribe to the scene loaded event
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "Level")
+        {
+            playerActive = true;
             RuntimeManager.PlayOneShot(playerMove);
         }
+    }
 
-        void Update()
+    private void Start()
+    {
+        bgmInstance.getPlaybackState(out PLAYBACK_STATE state);
+        if (state == PLAYBACK_STATE.STOPPED)
+        {
+            bgmInstance = RuntimeManager.CreateInstance(bgm);
+            bgmInstance.start();
+        }
+    }
+
+    void Update()
+    {
+        if (playerActive)
         {
             if (PlayerInteractions.instance.GetMoveInputState())
             {
@@ -46,9 +61,10 @@ using FMOD.Studio;
                 RuntimeManager.StudioSystem.setParameterByName("MoveInput", 0f);
             }
         }
-
-        public void PlaySFX(EventReference eventRef, Vector3 position)
-        {
-            RuntimeManager.PlayOneShot(eventRef, position);
-        }
     }
+
+    public void PlaySFX(EventReference eventRef, Vector3 position)
+    {
+        RuntimeManager.PlayOneShot(eventRef, position);
+    }
+}
