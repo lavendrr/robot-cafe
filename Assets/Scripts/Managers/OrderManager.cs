@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Orders
-{
+
     public enum FuelType
     {
         None,
@@ -37,13 +36,28 @@ namespace Orders
 
             cupSpawn = GameObject.Find("CupSpawn");
             customerRoot = GameObject.Find("CustomerRoot");
+            // Subscribe to the state change event
+            StateManager.Instance.OnStateChanged += HandleStateChange;
         }
 
         // Start is called before the first frame update
         void Start()
         {
             Audio = AudioManager.instance;
-            NewCustomer();
+        }
+
+        private void OnDestroy()
+        {
+            // Unsubscribe from the state change event
+            StateManager.Instance.OnStateChanged -= HandleStateChange;
+        }
+
+        private void HandleStateChange(State newState)
+        {
+            if (newState.GetType() == typeof(ShiftState))
+            {
+                NewCustomer();
+            }
         }
 
         public void NewCustomer()
@@ -99,4 +113,3 @@ namespace Orders
             Debug.Log("New order's type is " + orderType.ToString());
         }
     }
-}

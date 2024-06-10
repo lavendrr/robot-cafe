@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Orders
-{
+
     public enum InteractableType
     {
         None,
@@ -158,4 +157,3 @@ namespace Orders
             }
         }
     }
-}

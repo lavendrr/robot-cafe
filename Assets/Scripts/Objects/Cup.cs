@@ -1,8 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-namespace Orders
-{
     public class Cup : MonoBehaviour
     {
         private FuelType fuelType = FuelType.None;
@@ -94,4 +92,3 @@ namespace Orders
             }
         }
     }
-}

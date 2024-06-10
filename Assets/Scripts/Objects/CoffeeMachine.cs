@@ -1,7 +1,6 @@
 using UnityEngine;
 
-namespace Orders
-{
+
     public class CoffeeMachine : MonoBehaviour
     {
         [SerializeField]
@@ -30,4 +29,3 @@ namespace Orders
             }
         }
     }
-}
