@@ -91,5 +91,15 @@ using System.IO;
         {
             return saveData.highScore;
         }
+
+        public void SetDayCount(int dayCount)
+        {
+            saveData.dayCount = dayCount;
+        }
+
+        public int GetDayCount()
+        {
+            return saveData.dayCount;
+        }
     }
 

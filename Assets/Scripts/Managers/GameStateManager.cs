@@ -177,12 +177,13 @@ public class ShiftEndState : State
         GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().DeactivateInput();
         // Release the player cursor
         Cursor.lockState = CursorLockMode.None;
-        // Update the high score
+        // Update the high score and day count
         int score = OrderManager.instance.completedCounter;
         if (SaveManager.instance.GetHighScore() < score)
         {
             SaveManager.instance.SetHighScore(score);
         }
+        SaveManager.instance.SetDayCount(SaveManager.instance.GetDayCount() + 1);
         // Switch the UI to the game end UI
         UIManager.instance.EndGame(score);
         // Save game

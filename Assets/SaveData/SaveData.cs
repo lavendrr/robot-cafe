@@ -6,4 +6,5 @@ public class SaveData
     public string playerName = "";
     public string cafeName = "";
     public int highScore = 0;
+    public int dayCount = 0;
 }

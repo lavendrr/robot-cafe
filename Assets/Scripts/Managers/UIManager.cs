@@ -92,7 +92,7 @@ using UnityEngine.InputSystem;
             gameUI.SetActive(false);
             endMenu.SetActive(true);
             // Set the game end text
-            GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = "Orders Completed: " + score.ToString() + "\nHigh Score: " + SaveManager.GetHighScore().ToString();
+            GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = "Day " + SaveManager.GetDayCount().ToString() + "\nOrders Completed: " + score.ToString() + "\nHigh Score: " + SaveManager.GetHighScore().ToString();
         }
 
         public void RestartGame()
