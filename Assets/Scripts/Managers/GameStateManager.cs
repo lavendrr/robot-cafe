@@ -38,11 +38,6 @@ public class StateManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        ChangeState(new MainMenuState());
-    }
-
     public State GetCurrentState()
     {
         return currentState;
@@ -137,18 +132,18 @@ public class ShiftState : State
     }
 
     private void UpdateTimer()
+    {
+        // Update the timer each frame until it reaches 0, and format the string accordingly for the UI text
+        if (shiftTimer > 0f)
         {
-            // Update the timer each frame until it reaches 0, and format the string accordingly for the UI text
-            if (shiftTimer > 0f)
-            {
-                shiftTimer -= Time.deltaTime;
-                UIManager.instance.UpdateTimerText(shiftTimer);
-            }
-            else
-            {
-                StateManager.Instance.ChangeState(new ShiftEndState());
-            }
+            shiftTimer -= Time.deltaTime;
+            UIManager.instance.UpdateTimerText(shiftTimer);
         }
+        else
+        {
+            StateManager.Instance.ChangeState(new ShiftEndState());
+        }
+    }
 }
 
 public class PauseState : State
