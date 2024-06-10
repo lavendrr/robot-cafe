@@ -3462,6 +3462,13 @@ MonoBehaviour:
       Data3: -434532418
       Data4: -1465415387
     Path: event:/Bell Ding
+  playerMove:
+    Guid:
+      Data1: -2075878979
+      Data2: 1187755064
+      Data3: -420340320
+      Data4: 1107670384
+    Path: event:/Player Move
 --- !u!4 &1960187480
 Transform:
   m_ObjectHideFlags: 0
@@ -3472,6 +3479,50 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.8643799, y: 1.013402, z: -0.77147686}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2001967798
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2001967800}
+  - component: {fileID: 2001967799}
+  m_Layer: 0
+  m_Name: GameStateManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2001967799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001967798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1c8e6ff4ce9a4fe4a1f0e3d71887aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &2001967800
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001967798}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 950.0132, y: 501.68295, z: 5.0904922}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4222,3 +4273,4 @@ SceneRoots:
   - {fileID: 1027473518}
   - {fileID: 2125838622}
   - {fileID: 1960187480}
+  - {fileID: 2001967800}
