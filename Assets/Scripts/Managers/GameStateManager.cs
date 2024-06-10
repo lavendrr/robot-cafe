@@ -1,12 +1,15 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using System;
 
-    public class StateManager : MonoBehaviour
+public class StateManager : MonoBehaviour
 {
     public static StateManager Instance { get; private set; }
 
     private State currentState;
+    public delegate void StateChangeHandler(State newState);
+    public event StateChangeHandler OnStateChanged;
 
     private void Awake()
     {
@@ -54,6 +57,9 @@ using UnityEngine.InputSystem;
 
         currentState = newState;
         currentState.Enter();
+
+        // Broadcast the state change event
+        OnStateChanged?.Invoke(newState);
     }
 
     private void Update()
@@ -118,7 +124,6 @@ public class ShiftState : State
     public override void Enter()
     {
         Debug.Log("Entering Shift state");
-        OrderManager.instance.NewCustomer();
     }
 
     public override void Update()
