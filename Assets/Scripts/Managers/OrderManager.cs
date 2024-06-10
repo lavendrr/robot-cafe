@@ -42,7 +42,6 @@ using UnityEngine;
         void Start()
         {
             Audio = AudioManager.instance;
-            NewCustomer();
         }
 
         public void NewCustomer()

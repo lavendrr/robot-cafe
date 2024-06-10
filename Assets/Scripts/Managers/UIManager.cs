@@ -12,10 +12,8 @@ using UnityEngine.InputSystem;
         private GameObject gameUI, endMenu;
         private Crosshair crosshair;
         private TextMeshProUGUI orderInfo, ordersCompleted, timerText;
-        private float timer = 15f;
         private int minutes;
         private float seconds;
-        private bool gameEnded = false;
 
         private void Awake()
         {
@@ -47,7 +45,6 @@ using UnityEngine.InputSystem;
         void Update()
         {
             UpdateCrosshair();
-            UpdateTimer();
         }
 
         private void UpdateCrosshair()
@@ -72,20 +69,12 @@ using UnityEngine.InputSystem;
             }
         }
 
-        private void UpdateTimer()
+        public void UpdateTimerText(float timer)
         {
-            // Update the timer each frame until it reaches 0, and format the string accordingly for the UI text
-            if (!(timer < 0f))
-            {
-                timer -= Time.deltaTime;
-                seconds = timer % 60;
-                minutes = (int)timer / 60;
-                timerText.text = "Time: " + string.Format("{0:00}:{1:00.0}", minutes, seconds);
-            }
-            else if (!gameEnded)
-            {
-                EndGame();
-            }
+            // Format the string accordingly for the UI text
+            seconds = timer % 60;
+            minutes = (int)timer / 60;
+            timerText.text = "Time: " + string.Format("{0:00}:{1:00.0}", minutes, seconds);
         }
 
         public void SetOrderInfo(string order)
@@ -98,25 +87,12 @@ using UnityEngine.InputSystem;
             ordersCompleted.text = "Orders Completed: " + completed.ToString();
         }
 
-        public void EndGame()
+        public void EndGame(int score)
         {
-            // Disables player input, releases the player cursor, switches the UI to the game end UI, updates the high score, and sets the game end text
-            GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().DeactivateInput();
-            Cursor.lockState = CursorLockMode.None;
             gameUI.SetActive(false);
             endMenu.SetActive(true);
-
-            int score = OrderManager.instance.completedCounter;
-
-            if (SaveManager.GetHighScore() < score)
-            {
-                SaveManager.SetHighScore(score);
-            }
-
+            // Set the game end text
             GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = "Orders Completed: " + score.ToString() + "\nHigh Score: " + SaveManager.GetHighScore().ToString();
-
-            SaveManager.Save();
-            gameEnded = true;
         }
 
         public void RestartGame()
