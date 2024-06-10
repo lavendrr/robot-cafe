@@ -842,6 +842,13 @@ MonoBehaviour:
       Data3: -434532418
       Data4: -1465415387
     Path: event:/Bell Ding
+  playerMove:
+    Guid:
+      Data1: -2075878979
+      Data2: 1187755064
+      Data3: -420340320
+      Data4: 1107670384
+    Path: event:/Player Move
 --- !u!4 &229468283
 Transform:
   m_ObjectHideFlags: 0
