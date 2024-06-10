@@ -92,3 +92,5 @@ fmod_editor.log
 **/.DS_Store
 /FMOD/robot-cafe/.cache
 
+Assets/SaveData/saveData.json
+Assets/SaveData/saveData.json.meta
