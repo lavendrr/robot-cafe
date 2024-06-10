@@ -3,8 +3,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 
-namespace Orders
-{
     public class UIManager : MonoBehaviour
     {
         public static UIManager instance { get; private set; }
@@ -170,4 +168,3 @@ namespace Orders
             tooltip.text = "(Q)";
         }
     }
-}

@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Orders
-{
+
     public enum FuelType
     {
         None,
@@ -99,4 +98,3 @@ namespace Orders
             Debug.Log("New order's type is " + orderType.ToString());
         }
     }
-}

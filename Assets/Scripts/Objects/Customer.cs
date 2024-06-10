@@ -17,8 +17,6 @@ public class EmotionMaterialMap
     public Material material;
 }
 
-namespace Orders
-{
     public class Customer : MonoBehaviour
     {
         [SerializeField]
@@ -108,4 +106,3 @@ namespace Orders
             }
         }
     }
-}

@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-namespace Orders
-{
     public class SaveManager : MonoBehaviour
     {
         public static SaveManager instance { get; private set; }
@@ -94,4 +92,4 @@ namespace Orders
             return saveData.highScore;
         }
     }
-}
+

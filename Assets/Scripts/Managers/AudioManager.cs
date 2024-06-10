@@ -2,8 +2,7 @@ using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
 
-namespace Orders
-{
+
     public class AudioManager : MonoBehaviour
     {
         public static AudioManager instance { get; private set; }
@@ -40,4 +39,3 @@ namespace Orders
             RuntimeManager.PlayOneShot(eventRef, position);
         }
     }
-}
