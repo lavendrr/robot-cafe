@@ -1,31 +1,43 @@
 using UnityEngine;
 
 
-    public class CoffeeMachine : MonoBehaviour
+public class CoffeeMachine : MonoBehaviour
+{
+    [SerializeField]
+    private FuelType coffeeMachineType;
+    [SerializeField]
+    private Material fuelMaterial;
+    private Slot slot;
+    private BoxCollider slotCollider;
+
+    private void Start()
     {
-        [SerializeField]
-        private FuelType coffeeMachineType;
-        [SerializeField]
-        private Material fuelMaterial;
-        private Slot slot;
+        slot = GetComponentInChildren<Slot>();
+        slotCollider = transform.Find("Slot").GetComponent<BoxCollider>();
+    }
 
-        private void Start()
+    private void OnSlotInsert()
+    {
+        slotCollider.enabled = false;
+    }
+
+    private void OnSlotRemove()
+    {
+        slotCollider.enabled = true;
+    }
+
+    public void FillCup()
+    {
+        // Attempt to fill the cup if one is present
+        Debug.Log("Trying to fill");
+        var cupObj = slot.GetSlottedObj();
+        if (cupObj != null)
         {
-            slot = GetComponentInChildren<Slot>();
+            cupObj.GetComponent<Cup>().Fill(coffeeMachineType, slot.gameObject.transform.position, fuelMaterial);
         }
-
-        public void FillCup()
+        else
         {
-            // Attempt to fill the cup if one is present
-            Debug.Log("Trying to fill");
-            var cupObj = slot.GetSlottedObj();
-            if (cupObj != null)
-            {
-                cupObj.GetComponent<Cup>().Fill(coffeeMachineType, slot.gameObject.transform.position, fuelMaterial);
-            }
-            else
-            {
-                Debug.Log("No cup in the machine.");
-            }
+            Debug.Log("No cup in the machine.");
         }
     }
+}

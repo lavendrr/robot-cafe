@@ -18,6 +18,7 @@ public class Slot : MonoBehaviour
     public void RemoveObj()
     {
         slottedObj = null;
+        SendMessageUpwards("OnSlotRemove", options: SendMessageOptions.DontRequireReceiver);
     }
 
     public GameObject GetSlottedObj()
