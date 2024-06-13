@@ -15,7 +15,7 @@ public class SaveData
 
 public class SaveManager : MonoBehaviour
 {
-    public static SaveManager instance { get; private set; }
+    public static SaveManager Instance { get; private set; }
 
     [SerializeField]
     private SaveData saveData = new SaveData();
@@ -24,13 +24,13 @@ public class SaveManager : MonoBehaviour
     private void Awake()
     {
         // If there is an instance, and it's not me, delete myself.
-        if (instance != null && instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(this);
         }
         else
         {
-            instance = this;
+            Instance = this;
         }
     }
 

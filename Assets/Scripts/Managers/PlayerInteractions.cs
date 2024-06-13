@@ -12,11 +12,10 @@ using UnityEngine.InputSystem;
 
     public class PlayerInteractions : MonoBehaviour
     {
-        public static PlayerInteractions instance { get; private set; }
+        public static PlayerInteractions Instance { get; private set; }
 
         private PlayerInput playerInput;
         private InputAction moveAction;
-        private AudioManager Audio;
 
         private GameObject mainCamera;
         private GameObject grabbedObject;
@@ -26,20 +25,19 @@ using UnityEngine.InputSystem;
         private void Awake()
         {
             // If there is an instance, and it's not me, delete myself
-            if (instance != null && instance != this)
+            if (Instance != null && Instance != this)
             {
                 Destroy(this);
             }
             else
             {
-                instance = this;
+                Instance = this;
             }
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            Audio = AudioManager.instance;
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             playerInput = GetComponent<PlayerInput>();
             moveAction = playerInput.actions["move"];
@@ -95,7 +93,7 @@ using UnityEngine.InputSystem;
                 {
                     // Grabs the held object, disables its physics, and removes it from the slot if it is currently in one
                     grabbedObject = obj;
-                    Audio.PlaySFX(Audio.pickUp, grabbedObject.transform.position);
+                    AudioManager.Instance.PlaySFX(AudioManager.Instance.pickUp, grabbedObject.transform.position);
                     if (grabbedObject.transform.parent != null && grabbedObject.transform.parent.gameObject.name == "SlotRoot")
                     {
                         grabbedObject.transform.parent.gameObject.GetComponent<Slot>().RemoveObj();

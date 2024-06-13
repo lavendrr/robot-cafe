@@ -2,10 +2,9 @@ using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
 
-
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager instance { get; private set; }
+    public static AudioManager Instance { get; private set; }
 
     [SerializeField]
     public EventReference bgm, pickUp, pourCoffee, bellDing, playerMove;
@@ -16,13 +15,13 @@ public class AudioManager : MonoBehaviour
     private void Awake()
     {
         // If there is an instance, and it's not me, delete myself
-        if (instance != null && instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(this);
         }
         else
         {
-            instance = this;
+            Instance = this;
         }
     }
 
@@ -80,7 +79,7 @@ public class AudioManager : MonoBehaviour
     {
         if (playerActive)
         {
-            if (PlayerInteractions.instance.GetMoveInputState())
+            if (PlayerInteractions.Instance.GetMoveInputState())
             {
                 RuntimeManager.StudioSystem.setParameterByName("MoveInput", 1f);
             }

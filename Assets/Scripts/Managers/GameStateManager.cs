@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
-using System;
 
 public class StateManager : MonoBehaviour
 {
@@ -137,7 +136,7 @@ public class ShiftState : State
         if (shiftTimer > 0f)
         {
             shiftTimer -= Time.deltaTime;
-            UIManager.instance.UpdateTimerText(shiftTimer);
+            UIManager.Instance.UpdateTimerText(shiftTimer);
         }
         else
         {
@@ -173,16 +172,16 @@ public class ShiftEndState : State
         // Release the player cursor
         Cursor.lockState = CursorLockMode.None;
         // Update the high score and day count
-        int score = OrderManager.instance.completedCounter;
-        if (SaveManager.instance.GetHighScore() < score)
+        int score = OrderManager.Instance.completedCounter;
+        if (SaveManager.Instance.GetHighScore() < score)
         {
-            SaveManager.instance.SetHighScore(score);
+            SaveManager.Instance.SetHighScore(score);
         }
-        SaveManager.instance.SetDayCount(SaveManager.instance.GetDayCount() + 1);
+        SaveManager.Instance.SetDayCount(SaveManager.Instance.GetDayCount() + 1);
         // Switch the UI to the game end UI
-        UIManager.instance.EndGame(score);
+        UIManager.Instance.EndGame(score);
         // Save game
-        SaveManager.instance.Save();
+        SaveManager.Instance.Save();
     }
 
     public override void Update()

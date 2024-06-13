@@ -1,13 +1,10 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem;
 
     public class UIManager : MonoBehaviour
     {
-        public static UIManager instance { get; private set; }
-
-        private SaveManager SaveManager;
+        public static UIManager Instance { get; private set; }
 
         private GameObject gameUI, endMenu;
         private Crosshair crosshair;
@@ -18,20 +15,19 @@ using UnityEngine.InputSystem;
         private void Awake()
         {
             // If there is an instance, and it's not me, delete myself.
-            if (instance != null && instance != this)
+            if (Instance != null && Instance != this)
             {
                 Destroy(this);
             }
             else
             {
-                instance = this;
+                Instance = this;
             }
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            SaveManager = SaveManager.instance;
             gameUI = GameObject.Find("GameUI");
             endMenu = GameObject.Find("EndMenu");
             endMenu.SetActive(false);
@@ -51,12 +47,12 @@ using UnityEngine.InputSystem;
         private void UpdateCrosshair()
         {
             // Update crosshair state depending on what the player is looking at
-            var (type, _) = PlayerInteractions.instance.InteractionCheck();
+            var (type, _) = PlayerInteractions.Instance.InteractionCheck();
             if (type == InteractableType.Grabbable)
             {
                 crosshair.SetGrab();
             }
-            else if (type == InteractableType.Slottable && PlayerInteractions.instance.GetGrabStatus())
+            else if (type == InteractableType.Slottable && PlayerInteractions.Instance.GetGrabStatus())
             {
                 crosshair.SetSlot();
             }
@@ -86,7 +82,7 @@ using UnityEngine.InputSystem;
         public void CompleteOrder(int completed)
         {
             ordersCompleted.text = "Orders Completed: " + completed.ToString();
-            moneyText.text = "Money: " + SaveManager.instance.GetPlayerMoney().ToString();
+            moneyText.text = "Money: " + SaveManager.Instance.GetPlayerMoney().ToString();
         }
 
         public void EndGame(int score)
@@ -94,7 +90,7 @@ using UnityEngine.InputSystem;
             gameUI.SetActive(false);
             endMenu.SetActive(true);
             // Set the game end text
-            GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = "Day " + SaveManager.GetDayCount().ToString() + "\nOrders Completed: " + score.ToString() + "\nHigh Score: " + SaveManager.GetHighScore().ToString();
+            GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = "Day " + SaveManager.Instance.GetDayCount().ToString() + "\nOrders Completed: " + score.ToString() + "\nHigh Score: " + SaveManager.Instance.GetHighScore().ToString();
         }
 
         public void RestartGame()
