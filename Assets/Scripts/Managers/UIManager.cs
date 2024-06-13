@@ -11,7 +11,7 @@ using UnityEngine.InputSystem;
 
         private GameObject gameUI, endMenu;
         private Crosshair crosshair;
-        private TextMeshProUGUI orderInfo, ordersCompleted, timerText;
+        private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText;
         private int minutes;
         private float seconds;
 
@@ -39,6 +39,7 @@ using UnityEngine.InputSystem;
             orderInfo = GameObject.Find("OrderInfo").GetComponent<TextMeshProUGUI>();
             timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
             ordersCompleted = GameObject.Find("OrdersCompleted").GetComponent<TextMeshProUGUI>();
+            moneyText = GameObject.Find("Money").GetComponent<TextMeshProUGUI>();
         }
 
         // Update is called once per frame
@@ -85,6 +86,7 @@ using UnityEngine.InputSystem;
         public void CompleteOrder(int completed)
         {
             ordersCompleted.text = "Orders Completed: " + completed.ToString();
+            moneyText.text = "Money: " + SaveManager.instance.GetPlayerMoney().ToString();
         }
 
         public void EndGame(int score)

@@ -73,6 +73,7 @@ using UnityEngine;
             {
                 // Remove the order from the list, initialize a new customer, and spawn a new cup and delete the one used to fill the order
                 Debug.Log("Order filled!");
+                SaveManager.instance.AdjustPlayerMoney(currentCustomer.GetOrder().orderValue);
                 Audio.PlaySFX(Audio.bellDing, position);
 
                 currentCustomer.Leave();
@@ -105,6 +106,7 @@ using UnityEngine;
     public class Order
     {
         public FuelType orderType;
+        public int orderValue = 5;
         public Order()
         {
             // Randomly assign the order type from the available enums
