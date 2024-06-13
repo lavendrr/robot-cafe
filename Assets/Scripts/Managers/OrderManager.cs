@@ -1,14 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-
-public enum FuelType
-{
-    None,
-    Unleaded,
-    Diesel,
-    Premium
-}
+using UnityEngine.UIElements;
 
 public class OrderManager : MonoBehaviour
 {
@@ -61,11 +55,11 @@ public class OrderManager : MonoBehaviour
     {
         // Check if the current customer's order matches the delivered order
         Customer currentCustomer = customerList[0].GetComponent<Customer>();
-        if (currentCustomer.GetOrder().orderType == cupObj.GetComponent<Cup>().GetFuelType())
+        if (currentCustomer.GetOrder().orderItem.fuelType == cupObj.GetComponent<Cup>().GetFuelType())
         {
             // Remove the order from the list, initialize a new customer, and spawn a new cup and delete the one used to fill the order
             Debug.Log("Order filled!");
-            SaveManager.Instance.AdjustPlayerMoney(currentCustomer.GetOrder().orderValue);
+            SaveManager.Instance.AdjustPlayerMoney(currentCustomer.GetOrder().orderItem.cost);
             AudioManager.Instance.PlaySFX(AudioManager.Instance.bellDing, position);
 
             currentCustomer.Leave();
@@ -97,13 +91,21 @@ public class OrderManager : MonoBehaviour
 
 public class Order
 {
-    public FuelType orderType;
-    public int orderValue = 5;
+    public MenuItem orderItem;
     public Order()
     {
-        // Randomly assign the order type from the available enums
-        orderType = (FuelType)Enum.GetValues(typeof(FuelType)).GetValue(UnityEngine.Random.Range(1, 4));
-        UIManager.Instance.SetOrderInfo(orderType.ToString());
-        Debug.Log("New order's type is " + orderType.ToString());
+        // Randomly choose an order from the available menu items
+        MenuItem[] menuItems = MenuManager.Instance.ListItems();
+        if (menuItems.Length > 0)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, menuItems.Length);
+            orderItem = menuItems[randomIndex];
+        }
+        else
+        {
+            Debug.LogError("OrderManager;; The menu is empty.");
+        }
+        UIManager.Instance.SetOrderInfo(orderItem.name);
+        Debug.Log("New order's type is " + orderItem.name);
     }
 }

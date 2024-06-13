@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using GameConsts;
 
 public class StateManager : MonoBehaviour
 {
@@ -114,7 +115,7 @@ public class PlanningState : State
 
 public class ShiftState : State
 {
-    private float shiftTimer = 15f;
+    private float shiftTimer = GameConsts.GameConsts.ShiftLengthInSec;
     public override void Enter()
     {
         Debug.Log("Entering Shift state");
