@@ -2,143 +2,192 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-    public class UIManager : MonoBehaviour
+
+
+public class UIManager : MonoBehaviour
+{
+    public static UIManager Instance { get; private set; }
+
+    private GameObject gameUI, shiftEndUI, planningUI;
+    private Crosshair crosshair;
+    private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText, scoreText;
+    private int minutes;
+    private float seconds;
+
+    private void Awake()
     {
-        public static UIManager Instance { get; private set; }
-
-        private GameObject gameUI, endMenu;
-        private Crosshair crosshair;
-        private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText;
-        private int minutes;
-        private float seconds;
-
-        private void Awake()
+        // If there is an instance, and it's not me, delete myself.
+        if (Instance != null && Instance != this)
         {
-            // If there is an instance, and it's not me, delete myself.
-            if (Instance != null && Instance != this)
-            {
-                Destroy(this);
-            }
-            else
-            {
-                Instance = this;
-            }
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
         }
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            gameUI = GameObject.Find("GameUI");
-            endMenu = GameObject.Find("EndMenu");
-            endMenu.SetActive(false);
-            crosshair = new Crosshair(GameObject.Find("Crosshair"));
-            orderInfo = GameObject.Find("OrderInfo").GetComponent<TextMeshProUGUI>();
-            timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
-            ordersCompleted = GameObject.Find("OrdersCompleted").GetComponent<TextMeshProUGUI>();
-            moneyText = GameObject.Find("Money").GetComponent<TextMeshProUGUI>();
-        }
+        // Subscribe to the state change event
+        StateManager.Instance.OnStateChanged += HandleStateChange;
 
-        // Update is called once per frame
-        void Update()
-        {
-            UpdateCrosshair();
-        }
+        gameUI = GameObject.Find("GameUI");
+        shiftEndUI = GameObject.Find("ShiftEndUI");
+        planningUI = GameObject.Find("PlanningUI");
+        scoreText = GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>();
+    }
 
-        private void UpdateCrosshair()
-        {
-            // Update crosshair state depending on what the player is looking at
-            var (type, _) = PlayerInteractions.Instance.InteractionCheck();
-            if (type == InteractableType.Grabbable)
-            {
-                crosshair.SetGrab();
-            }
-            else if (type == InteractableType.Slottable && PlayerInteractions.Instance.GetGrabStatus())
-            {
-                crosshair.SetSlot();
-            }
-            else if (type == InteractableType.Usable)
-            {
-                crosshair.SetUse();
-            }
-            else
-            {
-                crosshair.SetNeutral();
-            }
-        }
+    // Start is called before the first frame update
+    void Start()
+    {
+        crosshair = new Crosshair(GameObject.Find("Crosshair"));
+        orderInfo = GameObject.Find("OrderInfo").GetComponent<TextMeshProUGUI>();
+        timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
+        ordersCompleted = GameObject.Find("OrdersCompleted").GetComponent<TextMeshProUGUI>();
+        moneyText = GameObject.Find("Money").GetComponent<TextMeshProUGUI>();
+    }
 
-        public void UpdateTimerText(float timer)
-        {
-            // Format the string accordingly for the UI text
-            seconds = timer % 60;
-            minutes = (int)timer / 60;
-            timerText.text = "Time: " + string.Format("{0:00}:{1:00.0}", minutes, seconds);
-        }
+    // Update is called once per frame
+    void Update()
+    {
+        UpdateCrosshair();
+    }
 
-        public void SetOrderInfo(string order)
-        {
-            orderInfo.text = "Current Order: " + order;
-        }
+    private void OnDestroy()
+    {
+        // Unsubscribe from the state change event
+        StateManager.Instance.OnStateChanged -= HandleStateChange;
+    }
 
-        public void CompleteOrder(int completed)
+    private void HandleStateChange(State newState)
+    {
+        HideAllUIs();
+        if (newState.GetType() == typeof(ShiftState))
         {
-            ordersCompleted.text = "Orders Completed: " + completed.ToString();
-            moneyText.text = "Money: " + SaveManager.Instance.GetPlayerMoney().ToString();
+            gameUI.SetActive(true);
         }
-
-        public void EndGame(int score)
+        else if (newState.GetType() == typeof(ShiftEndState))
         {
-            gameUI.SetActive(false);
-            endMenu.SetActive(true);
-            // Set the game end text
-            GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = "Day " + SaveManager.Instance.GetDayCount().ToString() + "\nOrders Completed: " + score.ToString() + "\nHigh Score: " + SaveManager.Instance.GetHighScore().ToString();
+            shiftEndUI.SetActive(true);
         }
-
-        public void RestartGame()
+        else if (newState.GetType() == typeof(PlanningState))
         {
-            SceneManager.LoadScene("Level");
-        }
-
-        public void LoadStartScene()
-        {
-            SceneManager.LoadScene("Start");
+            planningUI.SetActive(true);
+            UpdatePlanningUI();
         }
     }
 
-    // Class for the Crosshair UI element, containing methods to easily swap its tooltip text and color
-    public class Crosshair
+    private void HideAllUIs()
     {
-        private GameObject obj;
-        private UnityEngine.UI.Image img;
-        private TextMeshProUGUI tooltip;
+        gameUI.SetActive(false);
+        shiftEndUI.SetActive(false);
+        planningUI.SetActive(false);
+    }
 
-        public Crosshair(GameObject gameObject)
+    private void UpdateCrosshair()
+    {
+        // Update crosshair state depending on what the player is looking at
+        var (type, _) = PlayerInteractions.Instance.InteractionCheck();
+        if (type == InteractableType.Grabbable)
         {
-            obj = gameObject;
-            img = obj.GetComponent<UnityEngine.UI.Image>();
-            tooltip = obj.GetComponentInChildren<TextMeshProUGUI>();
+            crosshair.SetGrab();
         }
-
-        public void SetNeutral()
+        else if (type == InteractableType.Slottable && PlayerInteractions.Instance.GetGrabStatus())
         {
-            img.color = Color.white;
-            tooltip.text = "";
+            crosshair.SetSlot();
         }
-
-        public void SetGrab()
+        else if (type == InteractableType.Usable)
         {
-            img.color = Color.red;
-            tooltip.text = "(E)";
+            crosshair.SetUse();
         }
-
-        public void SetSlot()
+        else
         {
-            img.color = Color.green;
-            tooltip.text = "(E)";
-        }
-
-        public void SetUse()
-        {
-            img.color = Color.blue;
-            tooltip.text = "(Q)";
+            crosshair.SetNeutral();
         }
     }
+
+    public void UpdateTimerText(float timer)
+    {
+        // Format the string accordingly for the UI text
+        seconds = timer % 60;
+        minutes = (int)timer / 60;
+        timerText.text = "Time: " + string.Format("{0:00}:{1:00.0}", minutes, seconds);
+    }
+
+    public void SetOrderInfo(string order)
+    {
+        orderInfo.text = "Current Order: " + order;
+    }
+
+    public void CompleteOrder(int completed)
+    {
+        ordersCompleted.text = "Orders Completed: " + completed.ToString();
+        moneyText.text = SaveManager.Instance.GetPlayerMoney().ToString() + " Credits";
+    }
+
+    public void UpdateShiftEndUI(int score)
+    {
+        string dayCount = "Day " + SaveManager.Instance.GetDayCount().ToString();
+        string ordersCompleted = "Orders Completed: " + score.ToString();
+        string highScore = "High Score: " + SaveManager.Instance.GetHighScore().ToString();
+        scoreText.text = dayCount + "\n" + ordersCompleted + "\n" + highScore;
+    }
+
+    private void UpdatePlanningUI()
+    {
+        GameObject.Find("PUI_DayCountText").GetComponent<TextMeshProUGUI>().text = "Planning - Day " + SaveManager.Instance.GetDayCount().ToString();
+        GameObject.Find("PUI_MoneyText").GetComponent<TextMeshProUGUI>().text = SaveManager.Instance.GetPlayerMoney().ToString() + " Credits";
+    }
+
+    public void B_AdvanceDay()
+    {
+        StateManager.Instance.ChangeState(new PlanningState());
+    }
+
+    public void B_StartShift()
+    {
+        StateManager.Instance.ChangeState(new ShiftState());
+    }
+
+    public void LoadStartScene()
+    {
+        SceneManager.LoadScene("Start");
+    }
+}
+
+// Class for the Crosshair UI element, containing methods to easily swap its tooltip text and color
+public class Crosshair
+{
+    private GameObject obj;
+    private UnityEngine.UI.Image img;
+    private TextMeshProUGUI tooltip;
+
+    public Crosshair(GameObject gameObject)
+    {
+        obj = gameObject;
+        img = obj.GetComponent<UnityEngine.UI.Image>();
+        tooltip = obj.GetComponentInChildren<TextMeshProUGUI>();
+    }
+
+    public void SetNeutral()
+    {
+        img.color = Color.white;
+        tooltip.text = "";
+    }
+
+    public void SetGrab()
+    {
+        img.color = Color.red;
+        tooltip.text = "(E)";
+    }
+
+    public void SetSlot()
+    {
+        img.color = Color.green;
+        tooltip.text = "(E)";
+    }
+
+    public void SetUse()
+    {
+        img.color = Color.blue;
+        tooltip.text = "(Q)";
+    }
+}

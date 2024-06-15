@@ -101,6 +101,10 @@ public class PlanningState : State
     public override void Enter()
     {
         Debug.Log("Entering Planning state");
+        // Switch to overhead camera
+        CameraManager.Instance.SetActiveCamera(SceneCamera.OverheadCamera);
+        // Update day count
+        SaveManager.Instance.SetDayCount(SaveManager.Instance.GetDayCount() + 1);
     }
 
     public override void Update()
@@ -109,6 +113,10 @@ public class PlanningState : State
 
     public override void Exit()
     {
+        // Save game
+        SaveManager.Instance.Save();
+        // Switch back to main camera
+        CameraManager.Instance.SetActiveCamera(SceneCamera.MainCamera);
         Debug.Log("Exiting Planning state");
     }
 }
@@ -119,6 +127,10 @@ public class ShiftState : State
     public override void Enter()
     {
         Debug.Log("Entering Shift state");
+        // Enable player input
+        GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().ActivateInput();
+        // Capture the player cursor
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public override void Update()
@@ -129,6 +141,7 @@ public class ShiftState : State
     public override void Exit()
     {
         Debug.Log("Exiting Shift state");
+        // TODO: Delete any stray objects like cups
     }
 
     private void UpdateTimer()
@@ -172,15 +185,14 @@ public class ShiftEndState : State
         GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().DeactivateInput();
         // Release the player cursor
         Cursor.lockState = CursorLockMode.None;
-        // Update the high score and day count
+        // Update the high score
         int score = OrderManager.Instance.completedCounter;
         if (SaveManager.Instance.GetHighScore() < score)
         {
             SaveManager.Instance.SetHighScore(score);
         }
-        SaveManager.Instance.SetDayCount(SaveManager.Instance.GetDayCount() + 1);
         // Switch the UI to the game end UI
-        UIManager.Instance.EndGame(score);
+        UIManager.Instance.UpdateShiftEndUI(score);
         // Save game
         SaveManager.Instance.Save();
     }
