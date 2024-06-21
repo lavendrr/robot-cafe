@@ -1,8 +1,7 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-
 
 public class UIManager : MonoBehaviour
 {
@@ -137,6 +136,8 @@ public class UIManager : MonoBehaviour
         GameObject.Find("PUI_MoneyText").GetComponent<TextMeshProUGUI>().text = SaveManager.Instance.GetPlayerMoney().ToString() + " Credits";
     }
 
+    // Game State Functions
+
     public void B_AdvanceDay()
     {
         StateManager.Instance.ChangeState(new PlanningState());
@@ -147,9 +148,24 @@ public class UIManager : MonoBehaviour
         StateManager.Instance.ChangeState(new ShiftState());
     }
 
-    public void LoadStartScene()
+    // Dialogue Functions
+
+    public IEnumerator RevealText(TextMeshProUGUI textObj, string dialogueString, float delay = 0.05f)
     {
-        SceneManager.LoadScene("Start");
+        // Update the text object to contain the dialogue string
+        textObj.text = dialogueString;
+        textObj.ForceMeshUpdate();
+
+        int totalCharacters = dialogueString.Length;
+        int currentVisibleCharacters = 0;
+
+        while (currentVisibleCharacters <= totalCharacters)
+        {
+            // Update the text object's max visible characters to the current count
+            textObj.maxVisibleCharacters = currentVisibleCharacters;
+            currentVisibleCharacters++;
+            yield return new WaitForSeconds(delay);
+        }
     }
 }
 
