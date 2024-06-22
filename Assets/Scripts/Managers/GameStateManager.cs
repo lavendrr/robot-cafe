@@ -10,6 +10,9 @@ public class StateManager : MonoBehaviour
     private State currentState;
     public delegate void StateChangeHandler(State newState);
     public event StateChangeHandler OnStateChanged;
+    public delegate void PauseChangeHandler(bool gamePaused);
+    public event PauseChangeHandler OnGamePausedChanged;
+    private bool gamePaused = false;
 
     private void Awake()
     {
@@ -62,6 +65,23 @@ public class StateManager : MonoBehaviour
         if (currentState != null)
         {
             currentState.Update();
+        }
+    }
+
+    public bool GetGamePaused()
+    {
+        return gamePaused;
+    }
+
+    public void SetGamePaused(bool _gamePaused)
+    {
+        // TODO: Make PlanningState pausable as well
+        if (currentState.GetType() == typeof(ShiftState))
+        {
+            gamePaused = _gamePaused;
+
+            // Notify subscribers of the event
+            OnGamePausedChanged?.Invoke(gamePaused);
         }
     }
 
@@ -124,9 +144,12 @@ public class PlanningState : State
 public class ShiftState : State
 {
     private float shiftTimer = GameConsts.GameConsts.ShiftLengthInSec;
+    private bool paused = false;
     public override void Enter()
     {
         Debug.Log("Entering Shift state");
+        // Subscribe to game paused events
+        StateManager.Instance.OnGamePausedChanged += OnGamePausedChanged;
         // Enable player input
         GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().ActivateInput();
         // Capture the player cursor
@@ -135,7 +158,10 @@ public class ShiftState : State
 
     public override void Update()
     {
-        UpdateTimer();
+        if (!paused)
+        {
+            UpdateTimer();
+        }
     }
 
     public override void Exit()
@@ -157,22 +183,10 @@ public class ShiftState : State
             StateManager.Instance.ChangeState(new ShiftEndState());
         }
     }
-}
 
-public class PauseState : State
-{
-    public override void Enter()
+    private void OnGamePausedChanged(bool gamePaused)
     {
-        Debug.Log("Entering Pause state");
-    }
-
-    public override void Update()
-    {
-    }
-
-    public override void Exit()
-    {
-        Debug.Log("Exiting Pause state");
+        paused = gamePaused;
     }
 }
 

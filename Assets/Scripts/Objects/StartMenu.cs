@@ -7,4 +7,14 @@ public class StartMenu : MonoBehaviour
     {
         SceneManager.LoadScene("Level");
     }
+
+    public void QuitGame()
+    {
+        #if UNITY_STANDALONE
+            Application.Quit();
+        #endif
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #endif
+    }
 }
