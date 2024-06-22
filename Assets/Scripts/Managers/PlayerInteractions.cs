@@ -151,18 +151,8 @@ public class PlayerInteractions : MonoBehaviour
         var (type, obj) = InteractionCheck();
         if (type == InteractableType.Usable)
         {
-            if (obj.name == "CoffeeMachine")
-            {
-                obj.GetComponent<CoffeeMachine>().FillCup();
-            }
-            else if (obj.name == "Bell")
-            {
-                obj.GetComponent<Delivery>().Deliver();
-            }
-            else if (obj.name == "Trash")
-            {
-                obj.GetComponent<Trash>().TrashCup(grabbedObject);
-            }
+            // Requires a receiver on the target GameObject
+            obj.SendMessage("OnUse");
         }
     }
 }

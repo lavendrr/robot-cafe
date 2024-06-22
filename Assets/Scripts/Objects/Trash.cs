@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Trash : MonoBehaviour
 {
-    public void TrashCup(GameObject cup)
+    public void OnUse(GameObject cup)
     {
         if (cup != null)
         {

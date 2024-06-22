@@ -25,7 +25,7 @@ public class CoffeeMachine : MonoBehaviour
         slotCollider.enabled = true;
     }
 
-    public void FillCup()
+    public void OnUse()
     {
         // Attempt to fill the cup if one is present
         Debug.Log("Trying to fill");

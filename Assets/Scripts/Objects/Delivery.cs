@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Delivery : MonoBehaviour
 {
-    public void Deliver()
+    public void OnUse()
     {
         // Try to deliver the order, and if it is successfully filled, animate the bell
         var cupObj = gameObject.transform.parent.gameObject.GetComponentInChildren<Slot>().GetSlottedObj();
