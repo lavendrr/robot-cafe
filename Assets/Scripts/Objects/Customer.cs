@@ -28,7 +28,7 @@ public class Customer : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        headMesh = gameObject.transform.Find("SM_robot/robot_head")?.GetComponent<MeshRenderer>();
+        headMesh = transform.Find("robot_head")?.GetComponent<MeshRenderer>();
 
         SetEmotion(Emotion.Happy);
     }
@@ -40,7 +40,8 @@ public class Customer : MonoBehaviour
 
     public void PlaceOrder()
     {
-        order = new Order();
+        // If the order is null, place a new order. This stops repeated order taking
+        order ??= new Order();
     }
 
     public void WrongOrder()
@@ -64,7 +65,7 @@ public class Customer : MonoBehaviour
 
     public void Destroy()
     {
-        Destroy(this.gameObject);
+        Destroy(gameObject);
     }
 
     private Material GetEmotionMaterial(Emotion emotion)
