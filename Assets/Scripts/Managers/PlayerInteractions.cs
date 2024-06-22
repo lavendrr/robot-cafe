@@ -154,4 +154,14 @@ using UnityEngine.InputSystem;
                 }
             }
         }
+
+        void OnPause()
+        {
+            StateManager.Instance.SetGamePaused(true);
+        }
+
+        void OnUnpause()
+        {
+            StateManager.Instance.SetGamePaused(false);
+        }
     }

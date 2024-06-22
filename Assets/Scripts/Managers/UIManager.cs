@@ -1,13 +1,14 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    private GameObject gameUI, shiftEndUI, planningUI;
+    private GameObject gameUI, shiftEndUI, planningUI, pauseUI;
     private Crosshair crosshair;
     private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText, scoreText;
     private int minutes;
@@ -28,9 +29,13 @@ public class UIManager : MonoBehaviour
         // Subscribe to the state change event
         StateManager.Instance.OnStateChanged += HandleStateChange;
 
+        // Subscribe to game paused events
+        StateManager.Instance.OnGamePausedChanged += OnGamePausedChanged;
+
         gameUI = GameObject.Find("GameUI");
         shiftEndUI = GameObject.Find("ShiftEndUI");
         planningUI = GameObject.Find("PlanningUI");
+        pauseUI = GameObject.Find("PauseUI");
         scoreText = GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>();
     }
 
@@ -74,11 +79,33 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void OnGamePausedChanged(bool gamePaused)
+    {
+        if (gamePaused)
+        {
+            // Disable player movement
+            GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().SwitchCurrentActionMap("PlayerPaused");
+            // Release the player cursor
+            Cursor.lockState = CursorLockMode.None;
+            // Show pause UI
+            pauseUI.SetActive(true);
+        }
+        else
+        {
+            // Enable player movement
+            GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().SwitchCurrentActionMap("Player");
+            // Capture the player cursor
+            Cursor.lockState = CursorLockMode.Locked;
+            pauseUI.SetActive(false);
+        }
+    }
+
     private void HideAllUIs()
     {
         gameUI.SetActive(false);
         shiftEndUI.SetActive(false);
         planningUI.SetActive(false);
+        pauseUI.SetActive(false);
     }
 
     private void UpdateCrosshair()
@@ -146,6 +173,26 @@ public class UIManager : MonoBehaviour
     public void B_StartShift()
     {
         StateManager.Instance.ChangeState(new ShiftState());
+    }
+
+    public void B_Resume()
+    {
+        StateManager.Instance.SetGamePaused(false);
+    }
+
+    public void B_QuitToMenu()
+    {
+        SceneManager.LoadScene("Start");
+    }
+
+    public void B_QuitGame()
+    {
+        #if UNITY_STANDALONE
+            Application.Quit();
+        #endif
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #endif
     }
 
     // Dialogue Functions

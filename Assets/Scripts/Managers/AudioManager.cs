@@ -30,6 +30,9 @@ public class AudioManager : MonoBehaviour
         // Subscribe to the state change event
         StateManager.Instance.OnStateChanged += HandleStateChange;
 
+        // Subscribe to game paused events
+        StateManager.Instance.OnGamePausedChanged += OnGamePausedChanged;
+
         bgmInstance.getPlaybackState(out PLAYBACK_STATE state);
         if (state == PLAYBACK_STATE.STOPPED)
         {
@@ -60,7 +63,18 @@ public class AudioManager : MonoBehaviour
                 moveInstance.start();
             }
         }
-        else if (newState.GetType() == typeof(PauseState))
+        else
+        {
+            // Completely stop the move instance in other states
+            playerActive = false;
+            moveInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            RuntimeManager.StudioSystem.setParameterByName("MoveInput", 0f, true);
+        }
+    }
+
+    private void OnGamePausedChanged(bool gamePaused)
+    {
+        if (gamePaused)
         {
             // Pause the move instance in the pause state
             playerActive = false;
@@ -68,10 +82,9 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            // Completely stop the move instance in other states
-            playerActive = false;
-            moveInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-            RuntimeManager.StudioSystem.setParameterByName("MoveInput", 0f, true);
+            // Pause the move instance in the pause state
+            playerActive = true;
+            moveInstance.setPaused(false);
         }
     }
 
