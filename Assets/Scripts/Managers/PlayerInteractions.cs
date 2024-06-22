@@ -58,7 +58,7 @@ public class PlayerInteractions : MonoBehaviour
         // Debug ray that matches the raycast for distance testing
         Debug.DrawRay(mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward) * 3);
         // Sends a ray 3 meters out from the camera & returns the first interactable object's type and reference.
-        if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward), out RaycastHit hit, 3f, LayerMask.GetMask("Interactable")))
+        if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward), out RaycastHit hit, 3f))
         {
             if (hit.collider.gameObject.CompareTag("Grabbable"))
             {
