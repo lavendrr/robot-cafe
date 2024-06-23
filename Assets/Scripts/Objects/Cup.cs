@@ -91,4 +91,9 @@ public class Cup : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public void Destroy()
+    {
+        Destroy(gameObject);
+    }
 }
