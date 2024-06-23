@@ -124,21 +124,21 @@ public class PlayerInteractions : MonoBehaviour
                 grabbedObject = null;
             }
         }
-
-        void OnPause()
-        {
-            StateManager.Instance.SetGamePaused(true);
-        }
-
-        void OnUnpause()
-        {
-            StateManager.Instance.SetGamePaused(false);
-        }
     }
 
     public bool GetGrabStatus()
     {
         return grabbedObject != null;
+    }
+
+    void OnPause()
+        {
+            StateManager.Instance.SetGamePaused(true);
+        }
+
+    void OnUnpause()
+    {
+        StateManager.Instance.SetGamePaused(false);
     }
 
     void OnUse()
