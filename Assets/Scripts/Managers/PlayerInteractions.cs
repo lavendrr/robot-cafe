@@ -132,9 +132,9 @@ public class PlayerInteractions : MonoBehaviour
     }
 
     void OnPause()
-        {
-            StateManager.Instance.SetGamePaused(true);
-        }
+    {
+        StateManager.Instance.SetGamePaused(true);
+    }
 
     void OnUnpause()
     {
@@ -152,7 +152,7 @@ public class PlayerInteractions : MonoBehaviour
         if (type == InteractableType.Usable)
         {
             // Requires a receiver on the target GameObject
-            obj.SendMessage("OnUse");
+            obj.SendMessage("OnUse", grabbedObject);
         }
     }
 }
