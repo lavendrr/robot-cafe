@@ -42,6 +42,7 @@ public class OrderManager : MonoBehaviour
     {
         if (newState.GetType() == typeof(ShiftState))
         {
+            ResetOrders();
             NewCustomer();
         }
     }
@@ -68,7 +69,7 @@ public class OrderManager : MonoBehaviour
             NewCustomer();
             completedCounter++;
 
-            UIManager.Instance.CompleteOrder(completedCounter);
+            UIManager.Instance.SetOrdersCompleted(completedCounter);
             UIManager.Instance.SetOrderInfo("");
 
             SpawnCup();
@@ -86,6 +87,12 @@ public class OrderManager : MonoBehaviour
     public void SpawnCup()
     {
         Instantiate(cupPrefab, cupSpawn.transform.position, Quaternion.identity);
+    }
+
+    public void ResetOrders()
+    {
+        customerList = new List<GameObject>();
+        completedCounter = 0;
     }
 }
 

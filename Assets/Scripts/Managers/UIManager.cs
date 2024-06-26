@@ -37,11 +37,6 @@ public class UIManager : MonoBehaviour
         planningUI = GameObject.Find("PlanningUI");
         pauseUI = GameObject.Find("PauseUI");
         scoreText = GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
         crosshair = new Crosshair(GameObject.Find("Crosshair"));
         orderInfo = GameObject.Find("OrderInfo").GetComponent<TextMeshProUGUI>();
         timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
@@ -66,6 +61,8 @@ public class UIManager : MonoBehaviour
         HideAllUIs();
         if (newState.GetType() == typeof(ShiftState))
         {
+            SetOrderInfo("");
+            SetOrdersCompleted(0);
             gameUI.SetActive(true);
         }
         else if (newState.GetType() == typeof(ShiftEndState))
@@ -143,7 +140,7 @@ public class UIManager : MonoBehaviour
         orderInfo.text = "Current Order: " + order;
     }
 
-    public void CompleteOrder(int completed)
+    public void SetOrdersCompleted(int completed)
     {
         ordersCompleted.text = "Orders Completed: " + completed.ToString();
         moneyText.text = SaveManager.Instance.GetPlayerMoney().ToString() + " Credits";
