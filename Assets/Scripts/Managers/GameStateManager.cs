@@ -124,8 +124,6 @@ public class PlanningState : State
     public override void Enter()
     {
         Debug.Log("Entering Planning state");
-        // Switch to overhead camera
-        CameraManager.Instance.SetActiveCamera(SceneCamera.OverheadCamera);
         // Update day count
         SaveManager.Instance.SetDayCount(SaveManager.Instance.GetDayCount() + 1);
     }
@@ -138,8 +136,6 @@ public class PlanningState : State
     {
         // Save game
         SaveManager.Instance.Save();
-        // Switch back to main camera
-        CameraManager.Instance.SetActiveCamera(SceneCamera.MainCamera);
         Debug.Log("Exiting Planning state");
     }
 }
@@ -180,7 +176,7 @@ public class ShiftState : State
         {
             cup.Destroy();
         }
-        
+
         // Delete all stray customers
         Customer[] customers = Object.FindObjectsOfType<Customer>();
         foreach (Customer customer in customers)
