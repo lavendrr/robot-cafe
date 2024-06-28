@@ -86,7 +86,7 @@ public class OrderManager : MonoBehaviour
 
     public void SpawnCup()
     {
-        Instantiate(cupPrefab, cupSpawn.transform.position, Quaternion.identity);
+        Instantiate(cupPrefab, cupSpawn.transform.position, Quaternion.identity, cupSpawn.transform);
     }
 
     public void ResetOrders()
