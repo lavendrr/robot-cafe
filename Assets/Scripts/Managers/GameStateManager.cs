@@ -76,7 +76,7 @@ public class StateManager : MonoBehaviour
     public void SetGamePaused(bool _gamePaused)
     {
         // TODO: Make PlanningState pausable as well
-        if (currentState.GetType() == typeof(ShiftState))
+        if (currentState != null && currentState.Pausable)
         {
             gamePaused = _gamePaused;
 
@@ -94,6 +94,7 @@ public class StateManager : MonoBehaviour
 
 public abstract class State
 {
+    public abstract bool Pausable { get; }
     public abstract void Enter();
     public abstract void Update();
     public abstract void Exit();
@@ -101,6 +102,7 @@ public abstract class State
 
 public class MainMenuState : State
 {
+    public override bool Pausable => false;
     public override void Enter()
     {
         Debug.Log("Entering MainMenu state");
@@ -118,6 +120,7 @@ public class MainMenuState : State
 
 public class PlanningState : State
 {
+    public override bool Pausable => false;
     public override void Enter()
     {
         Debug.Log("Entering Planning state");
@@ -143,6 +146,7 @@ public class PlanningState : State
 
 public class ShiftState : State
 {
+    public override bool Pausable => true;
     private float shiftTimer = GameConsts.GameConsts.ShiftLengthInSec;
     private bool paused = false;
     public override void Enter()
@@ -207,6 +211,7 @@ public class ShiftState : State
 
 public class ShiftEndState : State
 {
+    public override bool Pausable => false;
     public override void Enter()
     {
         Debug.Log("Entering ShiftEnd state");
