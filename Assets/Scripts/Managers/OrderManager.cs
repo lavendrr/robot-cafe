@@ -56,7 +56,12 @@ public class OrderManager : MonoBehaviour
     {
         // Check if the current customer's order matches the delivered order
         Customer currentCustomer = customerList[0].GetComponent<Customer>();
-        if (currentCustomer.GetOrder().orderItem.fuelType == cupObj.GetComponent<Cup>().GetFuelType())
+        if (currentCustomer.GetOrder() == null)
+        {
+            currentCustomer.WrongOrder();
+            return false;
+        }
+        else if (currentCustomer.GetOrder().orderItem.fuelType == cupObj.GetComponent<Cup>().GetFuelType())
         {
             // Remove the order from the list, initialize a new customer, and spawn a new cup and delete the one used to fill the order
             Debug.Log("Order filled!");
