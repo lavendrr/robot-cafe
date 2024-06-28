@@ -5,7 +5,8 @@ public class StartMenu : MonoBehaviour
 {
     public void StartGame()
     {
-        SceneManager.LoadScene("Level");
+        SceneManager.LoadScene("Shift", LoadSceneMode.Additive);
+        SceneManager.UnloadSceneAsync("Start");
     }
 
     public void QuitGame()

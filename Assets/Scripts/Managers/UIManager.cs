@@ -26,22 +26,26 @@ public class UIManager : MonoBehaviour
             Instance = this;
         }
 
-        // Subscribe to the state change event
-        StateManager.Instance.OnStateChanged += HandleStateChange;
-
-        // Subscribe to game paused events
-        StateManager.Instance.OnGamePausedChanged += OnGamePausedChanged;
-
         gameUI = GameObject.Find("GameUI");
         shiftEndUI = GameObject.Find("ShiftEndUI");
-        planningUI = GameObject.Find("PlanningUI");
-        pauseUI = GameObject.Find("PauseUI");
         scoreText = GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>();
+        shiftEndUI.SetActive(false);
+        // planningUI = GameObject.Find("PlanningUI");
+        // pauseUI = GameObject.Find("PauseUI");
         crosshair = new Crosshair(GameObject.Find("Crosshair"));
         orderInfo = GameObject.Find("OrderInfo").GetComponent<TextMeshProUGUI>();
         timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
         ordersCompleted = GameObject.Find("OrdersCompleted").GetComponent<TextMeshProUGUI>();
         moneyText = GameObject.Find("Money").GetComponent<TextMeshProUGUI>();
+    }
+
+    private void Start()
+    {
+        // Subscribe to the state change event
+        StateManager.Instance.OnStateChanged += HandleStateChange;
+
+        // Subscribe to game paused events
+        StateManager.Instance.OnGamePausedChanged += OnGamePausedChanged;
     }
 
     // Update is called once per frame
@@ -80,20 +84,16 @@ public class UIManager : MonoBehaviour
     {
         if (gamePaused)
         {
-            // Disable player movement
-            GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().SwitchCurrentActionMap("PlayerPaused");
             // Release the player cursor
             Cursor.lockState = CursorLockMode.None;
             // Show pause UI
-            pauseUI.SetActive(true);
+            SceneManager.LoadScene("Pause", LoadSceneMode.Additive);
         }
         else
         {
-            // Enable player movement
-            GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().SwitchCurrentActionMap("Player");
             // Capture the player cursor
             Cursor.lockState = CursorLockMode.Locked;
-            pauseUI.SetActive(false);
+            SceneManager.UnloadSceneAsync("Pause");
         }
     }
 
