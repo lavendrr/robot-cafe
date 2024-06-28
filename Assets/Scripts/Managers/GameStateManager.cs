@@ -31,7 +31,7 @@ public class StateManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "Level")
+        if (scene.name == "Shift")
         {
             ChangeState(new ShiftState());
         }
@@ -206,6 +206,16 @@ public class ShiftState : State
     private void OnGamePausedChanged(bool gamePaused)
     {
         paused = gamePaused;
+        if (paused)
+        {
+            // Disable player movement
+            GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().SwitchCurrentActionMap("PlayerPaused");
+        }
+        else
+        {
+            // Enable player movement
+            GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().SwitchCurrentActionMap("Player");
+        }
     }
 }
 

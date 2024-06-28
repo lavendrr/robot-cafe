@@ -510,7 +510,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1523432143}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: B_QuitToMenu
         m_Mode: 1
@@ -722,7 +722,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1523432143}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: B_Resume
         m_Mode: 1
@@ -855,7 +855,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1523432143}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: B_QuitGame
         m_Mode: 1
@@ -1185,7 +1185,6 @@ GameObject:
   - component: {fileID: 1523432146}
   - component: {fileID: 1523432145}
   - component: {fileID: 1523432144}
-  - component: {fileID: 1523432143}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1193,18 +1192,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1523432143
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1523432142}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14c05dc8452a64e50a089347857e3e88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1523432144
 MonoBehaviour:
   m_ObjectHideFlags: 0

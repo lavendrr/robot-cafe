@@ -1,6 +1,7 @@
-namespace GameConsts{
+namespace GameConsts
+{
     public static class GameConsts
     {
-        public const float ShiftLengthInSec = 15f;
+        public const float ShiftLengthInSec = 120f;
     }
 }
