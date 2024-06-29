@@ -11,15 +11,14 @@ namespace StarterAssets
 	#endif
 	public class FirstPersonController : MonoBehaviour
 	{
-		public float MoveSpeed = 6.0f;
-		public float RotationSpeed = 2.0f;
-		public float SpeedChangeRate = 10.0f; // acceleration and decceleration
-		public float TopCameraClamp = 60.0f;
-		public float BottomCameraClamp = -60.0f;
-
-		[Header("Cinemachine")]
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
 		public GameObject CinemachineCameraTarget;
+
+		private float MoveSpeed = 6.0f;
+		private float RotationSpeed = 2.0f;
+		private float SpeedChangeRate = 10.0f; // acceleration and decceleration
+		private float TopCameraClamp = 60.0f;
+		private float BottomCameraClamp = -60.0f;
 
 		// cinemachine
 		private float _cinemachineTargetPitch;
