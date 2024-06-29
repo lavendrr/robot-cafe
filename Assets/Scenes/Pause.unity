@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311932, g: 0.38073996, b: 0.3587271, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -132,6 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 30863300}
+  - component: {fileID: 30863301}
   m_Layer: 5
   m_Name: PauseUI
   m_TagString: Untagged
@@ -159,6 +160,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &30863301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30863299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 543b752f91b964a10ab396c5627761ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &142223585
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,8 +523,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+      - m_Target: {fileID: 30863301}
+        m_TargetAssemblyTypeName: PauseUI, Assembly-CSharp
         m_MethodName: B_QuitToMenu
         m_Mode: 1
         m_Arguments:
@@ -722,8 +735,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+      - m_Target: {fileID: 30863301}
+        m_TargetAssemblyTypeName: PauseUI, Assembly-CSharp
         m_MethodName: B_Resume
         m_Mode: 1
         m_Arguments:
@@ -855,8 +868,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+      - m_Target: {fileID: 30863301}
+        m_TargetAssemblyTypeName: PauseUI, Assembly-CSharp
         m_MethodName: B_QuitGame
         m_Mode: 1
         m_Arguments:

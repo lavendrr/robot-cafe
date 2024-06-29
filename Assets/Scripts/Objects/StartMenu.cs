@@ -1,12 +1,10 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class StartMenu : MonoBehaviour
 {
     public void StartGame()
     {
-        SceneManager.LoadScene("Shift", LoadSceneMode.Additive);
-        SceneManager.UnloadSceneAsync("Start");
+        StateManager.Instance.ChangeState(new ShiftState());
     }
 
     public void QuitGame()

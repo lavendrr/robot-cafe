@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 #endif
 
 namespace StarterAssets
@@ -68,6 +69,8 @@ namespace StarterAssets
 	#else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 	#endif
+			// Subscribe to the state change event
+        	StateManager.Instance.OnStateChanged += HandleStateChange;
 		}
 
 		private void Update()
@@ -78,6 +81,15 @@ namespace StarterAssets
 		private void LateUpdate()
 		{
 			CameraRotation();
+		}
+
+		private void HandleStateChange(State newState)
+		{
+			if (newState.GetType() == typeof(ShiftEndState))
+			{
+				// Disable player input
+        		_playerInput.DeactivateInput();
+			}
 		}
 
 		private void CameraRotation()
@@ -93,7 +105,7 @@ namespace StarterAssets
 
 				// clamp our pitch rotation
 				_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomCameraClamp, TopCameraClamp);
-				Debug.Log(_cinemachineTargetPitch);
+
 				// Update Cinemachine camera target pitch
 				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
 

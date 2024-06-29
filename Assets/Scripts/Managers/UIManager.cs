@@ -8,7 +8,7 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    private GameObject gameUI, shiftEndUI, planningUI, pauseUI;
+    private GameObject gameUI, shiftEndUI;
     private Crosshair crosshair;
     private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText, scoreText;
     private int minutes;
@@ -30,8 +30,6 @@ public class UIManager : MonoBehaviour
         shiftEndUI = GameObject.Find("ShiftEndUI");
         scoreText = GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>();
         shiftEndUI.SetActive(false);
-        // planningUI = GameObject.Find("PlanningUI");
-        // pauseUI = GameObject.Find("PauseUI");
         crosshair = new Crosshair(GameObject.Find("Crosshair"));
         orderInfo = GameObject.Find("OrderInfo").GetComponent<TextMeshProUGUI>();
         timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
@@ -73,11 +71,6 @@ public class UIManager : MonoBehaviour
         {
             shiftEndUI.SetActive(true);
         }
-        else if (newState.GetType() == typeof(PlanningState))
-        {
-            planningUI.SetActive(true);
-            UpdatePlanningUI();
-        }
     }
 
     private void OnGamePausedChanged(bool gamePaused)
@@ -87,13 +80,19 @@ public class UIManager : MonoBehaviour
             // Release the player cursor
             Cursor.lockState = CursorLockMode.None;
             // Show pause UI
-            SceneManager.LoadScene("Pause", LoadSceneMode.Additive);
+            if (!SceneManager.GetSceneByName("Pause").isLoaded)
+            {
+                SceneManager.LoadScene("Pause", LoadSceneMode.Additive);
+            }
         }
         else
         {
             // Capture the player cursor
             Cursor.lockState = CursorLockMode.Locked;
-            SceneManager.UnloadSceneAsync("Pause");
+            if (SceneManager.GetSceneByName("Pause").isLoaded)
+            {
+                SceneManager.UnloadSceneAsync("Pause");
+            }
         }
     }
 
@@ -101,8 +100,6 @@ public class UIManager : MonoBehaviour
     {
         gameUI.SetActive(false);
         shiftEndUI.SetActive(false);
-        planningUI.SetActive(false);
-        pauseUI.SetActive(false);
     }
 
     private void UpdateCrosshair()
@@ -154,12 +151,6 @@ public class UIManager : MonoBehaviour
         scoreText.text = dayCount + "\n" + ordersCompleted + "\n" + highScore;
     }
 
-    private void UpdatePlanningUI()
-    {
-        GameObject.Find("PUI_DayCountText").GetComponent<TextMeshProUGUI>().text = "Planning - Day " + SaveManager.Instance.GetDayCount().ToString();
-        GameObject.Find("PUI_MoneyText").GetComponent<TextMeshProUGUI>().text = SaveManager.Instance.GetPlayerMoney().ToString() + " Credits";
-    }
-
     // Game State Functions
 
     public void B_AdvanceDay()
@@ -179,7 +170,7 @@ public class UIManager : MonoBehaviour
 
     public void B_QuitToMenu()
     {
-        SceneManager.LoadScene("Start");
+        StateManager.Instance.ChangeState(new MainMenuState());
     }
 
     public void B_QuitGame()

@@ -24,20 +24,11 @@ public class StateManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        // Subscribe to the scene loaded event
-        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void Start()
     {
-        if (scene.name == "Shift")
-        {
-            ChangeState(new ShiftState());
-        }
-        if (scene.name == "Start")
-        {
-            ChangeState(new MainMenuState());
-        }
+        ChangeState(new MainMenuState());
     }
 
     public State GetCurrentState()
@@ -74,7 +65,6 @@ public class StateManager : MonoBehaviour
 
     public void SetGamePaused(bool _gamePaused)
     {
-        // TODO: Make PlanningState pausable as well
         if (currentState != null && currentState.Pausable)
         {
             gamePaused = _gamePaused;
@@ -82,12 +72,6 @@ public class StateManager : MonoBehaviour
             // Notify subscribers of the event
             OnGamePausedChanged?.Invoke(gamePaused);
         }
-    }
-
-    private void OnDestroy()
-    {
-        // Unsubscribe from the scene loaded event
-        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }
 
@@ -104,7 +88,23 @@ public class MainMenuState : State
     public override bool Pausable => false;
     public override void Enter()
     {
-        Debug.Log("Entering MainMenu state");
+        if (!SceneManager.GetSceneByName("Start").isLoaded)
+        {
+            SceneManager.LoadScene("Start", LoadSceneMode.Additive);
+        }
+        
+        if (SceneManager.GetSceneByName("Shift").isLoaded)
+        {
+            SceneManager.UnloadSceneAsync("Shift");
+        }
+        if (SceneManager.GetSceneByName("Planning").isLoaded)
+        {
+            SceneManager.UnloadSceneAsync("Planning");
+        }
+        if (SceneManager.GetSceneByName("Pause").isLoaded)
+        {
+            SceneManager.UnloadSceneAsync("Pause");
+        }
     }
 
     public override void Update()
@@ -113,7 +113,7 @@ public class MainMenuState : State
 
     public override void Exit()
     {
-        Debug.Log("Exiting MainMenu state");
+        SceneManager.UnloadSceneAsync("Start");
     }
 }
 
@@ -122,9 +122,12 @@ public class PlanningState : State
     public override bool Pausable => false;
     public override void Enter()
     {
-        Debug.Log("Entering Planning state");
         // Update day count
         SaveManager.Instance.SetDayCount(SaveManager.Instance.GetDayCount() + 1);
+        if (!SceneManager.GetSceneByName("Planning").isLoaded)
+        {
+            SceneManager.LoadScene("Planning", LoadSceneMode.Additive);
+        }
     }
 
     public override void Update()
@@ -135,7 +138,7 @@ public class PlanningState : State
     {
         // Save game
         SaveManager.Instance.Save();
-        Debug.Log("Exiting Planning state");
+        SceneManager.UnloadSceneAsync("Planning");
     }
 }
 
@@ -146,16 +149,25 @@ public class ShiftState : State
     private bool paused = false;
     public override void Enter()
     {
-        Debug.Log("Entering Shift state");
+        if (!SceneManager.GetSceneByName("Shift").isLoaded)
+        {
+            SceneManager.LoadScene("Shift", LoadSceneMode.Additive);
+        }
+        // Subscribe to the scene loaded event
+        SceneManager.sceneLoaded += OnSceneLoaded;
         // Subscribe to game paused events
         StateManager.Instance.OnGamePausedChanged += OnGamePausedChanged;
-        // Enable player input
-        GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().ActivateInput();
         // Capture the player cursor
         Cursor.lockState = CursorLockMode.Locked;
+    }
 
-        // Spawn first cup
-        OrderManager.Instance.SpawnCup();
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "Shift")
+        {
+            // Spawn first cup
+            OrderManager.Instance.SpawnCup();
+        }
     }
 
     public override void Update()
@@ -182,6 +194,11 @@ public class ShiftState : State
         {
             customer.Destroy();
         }
+
+        // Unsubscribe from the scene load event
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        // Unsubscribe to game paused events
+        StateManager.Instance.OnGamePausedChanged -= OnGamePausedChanged;
     }
 
     private void UpdateTimer()
@@ -190,7 +207,10 @@ public class ShiftState : State
         if (shiftTimer > 0f)
         {
             shiftTimer -= Time.deltaTime;
-            UIManager.Instance.UpdateTimerText(shiftTimer);
+            if (UIManager.Instance)
+            {
+                UIManager.Instance.UpdateTimerText(shiftTimer);
+            }
         }
         else
         {
@@ -220,8 +240,6 @@ public class ShiftEndState : State
     public override void Enter()
     {
         Debug.Log("Entering ShiftEnd state");
-        // Disable player input
-        GameObject.Find("PlayerCapsule").GetComponent<PlayerInput>().DeactivateInput();
         // Release the player cursor
         Cursor.lockState = CursorLockMode.None;
         // Update the high score
@@ -242,6 +260,6 @@ public class ShiftEndState : State
 
     public override void Exit()
     {
-        Debug.Log("Exiting ShiftEnd state");
+        SceneManager.UnloadSceneAsync("Shift");
     }
 }

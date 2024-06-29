@@ -90,6 +90,11 @@ public class AudioManager : MonoBehaviour
 
     void Update()
     {
+        if (!PlayerInteractions.Instance)
+        {
+            return;
+        }
+        
         if (playerActive)
         {
             if (PlayerInteractions.Instance.GetMoveInputState())

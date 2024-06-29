@@ -30,6 +30,12 @@ public class OrderManager : MonoBehaviour
         customerRoot = GameObject.Find("CustomerRoot");
         // Subscribe to the state change event
         StateManager.Instance.OnStateChanged += HandleStateChange;
+
+        if (StateManager.Instance.GetCurrentState().GetType() == typeof(ShiftState))
+        {
+            ResetOrders();
+            NewCustomer();
+        }
     }
 
     private void OnDestroy()
