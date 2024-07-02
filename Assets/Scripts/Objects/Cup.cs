@@ -15,8 +15,8 @@ public class Cup : MonoBehaviour
         // Fill the cup if it's empty, or do nothing if it's already full
         if (fuelType == FuelType.None)
         {
-            // Make the cup un-interactable (until it is set to be interactive again by the animation function when finished)
-            gameObject.layer = LayerMask.NameToLayer("Grabbed");
+            // Make the cup un-grabbable (until it is set to be grabbable again by the animation function when finished)
+            gameObject.tag = "Untagged";
 
             // Animate the lever
             var animator = transform.parent.parent.parent.gameObject.GetComponentInChildren<Animator>();
@@ -72,7 +72,8 @@ public class Cup : MonoBehaviour
 
         drinkMeshTransform.localScale = targetScale;
         // Make the cup interactable again
-        gameObject.layer = LayerMask.NameToLayer("Interactable");
+        Debug.Log("Back to interactable");
+        gameObject.tag = "Grabbable";
     }
 
     public void Empty()
