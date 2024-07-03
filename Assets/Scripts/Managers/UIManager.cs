@@ -8,7 +8,7 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    private GameObject gameUI, shiftEndUI;
+    private GameObject gameUI, shiftEndUI, dialogueUI;
     private Crosshair crosshair;
     private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText, scoreText;
     private int minutes;
@@ -35,6 +35,8 @@ public class UIManager : MonoBehaviour
         timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
         ordersCompleted = GameObject.Find("OrdersCompleted").GetComponent<TextMeshProUGUI>();
         moneyText = GameObject.Find("Money").GetComponent<TextMeshProUGUI>();
+        dialogueUI = GameObject.Find("DialogueUI");
+        dialogueUI.SetActive(false);
     }
 
     private void Start()
@@ -73,6 +75,7 @@ public class UIManager : MonoBehaviour
         else if (newState.GetType() == typeof(ShiftEndState))
         {
             shiftEndUI.SetActive(true);
+            dialogueUI.SetActive(false);
         }
     }
 
@@ -138,6 +141,19 @@ public class UIManager : MonoBehaviour
     public void SetOrderInfo(string order)
     {
         orderInfo.text = "Current Order: " + order;
+        // Display dialogue if the customer is placing an order
+        if (order != "")
+        {
+            dialogueUI.SetActive(true);
+            // Reveal the dialogue text, and when it's done, disable the dialogue box after a delay
+            StartCoroutine(RevealText(dialogueUI.GetComponentInChildren<TextMeshProUGUI>(), $"Hi! I'd like a drink that's {order}, please!", done =>
+            {
+                StartCoroutine(StateManager.Instance.Delay(3f, done =>
+                {
+                    dialogueUI.SetActive(false);
+                }));
+            }, 0.035f));
+        }
     }
 
     public void SetOrdersCompleted(int completed)
@@ -178,17 +194,17 @@ public class UIManager : MonoBehaviour
 
     public void B_QuitGame()
     {
-        #if UNITY_STANDALONE
-            Application.Quit();
-        #endif
-        #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-        #endif
+#if UNITY_STANDALONE
+        Application.Quit();
+#endif
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 
     // Dialogue Functions
 
-    public IEnumerator RevealText(TextMeshProUGUI textObj, string dialogueString, float delay = 0.05f)
+    public IEnumerator RevealText(TextMeshProUGUI textObj, string dialogueString, System.Action<bool> done, float delay = 0.05f)
     {
         // Update the text object to contain the dialogue string
         textObj.text = dialogueString;
@@ -204,6 +220,8 @@ public class UIManager : MonoBehaviour
             currentVisibleCharacters++;
             yield return new WaitForSeconds(delay);
         }
+
+        done(true);
     }
 }
 

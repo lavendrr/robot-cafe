@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
@@ -73,6 +74,12 @@ public class StateManager : MonoBehaviour
             OnGamePausedChanged?.Invoke(gamePaused);
         }
     }
+
+    public IEnumerator Delay(float time, System.Action<bool> done)
+    {
+        yield return new WaitForSeconds(time);
+        done(true);
+    }
 }
 
 public abstract class State
@@ -92,7 +99,7 @@ public class MainMenuState : State
         {
             SceneManager.LoadScene("Start", LoadSceneMode.Additive);
         }
-        
+
         if (SceneManager.GetSceneByName("Shift").isLoaded)
         {
             SceneManager.UnloadSceneAsync("Shift");
