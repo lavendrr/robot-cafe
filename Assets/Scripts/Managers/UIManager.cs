@@ -56,6 +56,9 @@ public class UIManager : MonoBehaviour
     {
         // Unsubscribe from the state change event
         StateManager.Instance.OnStateChanged -= HandleStateChange;
+
+        // Unsubscribe from the game paused event
+        StateManager.Instance.OnGamePausedChanged -= OnGamePausedChanged;
     }
 
     private void HandleStateChange(State newState)
