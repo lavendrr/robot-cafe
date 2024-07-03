@@ -57,8 +57,8 @@ public class PlayerInteractions : MonoBehaviour
     {
         // Debug ray that matches the raycast for distance testing
         Debug.DrawRay(mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward) * 3);
-        // Sends a ray 3 meters out from the camera & returns the first interactable object's type and reference.
-        if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward), out RaycastHit hit, 3f))
+        // Sends a ray 3 meters out from the camera & returns the first interactable object's type and reference. Uses an inverse layermask to ignore anything on the Ignore Raycast layer
+        if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward), out RaycastHit hit, 3f, ~(1 << LayerMask.NameToLayer("Ignore Raycast"))))
         {
             if (hit.collider.gameObject.CompareTag("Grabbable"))
             {
@@ -103,7 +103,7 @@ public class PlayerInteractions : MonoBehaviour
                 grabbedObject.transform.SetLocalPositionAndRotation(Vector3.zero + new Vector3(0.5f, -0.5f, 0.75f), Quaternion.identity);
                 grabbedObject.GetComponent<Rigidbody>().isKinematic = true;
                 grabbedObject.GetComponent<BoxCollider>().enabled = false;
-                grabbedObject.layer = LayerMask.NameToLayer("Grabbed");
+                grabbedObject.layer = LayerMask.NameToLayer("Ignore Raycast");
             }
         }
         else
@@ -114,7 +114,7 @@ public class PlayerInteractions : MonoBehaviour
                 grabbedObject.GetComponent<Rigidbody>().isKinematic = false;
                 grabbedObject.GetComponent<BoxCollider>().enabled = true;
                 grabbedObject.transform.parent = null;
-                grabbedObject.layer = LayerMask.NameToLayer("Interactable");
+                grabbedObject.layer = LayerMask.NameToLayer("Default");
                 grabbedObject = null;
             }
             else if (type == InteractableType.Slottable)

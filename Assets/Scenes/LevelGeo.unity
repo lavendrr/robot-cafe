@@ -231,7 +231,7 @@ GameObject:
   m_Component:
   - component: {fileID: 60908165}
   - component: {fileID: 60908166}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Slot
   m_TagString: Slottable
   m_Icon: {fileID: 0}
@@ -344,7 +344,7 @@ GameObject:
   - component: {fileID: 122158075}
   - component: {fileID: 122158074}
   - component: {fileID: 122158073}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Premium_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -446,7 +446,7 @@ GameObject:
   - component: {fileID: 220056541}
   - component: {fileID: 220056540}
   - component: {fileID: 220056539}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Unleaded_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -922,7 +922,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0b899fbde973d6b429f77d68928ae3ff, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0b899fbde973d6b429f77d68928ae3ff, type: 3}
       propertyPath: m_TagString
@@ -1517,7 +1517,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8714542724045911724, guid: cd44de1ea28def04aa526c6d61837734, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8714542724045911724, guid: cd44de1ea28def04aa526c6d61837734, type: 3}
       propertyPath: m_TagString
@@ -1625,7 +1625,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2065558796947674602, guid: cd44de1ea28def04aa526c6d61837734, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2065558796947674602, guid: cd44de1ea28def04aa526c6d61837734, type: 3}
       propertyPath: m_TagString
@@ -1657,7 +1657,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9127127576570199401, guid: cd44de1ea28def04aa526c6d61837734, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9127127576570199401, guid: cd44de1ea28def04aa526c6d61837734, type: 3}
       propertyPath: m_TagString
@@ -1891,7 +1891,7 @@ GameObject:
   - component: {fileID: 764793915}
   - component: {fileID: 764793914}
   - component: {fileID: 764793913}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: LeverMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2214,7 +2214,7 @@ GameObject:
   - component: {fileID: 893191883}
   - component: {fileID: 893191885}
   - component: {fileID: 893191884}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2350,7 +2350,7 @@ GameObject:
   - component: {fileID: 937326940}
   - component: {fileID: 937326938}
   - component: {fileID: 937326943}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Trash
   m_TagString: Usable
   m_Icon: {fileID: 0}
@@ -2794,7 +2794,7 @@ GameObject:
   - component: {fileID: 1092409768}
   - component: {fileID: 1092409767}
   - component: {fileID: 1092409766}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Diesel_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2896,7 +2896,7 @@ GameObject:
   - component: {fileID: 1193312287}
   - component: {fileID: 1193312286}
   - component: {fileID: 1193312285}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: LeverMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3008,7 +3008,7 @@ GameObject:
   - component: {fileID: 1253328643}
   - component: {fileID: 1253328642}
   - component: {fileID: 1253328641}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: LeverMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3241,7 +3241,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1374389194}
   - component: {fileID: 1374389195}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Slot
   m_TagString: Slottable
   m_Icon: {fileID: 0}
@@ -3711,7 +3711,7 @@ GameObject:
   - component: {fileID: 1638845960}
   - component: {fileID: 1638845959}
   - component: {fileID: 1638845961}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Bell
   m_TagString: Usable
   m_Icon: {fileID: 0}
@@ -3860,7 +3860,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8192012338064938033, guid: b728da1ce64df4514b7ea851a568e8b2, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4284,7 +4284,7 @@ GameObject:
   - component: {fileID: 1853011656}
   - component: {fileID: 1853011658}
   - component: {fileID: 1853011657}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4514,7 +4514,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1862458003}
   - component: {fileID: 1862458004}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Slot
   m_TagString: Slottable
   m_Icon: {fileID: 0}
@@ -4569,7 +4569,7 @@ GameObject:
   - component: {fileID: 1862494944}
   - component: {fileID: 1862494946}
   - component: {fileID: 1862494945}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5292,6 +5292,10 @@ PrefabInstance:
     - target: {fileID: 7634965264845135034, guid: 3f65b2f81b773fa4683e62c15f322193, type: 3}
       propertyPath: m_Name
       value: GrabbableCup
+      objectReference: {fileID: 0}
+    - target: {fileID: 7634965264845135034, guid: 3f65b2f81b773fa4683e62c15f322193, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7634965264845135034, guid: 3f65b2f81b773fa4683e62c15f322193, type: 3}
       propertyPath: m_IsActive
