@@ -3,12 +3,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
+using Unity.VisualScripting;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    private GameObject gameUI, shiftEndUI, dialogueUI;
+    private GameObject gameUI, shiftEndUI, dialogueUI, moneyDoober;
     private Crosshair crosshair;
     private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText, scoreText;
     private int minutes;
@@ -35,8 +37,10 @@ public class UIManager : MonoBehaviour
         timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
         ordersCompleted = GameObject.Find("OrdersCompleted").GetComponent<TextMeshProUGUI>();
         moneyText = GameObject.Find("Money").GetComponent<TextMeshProUGUI>();
+        moneyDoober = GameObject.Find("MoneyDoober");
         dialogueUI = GameObject.Find("DialogueUI");
         dialogueUI.SetActive(false);
+        moneyDoober.SetActive(false);
     }
 
     private void Start()
@@ -156,10 +160,28 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void SetOrdersCompleted(int completed)
+    public void SetOrdersCompleted(int completed, int gain = -1)
     {
         ordersCompleted.text = "Orders Completed: " + completed.ToString();
         moneyText.text = SaveManager.Instance.GetPlayerMoney().ToString() + " Credits";
+        // Animate money doober
+        if (gain != -1)
+        {
+            var textTransform = moneyDoober.GetComponent<TextMeshProUGUI>().transform;
+            var endPos = textTransform.position.x;
+            moneyDoober.GetComponent<TextMeshProUGUI>().text = "+" + gain.ToString();
+            textTransform.SetPositionAndRotation(new Vector3(endPos + 50, textTransform.position.y, textTransform.position.z), textTransform.rotation);
+            moneyDoober.SetActive(true);
+            // animate
+            textTransform.DOMoveX(endPos, 0.5f).OnComplete(() =>
+                {
+                    StartCoroutine(StateManager.Instance.Delay(1f, done =>
+                {
+                    moneyDoober.SetActive(false);
+                }));
+                }
+            );
+        }
     }
 
     public void UpdateShiftEndUI(int score)

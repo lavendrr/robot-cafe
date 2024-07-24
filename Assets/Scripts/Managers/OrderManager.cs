@@ -71,7 +71,8 @@ public class OrderManager : MonoBehaviour
         {
             // Remove the order from the list, initialize a new customer, and spawn a new cup and delete the one used to fill the order
             Debug.Log("Order filled!");
-            SaveManager.Instance.AdjustPlayerMoney(currentCustomer.GetOrder().orderItem.cost);
+            var gain = currentCustomer.GetOrder().orderItem.cost;
+            SaveManager.Instance.AdjustPlayerMoney(gain);
             AudioManager.Instance.PlaySFX(AudioManager.Instance.bellDing, position);
 
             currentCustomer.Leave();
@@ -80,7 +81,7 @@ public class OrderManager : MonoBehaviour
             NewCustomer();
             completedCounter++;
 
-            UIManager.Instance.SetOrdersCompleted(completedCounter);
+            UIManager.Instance.SetOrdersCompleted(completedCounter, gain);
             UIManager.Instance.SetOrderInfo("");
 
             SpawnCup();
