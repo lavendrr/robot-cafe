@@ -59,9 +59,12 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 }
             }
             // Debug.Log(eventData.hovered[0].name);
-            if (cell != null && !eventData.hovered[0].GetComponent<GridSlot>().AttemptItemSlot(gameObject))
+            if (cell != null)
             {
-                transform.SetParent(previousParent);
+                if (!eventData.hovered[0].GetComponent<GridSlot>().AttemptItemSlot(gameObject))
+                {
+                    transform.SetParent(previousParent);
+                }
             }
         }
         else
