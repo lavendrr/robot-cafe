@@ -2,17 +2,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class GridSlot : MonoBehaviour
 {
     [SerializeField]
     private bool occupied = false;
+    [SerializeField]
+    private Image image;
     private (int, int) coords;
 
     public void SetCoords((int, int) coords)
     {
         this.coords = coords;
+        image = GetComponent<Image>();
     }
 
     public (int, int) GetCoords()
@@ -84,6 +88,16 @@ public class GridSlot : MonoBehaviour
 
     public void SetOccupiedStatus(bool occ)
     {
+        Debug.Log("setting occ");
+        if (occ)
+        {
+            image.color = Color.blue;
+        }
+        else
+        {
+            image.color = Color.white;
+        }
+
         occupied = occ;
     }
 

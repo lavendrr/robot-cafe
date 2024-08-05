@@ -52,21 +52,21 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         // Checks if there are any cells underneath the item where it was released
         GameObject cell = null;
-        foreach (var item in eventData.hovered)
+        foreach (var element in eventData.hovered)
         {
-            Debug.Log(item.name);
-            if (item.name.Contains("Cell"))
+            Debug.Log(element.name);
+            if (element.name.Contains("Cell"))
             {
-                cell = item;
+                cell = element;
             }
         }
 
         // If a cell was found, attempt to slot the item into the cell. If slotting fails, reset the item to its previous parent
         if (cell != null)
         {
-            if (!eventData.hovered[0].GetComponent<GridSlot>().AttemptItemSlot(gameObject))
+            if (!cell.GetComponent<GridSlot>().AttemptItemSlot(gameObject))
             {
-                transform.SetParent(previousParent);
+                previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject);
             }
         }
         // If a cell wasn't found (meaning it was dropped in the void), but the object previously belonged to a cell, reset it to that cell
