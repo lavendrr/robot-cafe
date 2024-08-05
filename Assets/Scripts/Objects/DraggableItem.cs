@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using Unity.VisualScripting;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -51,7 +52,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Debug.Log("End drag");
 
         // Checks if there are any cells underneath the item where it was released
-        GameObject cell = null;
+        GameObject cell = null, spawner = null;
         foreach (var element in eventData.hovered)
         {
             Debug.Log(element.name);
@@ -59,6 +60,21 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             {
                 cell = element;
             }
+            else if (element.name.Contains("ItemSpawner"))
+            {
+                spawner = element;
+            }
+        }
+
+        if (spawner != null)
+        {
+            if (previousParent != transform.root)
+            {
+                previousParent.GetComponent<GridSlot>().OnRemove(this);
+            }
+
+            Destroy(gameObject);
+            return;
         }
 
         // If a cell was found, attempt to slot the item into the cell. If slotting fails, reset the item to its previous parent

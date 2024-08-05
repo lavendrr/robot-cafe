@@ -88,7 +88,6 @@ public class GridSlot : MonoBehaviour
 
     public void SetOccupiedStatus(bool occ)
     {
-        Debug.Log("setting occ");
         if (occ)
         {
             image.color = Color.blue;
