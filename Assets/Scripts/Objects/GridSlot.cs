@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class GridSlot : MonoBehaviour, IDropHandler
+public class GridSlot : MonoBehaviour
 {
     [SerializeField]
     private bool occupied = false;
@@ -20,19 +20,22 @@ public class GridSlot : MonoBehaviour, IDropHandler
         return coords;
     }
 
+    // Returns true if item was successfully slotted in
     public bool AttemptItemSlot(GameObject dropped)
     {
-        // Returns true if item was successfully slotted in
         DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
         List<(int, int)> offsets = draggableItem.GetOffsets();
-        if (occupied == false)
+        // Checks if the cell already has something slotted in
+        if (!GetOccupiedStatus())
         {
+            // Call this next block if the item being slotted extends beyond one cell
             if (offsets != null)
             {
                 try
                 {
-                    List<GridSlot> offsetCells = new List<GridSlot>();
-                    // Checks the occupied status of the slot at each offset of the item, and fails if any are occupied
+                    // Makes a list to store the cells at the corresponding offsets
+                    List<GridSlot> offsetCells = new();
+                    // Checks the occupied status of the slot at each offset of the item, stores it in the list, and fails if any are occupied
                     foreach ((int, int) offset in offsets)
                     {
                         GridSlot offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.Item1, coords.Item2 + offset.Item2].GetComponent<GridSlot>();
@@ -42,30 +45,29 @@ public class GridSlot : MonoBehaviour, IDropHandler
                         }
                         offsetCells.Add(offsetCell);
                     }
-                    // If all necessary slots were found to be empty, then set them to be occupied and reparent the item
+                    // If all necessary slots were found to be empty, then set them to be occupied
                     foreach (GridSlot cell in offsetCells)
                     {
                         cell.SetOccupiedStatus(true);
                     }
                     SetOccupiedStatus(true);
+                    // Reparent the item and reset the previous parent
                     dropped.transform.SetParent(transform);
                     dropped.GetComponent<DraggableItem>().previousParent = transform.root;
-                    // dropped.transform.SetAsLastSibling();
                     return true;
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    // If the offset is out of range of where the method is trying to check, the method fails
-                    Debug.Log("index out of range");
+                    // If the offset is out of range of where the method is trying to check (i.e. the item is being slotted somewhere it won't fit within the grid), the method fails
                     return false;
                 }
             }
+            // If there are no offsets to check and this slot was unoccupied, then the method succeeds
             else
             {
-                // draggableItem.parentAfterDrag = transform;
                 SetOccupiedStatus(true);
                 dropped.transform.SetParent(transform);
-                dropped.GetComponent<DraggableItem>().previousParent = null;
+                dropped.GetComponent<DraggableItem>().previousParent = transform.root;
                 return true;
             }
         }
@@ -83,19 +85,14 @@ public class GridSlot : MonoBehaviour, IDropHandler
     public void SetOccupiedStatus(bool occ)
     {
         occupied = occ;
-        // Debug.Log(string.Format("Cell {0}, {1} set to {2}", coords.Item1, coords.Item2, occ));
     }
 
-    public void OnDrop(PointerEventData eventData)
-    {
-        // AttemptItemSlot(eventData.pointerDrag);
-    }
-
+    // Called when an item is removed from a slot
     public void OnRemove(DraggableItem item)
     {
-        // itemObj.transform.SetParent(transform.root);
         SetOccupiedStatus(false);
 
+        // If the item took up more than one cell, set the corresponding cells to be empty as well
         List<(int, int)> offsets = item.GetOffsets();
         if (offsets != null)
         {

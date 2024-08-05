@@ -28,12 +28,13 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnBeginDrag(PointerEventData eventData)
     {
         Debug.Log("Start drag");
+        // If the item was slotted into a cell, tell that cell to call its removal method and update the previous parent
         if (transform.parent != transform.root)
         {
             previousParent = transform.parent;
             transform.parent.GetComponent<GridSlot>().OnRemove(this);
         }
-        // parentAfterDrag = transform.parent;
+        // Unparent the cell, set it as last sibling so it's on top of the rest of the UI, and turn raycasting off so it doesn't obscure the cursor's detection
         transform.SetParent(transform.root);
         transform.SetAsLastSibling();
         image.raycastTarget = false;
@@ -41,43 +42,43 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnDrag(PointerEventData eventData)
     {
+        // Update the item's position to match the cursor
         transform.position = Input.mousePosition;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         Debug.Log("End drag");
-        if (eventData.hovered.Count > 0)
+
+        // Checks if there are any cells underneath the item where it was released
+        GameObject cell = null;
+        foreach (var item in eventData.hovered)
         {
-            GameObject cell = null;
-            foreach (var item in eventData.hovered)
+            Debug.Log(item.name);
+            if (item.name.Contains("Cell"))
             {
-                Debug.Log(item.name);
-                if (item.name.Contains("Cell"))
-                {
-                    cell = item;
-                }
-            }
-            // Debug.Log(eventData.hovered[0].name);
-            if (cell != null)
-            {
-                if (!eventData.hovered[0].GetComponent<GridSlot>().AttemptItemSlot(gameObject))
-                {
-                    transform.SetParent(previousParent);
-                }
+                cell = item;
             }
         }
-        else
+
+        // If a cell was found, attempt to slot the item into the cell. If slotting fails, reset the item to its previous parent
+        if (cell != null)
         {
-            if (previousParent != transform.root)
+            if (!eventData.hovered[0].GetComponent<GridSlot>().AttemptItemSlot(gameObject))
             {
-                if (!previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject))
-                {
-                    transform.SetParent(previousParent);
-                }
+                transform.SetParent(previousParent);
             }
-            Debug.Log("Dropped in the void");
         }
+        // If a cell wasn't found (meaning it was dropped in the void), but the object previously belonged to a cell, reset it to that cell
+        else if (previousParent != transform.root)
+        {
+            if (!previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject))
+            {
+                transform.SetParent(previousParent);
+            }
+        }
+
+        // Re-enable raycasting so it can be detected by the cursor
         image.raycastTarget = true;
     }
 
