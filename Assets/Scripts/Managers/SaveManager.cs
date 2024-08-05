@@ -11,6 +11,7 @@ public class SaveData
     public int highScore = 0;
     public int dayCount = 0;
     public int playerMoney = 0;
+    public GameObject[,] planningGrid;
 }
 
 public class SaveManager : MonoBehaviour
@@ -121,6 +122,16 @@ public class SaveManager : MonoBehaviour
     public int GetPlayerMoney()
     {
         return saveData.playerMoney;
+    }
+
+    public GameObject[,] GetPlanningGrid()
+    {
+        return saveData.planningGrid;
+    }
+
+    public void SavePlanningGrid(GameObject[,] planningGrid)
+    {
+        saveData.planningGrid = planningGrid;
     }
 }
 
