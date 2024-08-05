@@ -26,6 +26,26 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         previousParent = transform.root;
     }
 
+    [ContextMenu("Rotate offsets clockwise")]
+    public void RotateOffsetsClockwise()
+    {
+        // Rotates 90 degrees clockwise
+        for (int i = 0; i < offsets.Count; i++)
+        {
+            offsets[i] = (offsets[i].Item2, offsets[i].Item1 * -1);
+        }
+    }
+
+    [ContextMenu("Rotate offsets counterclockwise")]
+    public void RotateOffsetsCounterclockwise()
+    {
+        // Rotates 90 degrees clockwise
+        for (int i = 0; i < offsets.Count; i++)
+        {
+            offsets[i] = (offsets[i].Item2 * -1, offsets[i].Item1);
+        }
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         Debug.Log("Start drag");
@@ -101,5 +121,22 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public List<(int, int)> GetOffsets()
     {
         return offsets;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("Collision enter");
+        if (other.gameObject.name.Contains("Cell"))
+        {
+            other.gameObject.GetComponent<Image>().color = Color.blue;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.name.Contains("Cell"))
+        {
+            other.gameObject.GetComponent<Image>().color = Color.white;
+        }
     }
 }

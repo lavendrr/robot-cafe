@@ -13,15 +13,32 @@ public class GridSlot : MonoBehaviour
     private Image image;
     private (int, int) coords;
 
+    void Start()
+    {
+        image = GetComponent<Image>();
+        StartCoroutine(DelayColliderResize());
+    }
+
+    private IEnumerator DelayColliderResize()
+    {
+        yield return 0;
+        RectTransform rt = GetComponent<RectTransform>();
+        GetComponent<BoxCollider2D>().size = new Vector2(rt.rect.width, rt.rect.height);
+    }
+
     public void SetCoords((int, int) coords)
     {
         this.coords = coords;
-        image = GetComponent<Image>();
     }
 
     public (int, int) GetCoords()
     {
         return coords;
+    }
+
+    public void HighlightSquare()
+    {
+
     }
 
     // Returns true if item was successfully slotted in

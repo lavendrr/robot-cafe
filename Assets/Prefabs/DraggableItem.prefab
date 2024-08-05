@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1701960681167722904}
   - component: {fileID: 3789143620696068011}
   - component: {fileID: 8744485895079396093}
+  - component: {fileID: 6356904173548098940}
   m_Layer: 5
   m_Name: DraggableItem
   m_TagString: Untagged
@@ -90,3 +91,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 3789143620696068011}
   previousParent: {fileID: 0}
+--- !u!58 &6356904173548098940
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9192525597895644964}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 90
