@@ -132,4 +132,49 @@ public class GridSlot : MonoBehaviour
             }
         }
     }
+
+    public void HoverColor(DraggableItem item)
+    {
+        image.color = Color.green;
+
+        // If the item took up more than one cell, set the corresponding cells to be empty as well
+        try
+        {
+            List<(int, int)> offsets = item.GetOffsets();
+            if (offsets != null)
+            {
+                foreach ((int, int) offset in offsets)
+                {
+                    PlanningManager.Instance.gridArray[coords.Item1 + offset.Item1, coords.Item2 + offset.Item2].GetComponent<Image>().color = Color.green;
+                }
+            }
+        }
+        catch (IndexOutOfRangeException)
+        {
+            Debug.Log("Out of range for hovering");
+        }
+
+    }
+
+    public void DisableHoverColor(DraggableItem item)
+    {
+        image.color = Color.white;
+
+        try
+        {
+            // If the item took up more than one cell, set the corresponding cells to be empty as well
+            List<(int, int)> offsets = item.GetOffsets();
+            if (offsets != null)
+            {
+                foreach ((int, int) offset in offsets)
+                {
+                    PlanningManager.Instance.gridArray[coords.Item1 + offset.Item1, coords.Item2 + offset.Item2].GetComponent<Image>().color = Color.white;
+                }
+            }
+        }
+        catch (IndexOutOfRangeException)
+        {
+            Debug.Log("Out of range for hovering");
+        }
+    }
 }

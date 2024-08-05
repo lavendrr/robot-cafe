@@ -125,18 +125,21 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Collision enter");
+        Debug.Log("Collision enter with " + other.gameObject.name);
         if (other.gameObject.name.Contains("Cell"))
         {
-            other.gameObject.GetComponent<Image>().color = Color.blue;
+            other.gameObject.GetComponent<GridSlot>().HoverColor(this);
+            // other.gameObject.GetComponent<Image>().color = Color.blue;
         }
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
+        Debug.Log("Collision exit with " + other.gameObject.name);
         if (other.gameObject.name.Contains("Cell"))
         {
-            other.gameObject.GetComponent<Image>().color = Color.white;
+            // other.gameObject.GetComponent<Image>().color = Color.white;
+            other.gameObject.GetComponent<GridSlot>().DisableHoverColor(this);
         }
     }
 }
