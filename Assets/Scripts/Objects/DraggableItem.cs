@@ -71,6 +71,9 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         Debug.Log("End drag");
 
+        // Re-enable raycasting so it can be detected by the cursor
+        image.raycastTarget = true;
+
         // Checks if there are any cells underneath the item where it was released
         GameObject cell = null, spawner = null;
         foreach (var element in eventData.hovered)
@@ -100,9 +103,19 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         // If a cell was found, attempt to slot the item into the cell. If slotting fails, reset the item to its previous parent
         if (cell != null)
         {
+            // Slotting failed
             if (!cell.GetComponent<GridSlot>().AttemptItemSlot(gameObject))
             {
-                previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject);
+                if (previousParent != transform.root)
+                {
+                    previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject);
+                    return;
+                }
+            }
+            // Slotting succeeded
+            else
+            {
+                return;
             }
         }
         // If a cell wasn't found (meaning it was dropped in the void), but the object previously belonged to a cell, reset it to that cell
@@ -111,11 +124,16 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             if (!previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject))
             {
                 transform.SetParent(previousParent);
+                return;
+            }
+            // Slotting succeeded
+            else
+            {
+                return;
             }
         }
 
-        // Re-enable raycasting so it can be detected by the cursor
-        image.raycastTarget = true;
+        Destroy(gameObject);
     }
 
     public List<(int, int)> GetOffsets()
