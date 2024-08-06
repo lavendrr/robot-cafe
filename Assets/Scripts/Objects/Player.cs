@@ -52,7 +52,7 @@ public class Player : MonoBehaviour
             _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         }
         // Subscribe to the state change event
-        //StateManager.Instance.OnStateChanged += HandleStateChange;
+        StateManager.Instance.OnStateChanged += HandleStateChange;
     }
 
     void Start()
@@ -63,17 +63,6 @@ public class Player : MonoBehaviour
         _input = GetComponent<PlayerInteractions>();
         _playerInput = GetComponent<PlayerInput>();
     }
-
-    // TODO: This function is superfluous since we reinstantiate the Shift scene on shift start
-    // This could instead be repurposed to spawn the player at the correct position according
-    // to their cafe layout.
-    // private void HandleStateChange(State newState)
-    // {
-    //     if (newState.GetType() == typeof(ShiftState))
-    //     {
-    //         Respawn();
-    //     }
-    // }
 
     public void Respawn()
     {
