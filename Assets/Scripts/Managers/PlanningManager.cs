@@ -5,6 +5,8 @@ using System.Data;
 using UnityEngine;
 using System.Linq;
 
+// TODO - change the color thing from colliders to cursor hover to avoid overlapping cell issue
+
 public class PlanningManager : MonoBehaviour
 {
     public static PlanningManager Instance { get; private set; }
@@ -29,7 +31,6 @@ public class PlanningManager : MonoBehaviour
         {
             Instance = this;
         }
-
 
         gridArray = new GameObject[rows, cols];
 

@@ -11,6 +11,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Image image;
     public Transform previousParent;
     private List<(int, int)> offsets;
+    private GameObject previousHoverCell = null;
 
     public DraggableItem(List<(int, int)> offsets = null)
     {
@@ -65,6 +66,38 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         // Update the item's position to match the cursor
         transform.position = Input.mousePosition;
+        GameObject hoverCell = null;
+        foreach (var element in eventData.hovered)
+        {
+            Debug.Log(element.name);
+            if (element.name.Contains("Cell"))
+            {
+                hoverCell = element;
+            }
+        }
+
+        if (hoverCell != null)
+        {
+            if (previousHoverCell == null)
+            {
+                previousHoverCell = hoverCell;
+                previousHoverCell.GetComponent<GridSlot>().HoverColor(this);
+            }
+            else if (previousHoverCell != hoverCell)
+            {
+                previousHoverCell.GetComponent<GridSlot>().DisableHoverColor(this);
+                previousHoverCell = hoverCell;
+                previousHoverCell.GetComponent<GridSlot>().HoverColor(this);
+            }
+        }
+        else
+        {
+            if (previousHoverCell != null)
+            {
+                previousHoverCell.GetComponent<GridSlot>().DisableHoverColor(this);
+                previousHoverCell = null;
+            }
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -108,6 +141,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             {
                 if (previousParent != transform.root)
                 {
+                    if (previousHoverCell != null)
+                    {
+                        previousHoverCell.GetComponent<GridSlot>().DisableHoverColor(this);
+                    }
+
                     previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject);
                     return;
                 }
@@ -115,6 +153,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             // Slotting succeeded
             else
             {
+                previousHoverCell = null;
                 return;
             }
         }
@@ -139,25 +178,5 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public List<(int, int)> GetOffsets()
     {
         return offsets;
-    }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        Debug.Log("Collision enter with " + other.gameObject.name);
-        if (other.gameObject.name.Contains("Cell"))
-        {
-            other.gameObject.GetComponent<GridSlot>().HoverColor(this);
-            // other.gameObject.GetComponent<Image>().color = Color.blue;
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        Debug.Log("Collision exit with " + other.gameObject.name);
-        if (other.gameObject.name.Contains("Cell"))
-        {
-            // other.gameObject.GetComponent<Image>().color = Color.white;
-            other.gameObject.GetComponent<GridSlot>().DisableHoverColor(this);
-        }
     }
 }
