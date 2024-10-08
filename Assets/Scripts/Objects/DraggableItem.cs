@@ -139,13 +139,14 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             // Slotting failed
             if (!cell.GetComponent<GridSlot>().AttemptItemSlot(gameObject))
             {
+                // Reset the color of the previous hover cell, then keep going
+                if (previousHoverCell != null)
+                {
+                    previousHoverCell.GetComponent<GridSlot>().DisableHoverColor(this);
+                }
+                // If this item was previously slotted to another cell, slot it back and return
                 if (previousParent != transform.root)
                 {
-                    if (previousHoverCell != null)
-                    {
-                        previousHoverCell.GetComponent<GridSlot>().DisableHoverColor(this);
-                    }
-
                     previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject);
                     return;
                 }
