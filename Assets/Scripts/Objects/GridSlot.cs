@@ -127,31 +127,54 @@ public class GridSlot : MonoBehaviour
 
     public void HoverColor(DraggableItem item)
     {
-        image.color = Color.green;
+        if (GetOccupiedStatus())
+        {
+            image.color = Color.red;
+        }
+        else
+        {
+            image.color = Color.green;
+        }
 
-        // If the item took up more than one cell, set the corresponding cells to be empty as well
+        List<(int, int)> offsets = item.GetOffsets();
+        List<GameObject> changedCells = new();
+
+        // If the item takes up more than one cell, set the colors for those cells as well
         try
         {
-            List<(int, int)> offsets = item.GetOffsets();
             if (offsets != null)
             {
                 foreach ((int, int) offset in offsets)
                 {
-                    PlanningManager.Instance.gridArray[coords.Item1 + offset.Item1, coords.Item2 + offset.Item2].GetComponent<Image>().color = Color.green;
+                    GameObject offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.Item1, coords.Item2 + offset.Item2];
+                    if (offsetCell.GetComponent<GridSlot>().GetOccupiedStatus())
+                    {
+                        offsetCell.GetComponent<Image>().color = Color.red;
+                    }
+                    else
+                    {
+                        offsetCell.GetComponent<Image>().color = Color.green;
+                    }
+                    changedCells.Add(offsetCell);
                 }
             }
         }
         catch (IndexOutOfRangeException)
         {
             Debug.Log("Out of range for hovering");
+            foreach (GameObject cell in changedCells)
+            {
+                cell.GetComponent<Image>().color = Color.red;
+            }
+            image.color = Color.red;
         }
 
     }
 
     public void DisableHoverColor(DraggableItem item)
     {
-        image.color = Color.white;
-
+        // Set this cell's color back to blue if occupied, or back to white if empty
+        image.color = GetOccupiedStatus() ? Color.blue : Color.white;
         try
         {
             // If the item took up more than one cell, set the corresponding cells to be empty as well
@@ -160,7 +183,9 @@ public class GridSlot : MonoBehaviour
             {
                 foreach ((int, int) offset in offsets)
                 {
-                    PlanningManager.Instance.gridArray[coords.Item1 + offset.Item1, coords.Item2 + offset.Item2].GetComponent<Image>().color = Color.white;
+                    GameObject cell = PlanningManager.Instance.gridArray[coords.Item1 + offset.Item1, coords.Item2 + offset.Item2];
+                    // Reset this cell's color back to blue if occupied, or back to white if empty
+                    cell.GetComponent<Image>().color = cell.GetComponent<GridSlot>().GetOccupiedStatus() ? Color.blue : Color.white;
                 }
             }
         }
