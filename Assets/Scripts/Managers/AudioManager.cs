@@ -7,7 +7,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance { get; private set; }
 
     [SerializeField]
-    public EventReference bgm, pickUp, pourCoffee, bellDing, playerMove;
+    public EventReference bgm, pickUp, pourCoffee, bellDing, playerMove, customerDialogue;
     private EventInstance bgmInstance, moveInstance;
 
     private bool playerActive = false;

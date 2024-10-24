@@ -238,6 +238,13 @@ MonoBehaviour:
       Data3: -420340320
       Data4: 1107670384
     Path: event:/Player Move
+  customerDialogue:
+    Guid:
+      Data1: 1355985166
+      Data2: 1204410655
+      Data3: -1732427361
+      Data4: 232910354
+    Path: event:/CustomerSpeech
 --- !u!4 &1960187480
 Transform:
   m_ObjectHideFlags: 0
