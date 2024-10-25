@@ -7,7 +7,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance { get; private set; }
 
     [SerializeField]
-    public EventReference bgm, pickUp, pourCoffee, bellDing, playerMove, customerDialogue;
+    public EventReference bgm, pickUp, pourCoffee, bellDing, playerMove, customerDialogue, UIClick;
     private EventInstance bgmInstance, moveInstance;
 
     private bool playerActive = false;
@@ -94,7 +94,7 @@ public class AudioManager : MonoBehaviour
         {
             return;
         }
-        
+
         if (playerActive)
         {
             if (PlayerInteractions.Instance.GetMoveInputState())
@@ -108,8 +108,16 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlaySFX(EventReference eventRef, Vector3 position)
+    public void PlaySFX(EventReference eventRef, Vector3? position = null)
     {
-        RuntimeManager.PlayOneShot(eventRef, position);
+        if (position != null)
+        {
+            RuntimeManager.PlayOneShot(eventRef, (Vector3)position);
+        }
+        else
+        {
+            RuntimeManager.PlayOneShot(eventRef, Vector3.zero);
+        }
+
     }
 }

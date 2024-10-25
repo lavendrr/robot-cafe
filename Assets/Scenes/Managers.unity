@@ -245,6 +245,13 @@ MonoBehaviour:
       Data3: -1732427361
       Data4: 232910354
     Path: event:/CustomerSpeech
+  UIClick:
+    Guid:
+      Data1: 894677724
+      Data2: 1295634851
+      Data3: 658553766
+      Data4: -53765999
+    Path: event:/UI Click
 --- !u!4 &1960187480
 Transform:
   m_ObjectHideFlags: 0

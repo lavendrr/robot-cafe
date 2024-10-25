@@ -4,6 +4,7 @@ public class StartMenu : MonoBehaviour
 {
     public void StartGame()
     {
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.UIClick);
         StateManager.Instance.ChangeState(new ShiftState());
     }
 
