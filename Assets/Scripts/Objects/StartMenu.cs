@@ -10,6 +10,7 @@ public class StartMenu : MonoBehaviour
 
     public void QuitGame()
     {
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.UIClick);
         #if UNITY_STANDALONE
             Application.Quit();
         #endif
