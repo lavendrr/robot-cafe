@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 325448821375158044}
   - component: {fileID: 3700255438281502501}
   - component: {fileID: 2424460452018399801}
+  - component: {fileID: 1689496585298304132}
+  - component: {fileID: -1956526663013064868}
   m_Layer: 6
   m_Name: GrabbableCup
   m_TagString: Grabbable
@@ -148,6 +150,68 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.21543789, y: 0.25734127, z: 0.21543694}
   m_Center: {x: -0.00000047683716, y: 0.12867075, z: 0}
+--- !u!114 &1689496585298304132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7634965264845135034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -439489234
+      Data2: 1235048641
+      Data3: -2114801771
+      Data4: -1140379612
+    Path: event:/Grab
+  Event: 
+  PlayEvent: 11
+  StopEvent: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &-1956526663013064868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7634965264845135034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1117039013
+      Data2: 1094022323
+      Data3: -1654948952
+      Data4: 1975158562
+    Path: event:/Set Down
+  Event: 
+  PlayEvent: 12
+  StopEvent: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1001 &8208844720867731105
 PrefabInstance:
   m_ObjectHideFlags: 0
