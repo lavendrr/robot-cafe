@@ -231,6 +231,13 @@ MonoBehaviour:
       Data3: -1156320070
       Data4: 606764532
     Path: event:/Pour Coffee
+  trash:
+    Guid:
+      Data1: -377521256
+      Data2: 1076045701
+      Data3: 706380188
+      Data4: -1208926373
+    Path: event:/Trash
   bellDing:
     Guid:
       Data1: -1397339627

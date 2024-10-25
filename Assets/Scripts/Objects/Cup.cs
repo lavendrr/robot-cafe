@@ -76,10 +76,20 @@ public class Cup : MonoBehaviour
         gameObject.tag = "Grabbable";
     }
 
-    public void Empty()
+    public bool Empty()
     {
-        fuelType = FuelType.None;
-        gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = false;
+        // Returns true if the cup was full then emptied, returns false if the cup was already empty
+        if (fuelType != FuelType.None)
+        {
+            fuelType = FuelType.None;
+            gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = false;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
     void OnCollisionEnter(Collision other)
