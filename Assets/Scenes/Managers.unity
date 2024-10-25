@@ -245,6 +245,13 @@ MonoBehaviour:
       Data3: -1732427361
       Data4: 232910354
     Path: event:/CustomerSpeech
+  customerHover:
+    Guid:
+      Data1: -873722063
+      Data2: 1290337964
+      Data3: 1400384917
+      Data4: 2079465452
+    Path: event:/CustomerHover
   UIClick:
     Guid:
       Data1: 894677724
