@@ -240,9 +240,8 @@ public class UIManager : MonoBehaviour
         while (currentVisibleCharacters < totalCharacters)
         {
             // If the current character isn't a space, plays the sound from the position of the current customer, or from the origin if the customer list is empty (this shouldn't happen, but just in case)
-            if (new[] { 'a', 'e', 'i', 'o', 'u', 'y' }.Contains(dialogueString[currentVisibleCharacters]))
+            if (currentVisibleCharacters == 0 || (dialogueString[currentVisibleCharacters - 1] == ' '))
             {
-                Debug.Log(dialogueString[currentVisibleCharacters]);
                 AudioManager.Instance.PlaySFX(AudioManager.Instance.customerDialogue, OrderManager.Instance.customerList.Count > 0 ? OrderManager.Instance.customerList[0].transform.position : Vector3.zero);
             }
 
