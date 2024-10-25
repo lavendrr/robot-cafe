@@ -217,6 +217,13 @@ MonoBehaviour:
       Data3: -2114801771
       Data4: -1140379612
     Path: event:/Grab
+  setDown:
+    Guid:
+      Data1: -1117039013
+      Data2: 1094022323
+      Data3: -1654948952
+      Data4: 1975158562
+    Path: event:/Set Down
   pourCoffee:
     Guid:
       Data1: 325408296

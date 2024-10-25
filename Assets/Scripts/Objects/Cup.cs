@@ -93,6 +93,11 @@ public class Cup : MonoBehaviour
         }
     }
 
+    void OnSlotInsert()
+    {
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.setDown, transform.position);
+    }
+
     public void Destroy()
     {
         Slot slot = GetComponentInParent<Slot>();

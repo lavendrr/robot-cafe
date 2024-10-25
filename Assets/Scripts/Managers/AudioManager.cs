@@ -8,7 +8,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance { get; private set; }
 
     [SerializeField]
-    public EventReference bgm, pickUp, pourCoffee, bellDing, playerMove, customerDialogue, customerHover, UIClick;
+    public EventReference bgm, pickUp, setDown, pourCoffee, bellDing, playerMove, customerDialogue, customerHover, UIClick;
     private EventInstance bgmInstance, moveInstance, customerHoverInstance;
     private List<EventInstance> instances = new();
 
