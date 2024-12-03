@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
@@ -29,6 +30,8 @@ public class StateManager : MonoBehaviour
 
     private void Start()
     {
+        // Subscribe to the scene loaded event
+        SceneManager.sceneLoaded += OnSceneLoaded;
         ChangeState(new MainMenuState());
     }
 
@@ -80,6 +83,20 @@ public class StateManager : MonoBehaviour
         yield return new WaitForSeconds(time);
         done(true);
     }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log(scene.name);
+        if (scene.name == "Start" || scene.name == "Shift" || scene.name == "Planning")
+        {
+            SceneManager.SetActiveScene(scene);
+        }
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 }
 
 public abstract class State
@@ -98,6 +115,11 @@ public class MainMenuState : State
         if (!SceneManager.GetSceneByName("Start").isLoaded)
         {
             SceneManager.LoadScene("Start", LoadSceneMode.Additive);
+        }
+
+        if (!SceneManager.GetSceneByName("LevelGeo").isLoaded)
+        {
+            SceneManager.LoadScene("LevelGeo", LoadSceneMode.Additive);
         }
 
         if (SceneManager.GetSceneByName("Shift").isLoaded)
