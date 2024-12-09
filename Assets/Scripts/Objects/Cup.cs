@@ -95,11 +95,6 @@ public class Cup : MonoBehaviour
 
     public void Destroy()
     {
-        Slot slot = GetComponentInParent<Slot>();
-        if (slot != null)
-        {
-            slot.RemoveObj();
-        }
         Destroy(gameObject);
     }
 }

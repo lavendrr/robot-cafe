@@ -33,8 +33,11 @@ public class OrderManager : MonoBehaviour
 
         if (StateManager.Instance.GetCurrentState().GetType() == typeof(ShiftState))
         {
-            ResetOrders();
-            NewCustomer();
+            if (customerList.Count == 0)
+            {
+                ResetOrders();
+                NewCustomer();
+            }
         }
     }
 
@@ -48,8 +51,11 @@ public class OrderManager : MonoBehaviour
     {
         if (newState.GetType() == typeof(ShiftState))
         {
-            ResetOrders();
-            NewCustomer();
+            if (customerList.Count == 0)
+            {
+                ResetOrders();
+                NewCustomer();
+            }
         }
     }
 
@@ -71,8 +77,7 @@ public class OrderManager : MonoBehaviour
         {
             // Remove the order from the list, initialize a new customer, and spawn a new cup and delete the one used to fill the order
             Debug.Log("Order filled!");
-            var gain = currentCustomer.GetOrder().orderItem.cost;
-            SaveManager.Instance.AdjustPlayerMoney(gain);
+            SaveManager.Instance.AdjustPlayerMoney(currentCustomer.GetOrder().orderItem.cost);
             AudioManager.Instance.PlaySFX(AudioManager.Instance.bellDing, position);
 
             currentCustomer.Leave();
@@ -81,7 +86,7 @@ public class OrderManager : MonoBehaviour
             NewCustomer();
             completedCounter++;
 
-            UIManager.Instance.SetOrdersCompleted(completedCounter, gain);
+            UIManager.Instance.SetOrdersCompleted(completedCounter);
             UIManager.Instance.SetOrderInfo("");
 
             SpawnCup();

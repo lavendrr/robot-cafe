@@ -3,14 +3,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using DG.Tweening;
-using Unity.VisualScripting;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    private GameObject gameUI, shiftEndUI, dialogueUI, moneyDoober;
+    private GameObject gameUI, shiftEndUI;
     private Crosshair crosshair;
     private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText, scoreText;
     private int minutes;
@@ -37,10 +35,6 @@ public class UIManager : MonoBehaviour
         timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
         ordersCompleted = GameObject.Find("OrdersCompleted").GetComponent<TextMeshProUGUI>();
         moneyText = GameObject.Find("Money").GetComponent<TextMeshProUGUI>();
-        moneyDoober = GameObject.Find("MoneyDoober");
-        dialogueUI = GameObject.Find("DialogueUI");
-        dialogueUI.SetActive(false);
-        moneyDoober.SetActive(false);
     }
 
     private void Start()
@@ -79,7 +73,6 @@ public class UIManager : MonoBehaviour
         else if (newState.GetType() == typeof(ShiftEndState))
         {
             shiftEndUI.SetActive(true);
-            dialogueUI.SetActive(false);
         }
     }
 
@@ -145,43 +138,12 @@ public class UIManager : MonoBehaviour
     public void SetOrderInfo(string order)
     {
         orderInfo.text = "Current Order: " + order;
-        // Display dialogue if the customer is placing an order
-        if (order != "")
-        {
-            dialogueUI.SetActive(true);
-            // Reveal the dialogue text, and when it's done, disable the dialogue box after a delay
-            StartCoroutine(RevealText(dialogueUI.GetComponentInChildren<TextMeshProUGUI>(), $"Hi! I'd like a drink that's {order}, please!", done =>
-            {
-                StartCoroutine(StateManager.Instance.Delay(3f, done =>
-                {
-                    dialogueUI.SetActive(false);
-                }));
-            }, 0.035f));
-        }
     }
 
-    public void SetOrdersCompleted(int completed, int gain = -1)
+    public void SetOrdersCompleted(int completed)
     {
         ordersCompleted.text = "Orders Completed: " + completed.ToString();
         moneyText.text = SaveManager.Instance.GetPlayerMoney().ToString() + " Credits";
-        // Animate money doober
-        if (gain != -1)
-        {
-            var textTransform = moneyDoober.GetComponent<TextMeshProUGUI>().transform;
-            var endPos = textTransform.position.x;
-            moneyDoober.GetComponent<TextMeshProUGUI>().text = "+" + gain.ToString();
-            textTransform.SetPositionAndRotation(new Vector3(endPos + 50, textTransform.position.y, textTransform.position.z), textTransform.rotation);
-            moneyDoober.SetActive(true);
-            // animate
-            textTransform.DOMoveX(endPos, 0.5f).OnComplete(() =>
-                {
-                    StartCoroutine(StateManager.Instance.Delay(1f, done =>
-                {
-                    moneyDoober.SetActive(false);
-                }));
-                }
-            );
-        }
     }
 
     public void UpdateShiftEndUI(int score)
@@ -190,13 +152,14 @@ public class UIManager : MonoBehaviour
         string ordersCompleted = "Orders Completed: " + score.ToString();
         string highScore = "High Score: " + SaveManager.Instance.GetHighScore().ToString();
         scoreText.text = dayCount + "\n" + ordersCompleted + "\n" + highScore;
+        SaveManager.Instance.SetDayCount(SaveManager.Instance.GetDayCount() + 1);
     }
 
     // Game State Functions
 
     public void B_AdvanceDay()
     {
-        StateManager.Instance.ChangeState(new PlanningState());
+        StateManager.Instance.ChangeState(new ShiftState());
     }
 
     public void B_StartShift()
@@ -226,7 +189,7 @@ public class UIManager : MonoBehaviour
 
     // Dialogue Functions
 
-    public IEnumerator RevealText(TextMeshProUGUI textObj, string dialogueString, System.Action<bool> done, float delay = 0.05f)
+    public IEnumerator RevealText(TextMeshProUGUI textObj, string dialogueString, float delay = 0.05f)
     {
         // Update the text object to contain the dialogue string
         textObj.text = dialogueString;
@@ -242,8 +205,6 @@ public class UIManager : MonoBehaviour
             currentVisibleCharacters++;
             yield return new WaitForSeconds(delay);
         }
-
-        done(true);
     }
 }
 
