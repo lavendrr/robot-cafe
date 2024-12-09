@@ -1,8 +1,8 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using GameConsts;
+using UnityEditor;
 
 public class StateManager : MonoBehaviour
 {
@@ -74,12 +74,6 @@ public class StateManager : MonoBehaviour
             OnGamePausedChanged?.Invoke(gamePaused);
         }
     }
-
-    public IEnumerator Delay(float time, System.Action<bool> done)
-    {
-        yield return new WaitForSeconds(time);
-        done(true);
-    }
 }
 
 public abstract class State
@@ -104,10 +98,6 @@ public class MainMenuState : State
         {
             SceneManager.UnloadSceneAsync("Shift");
         }
-        if (SceneManager.GetSceneByName("Planning").isLoaded)
-        {
-            SceneManager.UnloadSceneAsync("Planning");
-        }
         if (SceneManager.GetSceneByName("Pause").isLoaded)
         {
             SceneManager.UnloadSceneAsync("Pause");
@@ -121,31 +111,6 @@ public class MainMenuState : State
     public override void Exit()
     {
         SceneManager.UnloadSceneAsync("Start");
-    }
-}
-
-public class PlanningState : State
-{
-    public override bool Pausable => false;
-    public override void Enter()
-    {
-        // Update day count
-        SaveManager.Instance.SetDayCount(SaveManager.Instance.GetDayCount() + 1);
-        if (!SceneManager.GetSceneByName("Planning").isLoaded)
-        {
-            SceneManager.LoadScene("Planning", LoadSceneMode.Additive);
-        }
-    }
-
-    public override void Update()
-    {
-    }
-
-    public override void Exit()
-    {
-        // Save game
-        SaveManager.Instance.Save();
-        SceneManager.UnloadSceneAsync("Planning");
     }
 }
 
@@ -189,14 +154,14 @@ public class ShiftState : State
     {
         Debug.Log("Exiting Shift state");
         // Delete all stray cups
-        Cup[] cups = Object.FindObjectsOfType<Cup>();
+        Cup[] cups = Object.FindObjectsByType<Cup>(FindObjectsSortMode.None);
         foreach (Cup cup in cups)
         {
             cup.Destroy();
         }
 
         // Delete all stray customers
-        Customer[] customers = Object.FindObjectsOfType<Customer>();
+        Customer[] customers = Object.FindObjectsByType<Customer>(FindObjectsSortMode.None);
         foreach (Customer customer in customers)
         {
             customer.Destroy();

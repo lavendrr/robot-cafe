@@ -4,7 +4,7 @@ public class ShiftEndUI : MonoBehaviour
 {
     public void B_AdvanceDay()
     {
-        StateManager.Instance.ChangeState(new PlanningState());
+        StateManager.Instance.ChangeState(new ShiftState());
     }
 
     public void B_QuitToMenu()
