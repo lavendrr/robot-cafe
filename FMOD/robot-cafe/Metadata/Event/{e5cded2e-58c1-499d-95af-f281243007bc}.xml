@@ -104,7 +104,7 @@
 	</object>
 	<object class="EventMixerGroup" id="{0944f78a-122d-4f1b-887e-e3f4898648b9}">
 		<property name="volume">
-			<value>3</value>
+			<value>4.5</value>
 		</property>
 		<property name="name">
 			<value>Audio 1</value>
@@ -156,7 +156,11 @@
 	</object>
 	<object class="MixerBusPanner" id="{d5cc37bb-5ac3-4f95-bc39-ce8c9cc6d129}" />
 	<object class="MixerBusFader" id="{8ef504a8-ed9c-4337-bc99-a77702202862}" />
-	<object class="SpatialiserEffect" id="{1ba1e95b-3b6c-454a-97f1-7c4e0d9233a3}" />
+	<object class="SpatialiserEffect" id="{1ba1e95b-3b6c-454a-97f1-7c4e0d9233a3}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
+	</object>
 	<object class="AutomationPoint" id="{4ca5049b-a377-4fee-bc6f-90133f1b8eb8}">
 		<property name="position">
 			<value>0.11</value>

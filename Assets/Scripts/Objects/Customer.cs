@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
+using FMOD.Studio;
 
 public enum Emotion
 {
@@ -24,11 +26,13 @@ public class Customer : MonoBehaviour
     private Animator animator;
     private Order order;
     private MeshRenderer headMesh;
+    public EventInstance hoverAudio;
 
     void Start()
     {
         animator = GetComponent<Animator>();
         headMesh = transform.Find("robot_head")?.GetComponent<MeshRenderer>();
+        hoverAudio = (EventInstance)AudioManager.Instance.PlaySFX(AudioManager.Instance.customerHover, transform.position, gameObject, true);
 
         SetEmotion(Emotion.Happy);
     }
@@ -65,6 +69,7 @@ public class Customer : MonoBehaviour
 
     public void Destroy()
     {
+        AudioManager.Instance.RemoveInstance(hoverAudio);
         Destroy(gameObject);
     }
 

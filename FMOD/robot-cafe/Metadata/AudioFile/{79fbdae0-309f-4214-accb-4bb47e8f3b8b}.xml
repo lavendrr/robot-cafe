@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{79fbdae0-309f-4214-accb-4bb47e8f3b8b}">
+		<property name="assetPath">
+			<value>robotCafe_neutralVox_09.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.44500000000000001</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{28be07ac-ec7f-4ae9-9da4-14847111ca47}</destination>
+		</relationship>
+	</object>
+</objects>

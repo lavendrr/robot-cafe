@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{5f2f4044-6cca-41db-8c8e-6b21199417b4}">
+		<property name="assetPath">
+			<value>Grab_3.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.73406249999999995</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{28be07ac-ec7f-4ae9-9da4-14847111ca47}</destination>
+		</relationship>
+	</object>
+</objects>

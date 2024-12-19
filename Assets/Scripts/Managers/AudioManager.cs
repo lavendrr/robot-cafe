@@ -1,14 +1,16 @@
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
+using System.Collections.Generic;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
     [SerializeField]
-    public EventReference bgm, pickUp, pourCoffee, bellDing, playerMove;
+    public EventReference bgm, pickUp, setDown, pourCoffee, trash, bellDing, playerMove, customerDialogue, customerHover, UIClick;
     private EventInstance bgmInstance, moveInstance;
+    private List<EventInstance> instances = new();
 
     private bool playerActive = false;
 
@@ -65,7 +67,8 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            // Completely stop the move instance in other states
+            // Completely stop the move instance & other active instances in other states
+            ClearInstances();
             playerActive = false;
             moveInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
             RuntimeManager.StudioSystem.setParameterByName("MoveInput", 0f, true);
@@ -76,14 +79,22 @@ public class AudioManager : MonoBehaviour
     {
         if (gamePaused)
         {
-            // Pause the move instance in the pause state
+            // Pause the move instance & any other active instances in the pause state
             playerActive = false;
+            foreach (EventInstance instance in instances)
+            {
+                instance.setPaused(true);
+            }
             moveInstance.setPaused(true);
         }
         else
         {
-            // Pause the move instance in the pause state
+            // Unpause the move instance & any other active instances when not in the pause state
             playerActive = true;
+            foreach (EventInstance instance in instances)
+            {
+                instance.setPaused(false);
+            }
             moveInstance.setPaused(false);
         }
     }
@@ -94,7 +105,7 @@ public class AudioManager : MonoBehaviour
         {
             return;
         }
-        
+
         if (playerActive)
         {
             if (PlayerInteractions.Instance.GetMoveInputState())
@@ -108,8 +119,44 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlaySFX(EventReference eventRef, Vector3 position)
+    public EventInstance? PlaySFX(EventReference eventRef, Vector3? position = null, GameObject parent = null, bool isInstance = false)
     {
-        RuntimeManager.PlayOneShot(eventRef, position);
+        // Sets position equal to the non-nullable Vector3 type if it isn't null, or zero if it is null
+        Vector3 pos = position != null ? (Vector3)position : Vector3.zero;
+        if (isInstance == false)
+        {
+            RuntimeManager.PlayOneShot(eventRef, pos);
+            return null;
+        }
+        else
+        {
+            EventInstance instance = RuntimeManager.CreateInstance(eventRef);
+            RuntimeManager.AttachInstanceToGameObject(instance, parent.transform);
+            instance.start();
+            AddInstance(instance);
+            return instance;
+        }
+
+    }
+
+    public void AddInstance(EventInstance inst)
+    {
+        // Saves the event instance in the instance list and returns its index
+        instances.Add(inst);
+    }
+
+    public void RemoveInstance(EventInstance instance)
+    {
+        instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        instances.Remove(instance);
+    }
+
+    private void ClearInstances()
+    {
+        foreach (EventInstance instance in instances)
+        {
+            instance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            instances.Remove(instance);
+        }
     }
 }
