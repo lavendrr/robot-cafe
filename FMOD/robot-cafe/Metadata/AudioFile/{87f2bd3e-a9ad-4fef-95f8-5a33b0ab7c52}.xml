@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{87f2bd3e-a9ad-4fef-95f8-5a33b0ab7c52}">
+		<property name="assetPath">
+			<value>User Interface, Beep, Computer, Digital Beep, Short SND11436 3.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>96</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>0.36916666666666664</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{28be07ac-ec7f-4ae9-9da4-14847111ca47}</destination>
+		</relationship>
+	</object>
+</objects>

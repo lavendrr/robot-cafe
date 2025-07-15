@@ -9,6 +9,7 @@ public class PlanningUI : MonoBehaviour
     }
     public void B_StartShift()
     {
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.UIClick);
         StateManager.Instance.ChangeState(new ShiftState());
     }
 

@@ -59,7 +59,7 @@ public class SaveManager : MonoBehaviour
         stream.Close();
 
         // Reimport the new json file
-        AssetDatabase.ImportAsset(path);
+        // AssetDatabase.ImportAsset(path);
         Debug.Log("Successfully saved!");
     }
 

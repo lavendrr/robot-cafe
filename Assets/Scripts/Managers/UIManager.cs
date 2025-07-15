@@ -5,6 +5,9 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
 using Unity.VisualScripting;
+using System;
+using UnityEngine.Rendering;
+using System.Linq;
 
 public class UIManager : MonoBehaviour
 {
@@ -230,16 +233,23 @@ public class UIManager : MonoBehaviour
     {
         // Update the text object to contain the dialogue string
         textObj.text = dialogueString;
-        textObj.ForceMeshUpdate();
 
         int totalCharacters = dialogueString.Length;
         int currentVisibleCharacters = 0;
 
-        while (currentVisibleCharacters <= totalCharacters)
+        while (currentVisibleCharacters < totalCharacters)
         {
+            // If the current character isn't a space, plays the sound from the position of the current customer, or from the origin if the customer list is empty (this shouldn't happen, but just in case)
+            if (currentVisibleCharacters == 0 || (dialogueString[currentVisibleCharacters - 1] == ' '))
+            {
+                AudioManager.Instance.PlaySFX(AudioManager.Instance.customerDialogue, OrderManager.Instance.customerList.Count > 0 ? OrderManager.Instance.customerList[0].transform.position : Vector3.zero);
+            }
+
             // Update the text object's max visible characters to the current count
-            textObj.maxVisibleCharacters = currentVisibleCharacters;
+            textObj.maxVisibleCharacters = currentVisibleCharacters + 1;
             currentVisibleCharacters++;
+            textObj.ForceMeshUpdate();
+
             yield return new WaitForSeconds(delay);
         }
 

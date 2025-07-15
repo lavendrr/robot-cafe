@@ -217,6 +217,13 @@ MonoBehaviour:
       Data3: -2114801771
       Data4: -1140379612
     Path: event:/Grab
+  setDown:
+    Guid:
+      Data1: -1117039013
+      Data2: 1094022323
+      Data3: -1654948952
+      Data4: 1975158562
+    Path: event:/Set Down
   pourCoffee:
     Guid:
       Data1: 325408296
@@ -224,6 +231,13 @@ MonoBehaviour:
       Data3: -1156320070
       Data4: 606764532
     Path: event:/Pour Coffee
+  trash:
+    Guid:
+      Data1: -377521256
+      Data2: 1076045701
+      Data3: 706380188
+      Data4: -1208926373
+    Path: event:/Trash
   bellDing:
     Guid:
       Data1: -1397339627
@@ -238,6 +252,27 @@ MonoBehaviour:
       Data3: -420340320
       Data4: 1107670384
     Path: event:/Player Move
+  customerDialogue:
+    Guid:
+      Data1: 1355985166
+      Data2: 1204410655
+      Data3: -1732427361
+      Data4: 232910354
+    Path: event:/CustomerSpeech
+  customerHover:
+    Guid:
+      Data1: -873722063
+      Data2: 1290337964
+      Data3: 1400384917
+      Data4: 2079465452
+    Path: event:/CustomerHover
+  UIClick:
+    Guid:
+      Data1: 894677724
+      Data2: 1295634851
+      Data3: 658553766
+      Data4: -53765999
+    Path: event:/UI Click
 --- !u!4 &1960187480
 Transform:
   m_ObjectHideFlags: 0
