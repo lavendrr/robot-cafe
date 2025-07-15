@@ -16,6 +16,8 @@ public class StateManager : MonoBehaviour
     public event PauseChangeHandler OnGamePausedChanged;
     private bool gamePaused = false;
 
+    public Player player;
+
     private void Awake()
     {
         if (Instance == null)
@@ -76,6 +78,11 @@ public class StateManager : MonoBehaviour
             // Notify subscribers of the event
             OnGamePausedChanged?.Invoke(gamePaused);
         }
+    }
+
+    public void RegisterPlayer(Player newPlayer)
+    {
+        player = newPlayer;
     }
 
     public IEnumerator Delay(float time, System.Action<bool> done)
