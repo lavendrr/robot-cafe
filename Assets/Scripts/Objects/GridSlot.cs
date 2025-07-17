@@ -37,7 +37,7 @@ public class GridSlot : MonoBehaviour
     public bool AttemptItemSlot(GameObject dropped)
     {
         DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
-        List<(int, int)> offsets = draggableItem.GetOffsets();
+        List<GridCoord> offsets = draggableItem.GetOffsets();
         // Checks if the cell already has something slotted in
         if (!GetOccupiedStatus())
         {
@@ -49,9 +49,9 @@ public class GridSlot : MonoBehaviour
                     // Makes a list to store the cells at the corresponding offsets
                     List<GridSlot> offsetCells = new();
                     // Checks the occupied status of the slot at each offset of the item, stores it in the list, and fails if any are occupied
-                    foreach ((int, int) offset in offsets)
+                    foreach (GridCoord offset in offsets)
                     {
-                        GridSlot offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.Item1, coords.Item2 + offset.Item2].GetComponent<GridSlot>();
+                        GridSlot offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.y, coords.Item2 + offset.x].GetComponent<GridSlot>();
                         if (offsetCell.GetOccupiedStatus())
                         {
                             return false;
@@ -115,12 +115,12 @@ public class GridSlot : MonoBehaviour
         SetOccupiedStatus(false);
 
         // If the item took up more than one cell, set the corresponding cells to be empty as well
-        List<(int, int)> offsets = item.GetOffsets();
+        List<GridCoord> offsets = item.GetOffsets();
         if (offsets != null)
         {
-            foreach ((int, int) offset in offsets)
+            foreach (GridCoord offset in offsets)
             {
-                PlanningManager.Instance.gridArray[coords.Item1 + offset.Item1, coords.Item2 + offset.Item2].GetComponent<GridSlot>().SetOccupiedStatus(false);
+                PlanningManager.Instance.gridArray[coords.Item1 + offset.y, coords.Item2 + offset.x].GetComponent<GridSlot>().SetOccupiedStatus(false);
             }
         }
     }
@@ -136,7 +136,7 @@ public class GridSlot : MonoBehaviour
             image.color = Color.green;
         }
 
-        List<(int, int)> offsets = item.GetOffsets();
+        List<GridCoord> offsets = item.GetOffsets();
         List<GameObject> changedCells = new();
 
         // If the item takes up more than one cell, set the colors for those cells as well
@@ -144,9 +144,9 @@ public class GridSlot : MonoBehaviour
         {
             if (offsets != null)
             {
-                foreach ((int, int) offset in offsets)
+                foreach (GridCoord offset in offsets)
                 {
-                    GameObject offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.Item1, coords.Item2 + offset.Item2];
+                    GameObject offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.y, coords.Item2 + offset.x];
                     if (offsetCell.GetComponent<GridSlot>().GetOccupiedStatus())
                     {
                         offsetCell.GetComponent<Image>().color = Color.red;
@@ -178,12 +178,12 @@ public class GridSlot : MonoBehaviour
         try
         {
             // If the item took up more than one cell, set the corresponding cells to be empty as well
-            List<(int, int)> offsets = item.GetOffsets();
+            List<GridCoord> offsets = item.GetOffsets();
             if (offsets != null)
             {
-                foreach ((int, int) offset in offsets)
+                foreach (GridCoord offset in offsets)
                 {
-                    GameObject cell = PlanningManager.Instance.gridArray[coords.Item1 + offset.Item1, coords.Item2 + offset.Item2];
+                    GameObject cell = PlanningManager.Instance.gridArray[coords.Item1 + offset.y, coords.Item2 + offset.x];
                     // Reset this cell's color back to blue if occupied, or back to white if empty
                     cell.GetComponent<Image>().color = cell.GetComponent<GridSlot>().GetOccupiedStatus() ? Color.blue : Color.white;
                 }

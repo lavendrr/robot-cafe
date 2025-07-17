@@ -6,16 +6,15 @@ using UnityEngine.EventSystems;
 public class GridItemSpawn : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField]
-    private GameObject itemPrefab;
-
-    private GameObject item;
+    private FurnitureObject furniture;
     private DraggableItem draggableItem;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         Debug.Log("onbegindrag");
-        GameObject item = Instantiate(itemPrefab, transform.root);
+        GameObject item = Instantiate(furniture.prefab, transform.root);
         draggableItem = item.GetComponent<DraggableItem>();
+        draggableItem.Init(furniture.gridOffsets);
         draggableItem.OnBeginDrag(eventData);
     }
 
@@ -27,19 +26,5 @@ public class GridItemSpawn : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnEndDrag(PointerEventData eventData)
     {
         draggableItem.OnEndDrag(eventData);
-    }
-
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }

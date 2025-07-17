@@ -5,15 +5,16 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Image image;
     public Transform previousParent;
-    private List<(int, int)> offsets;
+    private List<GridCoord> offsets;
     private GameObject previousHoverCell = null;
 
-    public DraggableItem(List<(int, int)> offsets = null)
+    public void Init(List<GridCoord> offsets = null)
     {
         if (offsets != null)
         {
@@ -23,7 +24,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     void Start()
     {
-        offsets = new List<(int, int)> { (0, 1), (1, 0) };
+        // offsets = new List<(int, int)> { (0, 1), (1, 0) };
         previousParent = transform.root;
     }
 
@@ -33,7 +34,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         // Rotates 90 degrees clockwise
         for (int i = 0; i < offsets.Count; i++)
         {
-            offsets[i] = (offsets[i].Item2, offsets[i].Item1 * -1);
+            // offsets[i] = (offsets[i].Item2, offsets[i].Item1 * -1);
+            GridCoord temp = offsets[i];
+            temp.x *= -1;
+            offsets[i] = temp;
         }
     }
 
@@ -43,7 +47,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         // Rotates 90 degrees clockwise
         for (int i = 0; i < offsets.Count; i++)
         {
-            offsets[i] = (offsets[i].Item2 * -1, offsets[i].Item1);
+            // offsets[i] = (offsets[i].Item2 * -1, offsets[i].Item1);
+            GridCoord temp = offsets[i];
+            temp.y *= -1;
+            offsets[i] = temp;
         }
     }
 
@@ -176,7 +183,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Destroy(gameObject);
     }
 
-    public List<(int, int)> GetOffsets()
+    public List<GridCoord> GetOffsets()
     {
         return offsets;
     }
