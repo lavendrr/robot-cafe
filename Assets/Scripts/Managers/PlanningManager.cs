@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 // TODO - change the color thing from colliders to cursor hover to avoid overlapping cell issue
 
@@ -32,6 +33,8 @@ public class PlanningManager : MonoBehaviour
             Instance = this;
         }
 
+        gridObj.GetComponent<GridLayoutGroup>().constraintCount = rows;
+        
         gridArray = new GameObject[rows, cols];
 
         for (int row = 0; row < rows; row++)
