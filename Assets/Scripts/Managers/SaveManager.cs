@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class SaveData
@@ -11,8 +12,17 @@ public class SaveData
     public int highScore = 0;
     public int dayCount = 0;
     public int playerMoney = 0;
-    public GameObject[,] planningGrid;
+    public List<CafeElement> cafeLayout;
 }
+
+[System.Serializable]
+public struct CafeElement
+{
+    public FurnitureObject furnitureObject;
+    public GridCoord rootGridCoord;
+    public int rotation; // 0, 90, 180, 270 degrees
+}
+
 
 public class SaveManager : MonoBehaviour
 {
@@ -124,14 +134,14 @@ public class SaveManager : MonoBehaviour
         return saveData.playerMoney;
     }
 
-    public GameObject[,] GetPlanningGrid()
+    public List<CafeElement> GetCafeLayout()
     {
-        return saveData.planningGrid;
+        return saveData.cafeLayout;
     }
 
-    public void SavePlanningGrid(GameObject[,] planningGrid)
+    public void SaveCafeLayout(List<CafeElement> cafeLayout)
     {
-        saveData.planningGrid = planningGrid;
+        saveData.cafeLayout = cafeLayout;
     }
 }
 
