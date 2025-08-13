@@ -10,6 +10,8 @@ public class CafeLayoutManager : MonoBehaviour
 {
     public static CafeLayoutManager Instance { get; private set; }
 
+    private bool _prevTestInEditor = false;
+
     [SerializeField]
     public GameObject CafeRoot;
     public float GridCellSize = 1.0f;
@@ -44,30 +46,12 @@ public class CafeLayoutManager : MonoBehaviour
 
     public void PopulateCafeLevel()
     {
-        List<CafeElement> cafeLayout = SaveManager.Instance.GetCafeLayout();
-        // Iterate through the saved layout and instantiate the furniture objects
-        foreach (var element in cafeLayout)
-        {
-            GameObject furniturePrefab = element.furnitureObject.prefab;
-            if (furniturePrefab == null)
-            {
-                Debug.LogWarning($"Furniture prefab for {element.furnitureObject.furnitureName} not found.");
-                continue;
-            }
-
-            Vector3 spawnPosition = ConvertGridToWorldPosition(element.rootGridCoord.x, element.rootGridCoord.y);
-            GameObject furnitureInstance = Instantiate(furniturePrefab, spawnPosition, Quaternion.Euler(0, element.rotation, 0));
-            furnitureInstance.name = element.furnitureObject.furnitureName;
-            if (!TestInEditor && CafeRoot != null)
-            {
-                furnitureInstance.transform.SetParent(CafeRoot.transform);
-            }
-        }
-    }
-
-    public void EditorPopulateCafeLevel()
-    {
+        #if UNITY_EDITOR
         List<CafeElement> cafeLayout = TestLayout;
+        #else
+        List<CafeElement> cafeLayout = SaveManager.Instance.GetCafeLayout();
+        #endif
+        // Iterate through the saved layout and instantiate the furniture objects
         foreach (var element in cafeLayout)
         {
             if (element.furnitureObject == null)
@@ -82,9 +66,12 @@ public class CafeLayoutManager : MonoBehaviour
             }
 
             Vector3 spawnPosition = ConvertGridToWorldPosition(element.rootGridCoord.x, element.rootGridCoord.y);
-            GameObject furnitureInstance = (GameObject)PrefabUtility.InstantiatePrefab(furniturePrefab, CafeRoot != null ? CafeRoot.transform : null);
-            furnitureInstance.transform.SetPositionAndRotation(spawnPosition, Quaternion.Euler(0, element.rotation, 0));
+            GameObject furnitureInstance = Instantiate(furniturePrefab, spawnPosition, Quaternion.Euler(0, element.rotation, 0));
             furnitureInstance.name = element.furnitureObject.furnitureName;
+            if (CafeRoot != null)
+            {
+                furnitureInstance.transform.SetParent(CafeRoot.transform);
+            }
         }
     }
 
@@ -95,15 +82,13 @@ public class CafeLayoutManager : MonoBehaviour
 
         for (int i = CafeRoot.transform.childCount - 1; i >= 0; i--)
         {
-#if UNITY_EDITOR
+            #if UNITY_EDITOR
             DestroyImmediate(CafeRoot.transform.GetChild(i).gameObject);
             #else
             Destroy(CafeRoot.transform.GetChild(i).gameObject);
-#endif
+            #endif
         }
     }
-
-    private bool _prevTestInEditor = false;
 
     private void OnValidate()
     {
@@ -126,7 +111,7 @@ public class CafeLayoutManager : MonoBehaviour
                 if (!Application.isPlaying && this != null && CafeRoot != null)
                 {
                     DestroyCafeFurniture(); // CafeRoot shouldn't have children, but run just in case
-                    EditorPopulateCafeLevel();
+                    PopulateCafeLevel();
                 }
             };
         }
@@ -140,7 +125,7 @@ public class CafeLayoutManager : MonoBehaviour
                 if (!Application.isPlaying && this != null && CafeRoot != null)
                 {
                     DestroyCafeFurniture();
-                    EditorPopulateCafeLevel();
+                    PopulateCafeLevel();
                 }
             };
         }
