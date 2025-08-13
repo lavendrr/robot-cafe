@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -19,7 +18,7 @@ public class CafeLayoutManager : MonoBehaviour
 
     public List<CafeElement> TestLayout = new List<CafeElement>();
 
-    private void Awake()
+    private void Start()
     {
         // If there is an instance, and it's not me, delete myself.
         if (Instance != null && Instance != this)
@@ -30,6 +29,14 @@ public class CafeLayoutManager : MonoBehaviour
         {
             Instance = this;
         }
+
+        #if !UNITY_EDITOR
+        if (SaveManager.Instance.GetCafeLayout() != null)
+        {
+            DestroyCafeFurniture();
+            PopulateCafeLevel();
+        }
+        #endif
     }
 
     private Vector3 ConvertGridToWorldPosition(int x, int y)
