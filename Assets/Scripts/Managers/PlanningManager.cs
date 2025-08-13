@@ -53,23 +53,18 @@ public class PlanningManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public List<FurnitureObject> GetFinalGrid()
     {
+        List<FurnitureObject> output = new();
 
-    }
-
-    List<(string, (int, int), float)> GetFinalGrid()
-    {
-        List<(string, (int, int), float)> output = new();
         foreach (GameObject cell in gridArray)
         {
             if (cell.GetComponent<GridSlot>().GetOccupiedStatus())
             {
-                cell.GetComponentInChildren<DraggableItem>();
+                output.Add(cell.GetComponentInChildren<DraggableItem>().furnitureObject);
             }
         }
 
-        return new List<(string, (int, int), float)> { };
+        return output;
     }
 }

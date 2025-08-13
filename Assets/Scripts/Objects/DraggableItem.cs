@@ -11,20 +11,20 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 {
     public Image image;
     public Transform previousParent;
-    private List<GridCoord> offsets;
     private GameObject previousHoverCell = null;
+    public FurnitureObject furnitureObject { get; private set; }
 
-    public void Init(List<GridCoord> offsets = null)
+    public void Init(FurnitureObject f)
     {
-        if (offsets != null)
+        if (furnitureObject != null)
         {
-            this.offsets = offsets;
+            furnitureObject = f;
         }
     }
 
     void Start()
     {
-        // offsets = new List<(int, int)> { (0, 1), (1, 0) };
+        // furnitureObject.gridOffsets = new List<(int, int)> { (0, 1), (1, 0) };
         previousParent = transform.root;
     }
 
@@ -32,12 +32,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void RotateOffsetsClockwise()
     {
         // Rotates 90 degrees clockwise
-        for (int i = 0; i < offsets.Count; i++)
+        for (int i = 0; i < furnitureObject.gridOffsets.Count; i++)
         {
-            // offsets[i] = (offsets[i].Item2, offsets[i].Item1 * -1);
-            GridCoord temp = offsets[i];
+            GridCoord temp = furnitureObject.gridOffsets[i];
             temp.x *= -1;
-            offsets[i] = temp;
+            furnitureObject.gridOffsets[i] = temp;
         }
     }
 
@@ -45,12 +44,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void RotateOffsetsCounterclockwise()
     {
         // Rotates 90 degrees clockwise
-        for (int i = 0; i < offsets.Count; i++)
+        for (int i = 0; i < furnitureObject.gridOffsets.Count; i++)
         {
-            // offsets[i] = (offsets[i].Item2 * -1, offsets[i].Item1);
-            GridCoord temp = offsets[i];
+            GridCoord temp = furnitureObject.gridOffsets[i];
             temp.y *= -1;
-            offsets[i] = temp;
+            furnitureObject.gridOffsets[i] = temp;
         }
     }
 
@@ -185,6 +183,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public List<GridCoord> GetOffsets()
     {
-        return offsets;
+        return furnitureObject.gridOffsets;
     }
 }

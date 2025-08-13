@@ -14,7 +14,7 @@ public class GridItemSpawn : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Debug.Log("onbegindrag");
         GameObject item = Instantiate(furniture.prefab, transform.root);
         draggableItem = item.GetComponent<DraggableItem>();
-        draggableItem.Init(furniture.gridOffsets);
+        draggableItem.Init(furniture);
         draggableItem.OnBeginDrag(eventData);
     }
 

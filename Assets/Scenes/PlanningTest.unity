@@ -4130,7 +4130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a16dd813b06d44ce2b6b0b136b0c2889, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemPrefab: {fileID: 9192525597895644964, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
+  furniture: {fileID: 11400000, guid: 9103302160dda410da3dffe9031ac688, type: 2}
 --- !u!224 &1813964177 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3286662120504378361, guid: b43d0a1d076a8457e9db19f878e2cccf, type: 3}
