@@ -10,13 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 825951904b2e34c31bf676b7a7b609d2, type: 3}
-  m_Name: FO_Counter
+  m_Name: FO_WallPlain
   m_EditorClassIdentifier: 
-  furnitureName: Counter
-  prefab: {fileID: 919132149155446097, guid: 3655d8f12dd3c254782cceba0ff95d1f, type: 3}
+  furnitureName: WallPlain
+  prefab: {fileID: 919132149155446097, guid: c2e957f8184740747a13890c83f31ccd, type: 3}
   cost: 0
-  gridOffsets:
-  - x: 0
-    y: 1
-  - x: 1
-    y: 0
+  gridOffsets: []
