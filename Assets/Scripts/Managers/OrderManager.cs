@@ -84,7 +84,7 @@ public class OrderManager : MonoBehaviour
             UIManager.Instance.SetOrdersCompleted(completedCounter, gain);
             UIManager.Instance.SetOrderInfo("");
 
-            SpawnCup();
+            //SpawnCup();
             Destroy(cupObj);
             return true;
         }

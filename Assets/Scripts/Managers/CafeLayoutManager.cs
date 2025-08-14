@@ -1,8 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+
+public class LevelLayout
+{
+    public List<CafeElement> elements = new List<CafeElement>();
+    public (int rows, int cols) dimensions = (6, 10);
+    public (int col, int row) deliveryTileCoords;
+    public GameObject floorPrefab;
+    public GameObject straightWallPrefab;
+    public GameObject cornerWallPrefab;
+    public GameObject deliveryTilePrefab;
+}
 
 [ExecuteAlways]
 public class CafeLayoutManager : MonoBehaviour
@@ -10,16 +22,19 @@ public class CafeLayoutManager : MonoBehaviour
     public static CafeLayoutManager Instance { get; private set; }
 
     private bool _prevTestInEditor = false;
+    private LevelLayout TestLayout = new LevelLayout();
 
     [SerializeField]
     public GameObject CafeRoot;
     public float GridCellSize = 1.0f;
     public bool TestInEditor = false;
-    public (int rows, int cols) FloorDimensions = (6, 10);
-    public GameObject FloorPrefab; // TODO: move these to a data/constants file
-    public GameObject StraightWallPrefab;
-    public GameObject CornerWallPrefab;
-    public List<CafeElement> TestLayout = new List<CafeElement>();
+    public Vector2 dimensions = new Vector2(6, 10);
+    public Vector2 deliveryTileCoords;
+    public GameObject floorPrefab;
+    public GameObject straightWallPrefab;
+    public GameObject cornerWallPrefab;
+    public GameObject deliveryTilePrefab;
+    public List<CafeElement> elements = new List<CafeElement>();
 
     private void Start()
     {
@@ -33,13 +48,13 @@ public class CafeLayoutManager : MonoBehaviour
             Instance = this;
         }
 
-        #if !UNITY_EDITOR
+#if !UNITY_EDITOR
         if (SaveManager.Instance.GetCafeLayout() != null)
         {
             DestroyCafeFurniture();
-            PopulateCafeLevel();
+            PopulateCafeLevel(SaveManager.Instance.GetCafeLayout());
         }
-        #endif
+#endif
     }
 
     private Vector3 ConvertGridToWorldPosition(int col, int row)
@@ -54,21 +69,21 @@ public class CafeLayoutManager : MonoBehaviour
         return new Vector3(worldX, worldY, worldZ);
     }
 
-    public void PopulateFloorTiles()
+    public void PopulateFloorTiles(LevelLayout layout)
     {
         // Instantiate floors to cover the entire area
-        if (FloorPrefab == null)
+        if (layout.floorPrefab == null)
         {
             Debug.LogWarning("FloorPrefab not assigned in CafeLayoutManager.");
             return;
         }
 
-        for (int row = 0; row < FloorDimensions.rows; row++)
+        for (int row = 0; row < layout.dimensions.rows; row++)
         {
-            for (int col = 0; col < FloorDimensions.cols; col++)
+            for (int col = 0; col < layout.dimensions.cols; col++)
             {
                 Vector3 floorPosition = ConvertGridToWorldPosition(col, row);
-                GameObject floorInstance = Instantiate(FloorPrefab, floorPosition, Quaternion.identity);
+                GameObject floorInstance = Instantiate(layout.floorPrefab, floorPosition, Quaternion.identity);
                 floorInstance.name = $"Floor_{row}_{col}";
                 if (CafeRoot != null)
                 {
@@ -78,29 +93,66 @@ public class CafeLayoutManager : MonoBehaviour
         }
     }
 
-    public void PopulateWalls()
+    public void PopulateWalls(LevelLayout layout)
     {
-        if (StraightWallPrefab == null || CornerWallPrefab == null)
+        if (layout.straightWallPrefab == null || layout.cornerWallPrefab == null || layout.deliveryTilePrefab == null)
         {
             Debug.LogWarning("Wall prefabs not assigned in CafeLayoutManager.");
             return;
         }
 
-        int width = FloorDimensions.cols;
-        int height = FloorDimensions.rows;
+        int width = layout.dimensions.cols;
+        int height = layout.dimensions.rows;
+
+        // Calculate delivery-adjacent tile coordinates (to the left of delivery tile, relative to orientation)
+        (int col, int row) deliveryTile = layout.deliveryTileCoords;
+        (int col, int row)? deliveryAdjacentTile = null;
+
+        // Determine which edge the delivery tile is on and calculate the adjacent tile
+        if (deliveryTile.row == 0) // Top edge
+            deliveryAdjacentTile = (deliveryTile.col + 1, deliveryTile.row);
+        else if (deliveryTile.col == width - 1) // Right edge
+            deliveryAdjacentTile = (deliveryTile.col, deliveryTile.row + 1);
+        else if (deliveryTile.row == height - 1) // Bottom edge
+            deliveryAdjacentTile = (deliveryTile.col - 1, deliveryTile.row);
+        else if (deliveryTile.col == 0) // Left edge
+            deliveryAdjacentTile = (deliveryTile.col, deliveryTile.row - 1);
+
+        // Check if the adjacent tile is a corner
+        if (deliveryAdjacentTile.HasValue)
+        {
+            if ((deliveryAdjacentTile.Value.col == 0 || deliveryAdjacentTile.Value.col == width - 1) &&
+                (deliveryAdjacentTile.Value.row == 0 || deliveryAdjacentTile.Value.row == height - 1))
+            {
+                Debug.LogWarning("Invalid Delivery Tile. Adjacent tile is a corner.");
+            }
+        }
+
         GameObject wallPrefab;
         for (int col = 0; col < width; col++)
         {
             for (int row = 0; row < height; row++)
             {
+                // Skip the delivery-adjacent tile
+                if (deliveryAdjacentTile.HasValue && col == deliveryAdjacentTile.Value.col && row == deliveryAdjacentTile.Value.row)
+                    continue;
+
                 // Check if the tile is an edge tile
                 bool isLeftEdge = (col == 0);
                 bool isRightEdge = (col == width - 1);
                 bool isTopEdge = (row == 0);
                 bool isBottomEdge = (row == height - 1);
 
+                // Check if this is the delivery tile
+                bool isDeliveryTile = (col == layout.deliveryTileCoords.col && row == layout.deliveryTileCoords.row);
+
                 if (!isLeftEdge && !isRightEdge && !isBottomEdge && !isTopEdge)
                 {
+                    if (isDeliveryTile)
+                    {
+                        Debug.LogWarning("Invalid Delivery Tile. Tile is not an edge cell.");
+                        continue;
+                    }
                     continue;
                 }
 
@@ -110,7 +162,11 @@ public class CafeLayoutManager : MonoBehaviour
                 Quaternion rotation = Quaternion.identity;
                 if (isCorner)
                 {
-                    wallPrefab = CornerWallPrefab;
+                    if (isDeliveryTile)
+                    {
+                        Debug.LogWarning("Invalid Delivery Tile. Tile is a corner cell.");
+                    }
+                    wallPrefab = layout.cornerWallPrefab;
                     if (isLeftEdge && isTopEdge) rotation = Quaternion.Euler(0, 0, 0);
                     else if (isRightEdge && isTopEdge) rotation = Quaternion.Euler(0, 90, 0);
                     else if (isRightEdge && isBottomEdge) rotation = Quaternion.Euler(0, 180, 0);
@@ -118,7 +174,12 @@ public class CafeLayoutManager : MonoBehaviour
                 }
                 else
                 {
-                    wallPrefab = StraightWallPrefab;
+                    if (isDeliveryTile)
+                    {
+                        wallPrefab = layout.deliveryTilePrefab;
+                    } else {
+                        wallPrefab = layout.straightWallPrefab;
+                    }
                     if (isTopEdge) rotation = Quaternion.Euler(0, 0, 0);
                     else if (isRightEdge) rotation = Quaternion.Euler(0, 90, 0);
                     else if (isBottomEdge) rotation = Quaternion.Euler(0, 180, 0);
@@ -127,7 +188,12 @@ public class CafeLayoutManager : MonoBehaviour
 
                 Vector3 wallPosition = ConvertGridToWorldPosition(col, row);
                 GameObject wallInstance = Instantiate(wallPrefab, wallPosition, rotation);
-                wallInstance.name = $"Wall_{col}_{row}";
+                if (isDeliveryTile)
+                {
+                    wallInstance.name = $"DeliveryTile{col}_{row}";
+                } else {
+                    wallInstance.name = $"Wall{col}_{row}";
+                }
                 if (CafeRoot != null)
                 {
                     wallInstance.transform.SetParent(CafeRoot.transform);
@@ -136,19 +202,13 @@ public class CafeLayoutManager : MonoBehaviour
         }
     }
 
-    public void PopulateCafeLevel()
+    public void PopulateCafeLevel(LevelLayout cafeLayout)
     {
-#if UNITY_EDITOR
-        List<CafeElement> cafeLayout = TestLayout;
-#else
-        List<CafeElement> cafeLayout = SaveManager.Instance.GetCafeLayout();
-#endif
-
-        PopulateFloorTiles();
-        PopulateWalls();
+        PopulateFloorTiles(cafeLayout);
+        PopulateWalls(cafeLayout);
 
         // Iterate through the saved layout and instantiate the furniture objects
-        foreach (var element in cafeLayout)
+        foreach (var element in cafeLayout.elements)
         {
             if (element.furnitureObject == null)
             {
@@ -186,6 +246,20 @@ public class CafeLayoutManager : MonoBehaviour
         }
     }
 
+    private void UpdateTestLayout()
+    {
+        TestLayout = new LevelLayout
+        {
+            dimensions = ((int)dimensions.x, (int)dimensions.y),
+            deliveryTileCoords = ((int)deliveryTileCoords.x, (int)deliveryTileCoords.y),
+            floorPrefab = floorPrefab,
+            straightWallPrefab = straightWallPrefab,
+            cornerWallPrefab = cornerWallPrefab,
+            deliveryTilePrefab = deliveryTilePrefab,
+            elements = elements
+        };
+    }
+
     private void OnValidate()
     {
 #if UNITY_EDITOR
@@ -199,7 +273,8 @@ public class CafeLayoutManager : MonoBehaviour
                     DestroyCafeFurniture();
                 }
             };
-        } else if (!_prevTestInEditor && TestInEditor && CafeRoot != null)
+        }
+        else if (!_prevTestInEditor && TestInEditor && CafeRoot != null)
         {
             // If TestInEditor was just set to true, populate the cafe level
             EditorApplication.delayCall += () =>
@@ -207,12 +282,13 @@ public class CafeLayoutManager : MonoBehaviour
                 if (!Application.isPlaying && this != null && CafeRoot != null)
                 {
                     DestroyCafeFurniture(); // CafeRoot shouldn't have children, but run just in case
-                    PopulateCafeLevel();
+                    UpdateTestLayout();
+                    PopulateCafeLevel(TestLayout);
                 }
             };
         }
 
-        if (TestInEditor && TestLayout != null)
+        if (TestInEditor)
         {
             // Defer execution to avoid Unity's internal restrictions
             EditorApplication.delayCall += () =>
@@ -221,7 +297,8 @@ public class CafeLayoutManager : MonoBehaviour
                 if (!Application.isPlaying && this != null && CafeRoot != null)
                 {
                     DestroyCafeFurniture();
-                    PopulateCafeLevel();
+                    UpdateTestLayout();
+                    PopulateCafeLevel(TestLayout);
                 }
             };
         }

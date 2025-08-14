@@ -202,7 +202,7 @@ public class ShiftState : State
         if (scene.name == "Shift")
         {
             // Spawn first cup
-            OrderManager.Instance.SpawnCup();
+            //OrderManager.Instance.SpawnCup();
         }
     }
 

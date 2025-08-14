@@ -96,8 +96,7 @@ public class Cup : MonoBehaviour
     {
         if (other.gameObject.name == "ItemKillbox")
         {
-            Debug.Log("Hit box");
-            OrderManager.Instance.SpawnCup();
+            //OrderManager.Instance.SpawnCup();
             Debug.Log("Cup fell out of bounds and was replaced");
             Destroy(gameObject);
         }

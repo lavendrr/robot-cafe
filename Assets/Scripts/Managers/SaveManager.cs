@@ -12,7 +12,7 @@ public class SaveData
     public int highScore = 0;
     public int dayCount = 0;
     public int playerMoney = 0;
-    public List<CafeElement> cafeLayout;
+    public LevelLayout cafeLayout;
 }
 
 [System.Serializable]
@@ -134,12 +134,12 @@ public class SaveManager : MonoBehaviour
         return saveData.playerMoney;
     }
 
-    public List<CafeElement> GetCafeLayout()
+    public LevelLayout GetCafeLayout()
     {
         return saveData.cafeLayout;
     }
 
-    public void SaveCafeLayout(List<CafeElement> cafeLayout)
+    public void SaveCafeLayout(LevelLayout cafeLayout)
     {
         saveData.cafeLayout = cafeLayout;
     }
