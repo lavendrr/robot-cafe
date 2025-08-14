@@ -35,7 +35,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         for (int i = 0; i < furnitureObject.gridOffsets.Count; i++)
         {
             GridCoord temp = furnitureObject.gridOffsets[i];
-            temp.x *= -1;
+            temp.col *= -1;
             furnitureObject.gridOffsets[i] = temp;
         }
     }
@@ -47,7 +47,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         for (int i = 0; i < furnitureObject.gridOffsets.Count; i++)
         {
             GridCoord temp = furnitureObject.gridOffsets[i];
-            temp.y *= -1;
+            temp.row *= -1;
             furnitureObject.gridOffsets[i] = temp;
         }
     }

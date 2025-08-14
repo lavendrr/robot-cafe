@@ -16,14 +16,14 @@ public class CafeLayoutManager : MonoBehaviour
     public float GridCellSize = 1.0f;
     public bool TestInEditor = false;
     public (int rows, int cols) FloorDimensions = (6, 10);
-    public GameObject FloorPrefab; // TODO: move this to a data/constants file
+    public GameObject FloorPrefab; // TODO: move these to a data/constants file
     public GameObject StraightWallPrefab;
     public GameObject CornerWallPrefab;
     public List<CafeElement> TestLayout = new List<CafeElement>();
 
     private void Start()
     {
-        // If there is an instance, and it's not me, delete myself.
+        // If there is an instance, and it's not me, delete myself
         if (Instance != null && Instance != this)
         {
             Destroy(this);
@@ -42,7 +42,7 @@ public class CafeLayoutManager : MonoBehaviour
         #endif
     }
 
-    private Vector3 ConvertGridToWorldPosition(int row, int col)
+    private Vector3 ConvertGridToWorldPosition(int col, int row)
     {
         if (CafeRoot == null)
             return Vector3.zero;
@@ -67,7 +67,7 @@ public class CafeLayoutManager : MonoBehaviour
         {
             for (int col = 0; col < FloorDimensions.cols; col++)
             {
-                Vector3 floorPosition = ConvertGridToWorldPosition(row, col);
+                Vector3 floorPosition = ConvertGridToWorldPosition(col, row);
                 GameObject floorInstance = Instantiate(FloorPrefab, floorPosition, Quaternion.identity);
                 floorInstance.name = $"Floor_{row}_{col}";
                 if (CafeRoot != null)
@@ -86,8 +86,8 @@ public class CafeLayoutManager : MonoBehaviour
             return;
         }
 
-        int width = FloorDimensions.rows;
-        int height = FloorDimensions.cols;
+        int width = FloorDimensions.cols;
+        int height = FloorDimensions.rows;
         GameObject wallPrefab;
         for (int col = 0; col < width; col++)
         {
@@ -112,17 +112,17 @@ public class CafeLayoutManager : MonoBehaviour
                 {
                     wallPrefab = CornerWallPrefab;
                     if (isLeftEdge && isTopEdge) rotation = Quaternion.Euler(0, 0, 0);
-                    else if (isLeftEdge && isBottomEdge) rotation = Quaternion.Euler(0, 90, 0);
+                    else if (isRightEdge && isTopEdge) rotation = Quaternion.Euler(0, 90, 0);
                     else if (isRightEdge && isBottomEdge) rotation = Quaternion.Euler(0, 180, 0);
-                    else if (isRightEdge && isTopEdge) rotation = Quaternion.Euler(0, 270, 0);
+                    else if (isLeftEdge && isBottomEdge) rotation = Quaternion.Euler(0, 270, 0);
                 }
                 else
                 {
                     wallPrefab = StraightWallPrefab;
-                    if (isLeftEdge) rotation = Quaternion.Euler(0, 0, 0);
-                    else if (isBottomEdge) rotation = Quaternion.Euler(0, 90, 0);
-                    else if (isRightEdge) rotation = Quaternion.Euler(0, 180, 0);
-                    else if (isTopEdge) rotation = Quaternion.Euler(0, 270, 0);
+                    if (isTopEdge) rotation = Quaternion.Euler(0, 0, 0);
+                    else if (isRightEdge) rotation = Quaternion.Euler(0, 90, 0);
+                    else if (isBottomEdge) rotation = Quaternion.Euler(0, 180, 0);
+                    else if (isLeftEdge) rotation = Quaternion.Euler(0, 270, 0);
                 }
 
                 Vector3 wallPosition = ConvertGridToWorldPosition(col, row);
@@ -161,7 +161,7 @@ public class CafeLayoutManager : MonoBehaviour
                 continue;
             }
 
-            Vector3 spawnPosition = ConvertGridToWorldPosition(element.rootGridCoord.x, element.rootGridCoord.y);
+            Vector3 spawnPosition = ConvertGridToWorldPosition(element.rootGridCoord.col, element.rootGridCoord.row);
             GameObject furnitureInstance = Instantiate(furniturePrefab, spawnPosition, Quaternion.Euler(0, element.rotation, 0));
             furnitureInstance.name = element.furnitureObject.furnitureName;
             if (CafeRoot != null)

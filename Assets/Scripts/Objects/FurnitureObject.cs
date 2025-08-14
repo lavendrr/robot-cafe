@@ -4,8 +4,8 @@ using UnityEngine;
 [System.Serializable]
 public struct GridCoord
 {
-    public int x;
-    public int y;
+    public int col;
+    public int row;
 }
 
 [CreateAssetMenu(fileName = "FO_New", menuName = "Furniture Object")]
