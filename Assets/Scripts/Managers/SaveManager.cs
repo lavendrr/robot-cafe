@@ -143,5 +143,15 @@ public class SaveManager : MonoBehaviour
     {
         saveData.cafeLayout = cafeLayout;
     }
+
+    // public Dictionary<FurnitureObject, int> GetStorageDict()
+    // {
+    //     // Hardcoded test dictionary
+    //     var storageDict = new Dictionary<FurnitureObject, int>
+    //     {
+    //         { new FurnitureObject { }, 5 },
+    //     };
+    //     return storageDict;
+    // }
 }
 

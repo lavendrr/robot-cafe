@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 825951904b2e34c31bf676b7a7b609d2, type: 3}
   m_Name: FO_WallCorner
   m_EditorClassIdentifier: 
-  furnitureName: WallCorner
+  furnitureName: Wall Corner
   prefab: {fileID: 919132149155446097, guid: e01348288f397e4468dc0d9a0d1638f0, type: 3}
   cost: 0
   gridOffsets: []
+  sprite: {fileID: 0}

@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 using Unity.VisualScripting;
+using TMPro;
 
 // TODO - change the color thing from colliders to cursor hover to avoid overlapping cell issue
 
@@ -20,6 +21,10 @@ public class PlanningManager : MonoBehaviour
     private int rows, cols;
 
     public GameObject[,] gridArray;
+    [SerializeField]
+    private GameObject storageIconPrefab, storageGridContent, draggableItemPrefab;
+    [SerializeField]
+    public List<FurnitureObject> testFurniture;
 
     // Start is called before the first frame update
     void Start()
@@ -50,6 +55,29 @@ public class PlanningManager : MonoBehaviour
                 // Save it to the corresponding spot in the array
                 gridArray[row, col] = clone;
             }
+        }
+
+        PopulateStorageGrid();
+    }
+
+    private void PopulateStorageGrid()
+    {
+        Dictionary<FurnitureObject, int> ownedFurniture = new Dictionary<FurnitureObject, int>();//SaveManager.Instance.GetStorageDict();
+        // For each furniture object in the test list, add a value of 5 to the dictionary
+        foreach (FurnitureObject f in testFurniture)
+        {
+            ownedFurniture.Add(f, 5);
+        }
+        foreach (KeyValuePair<FurnitureObject, int> element in ownedFurniture)
+        {
+            // Spawn a StorageItem prefab under the storage grid Content object
+            GameObject item = Instantiate(storageIconPrefab, storageGridContent.transform);
+            // Initialize the StorageItem with the furniture icon and name
+            item.GetComponent<GridItemSpawn>().furnitureType = element.Key;
+            item.GetComponent<GridItemSpawn>().draggableItemPrefab = draggableItemPrefab;
+            item.GetComponent<Image>().sprite = element.Key.sprite;
+            item.transform.Find("NumberPip").GetComponentInChildren<TextMeshProUGUI>().text = element.Value.ToString();
+            item.transform.Find("ItemName").GetComponent<TextMeshProUGUI>().text = element.Key.furnitureName;
         }
     }
 

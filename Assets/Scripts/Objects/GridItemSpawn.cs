@@ -2,19 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class GridItemSpawn : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField]
-    private FurnitureObject furniture;
+    public FurnitureObject furnitureType;
+    public GameObject draggableItemPrefab;
     private DraggableItem draggableItem;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         Debug.Log("onbegindrag");
-        GameObject item = Instantiate(furniture.prefab, transform.root);
-        draggableItem = item.GetComponent<DraggableItem>();
-        draggableItem.Init(furniture);
+        GameObject spawnedItem = Instantiate(draggableItemPrefab, transform.root);
+        spawnedItem.GetComponent<Image>().sprite = furnitureType.sprite;
+        draggableItem = spawnedItem.GetComponent<DraggableItem>();
+        draggableItem.Init(furnitureType);
         draggableItem.OnBeginDrag(eventData);
     }
 

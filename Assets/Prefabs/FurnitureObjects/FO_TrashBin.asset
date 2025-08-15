@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 825951904b2e34c31bf676b7a7b609d2, type: 3}
   m_Name: FO_TrashBin
   m_EditorClassIdentifier: 
-  furnitureName: TrashBin
+  furnitureName: Trash Bin
   prefab: {fileID: 3813000254152917980, guid: 94173a8513f5647d1bc68b05e8ce5dc1, type: 3}
   cost: 0
   gridOffsets: []
+  sprite: {fileID: 0}

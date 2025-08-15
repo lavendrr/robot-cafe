@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
 [System.Serializable]
@@ -15,4 +16,5 @@ public class FurnitureObject : ScriptableObject
     public GameObject prefab;
     public int cost;
     public List<GridCoord> gridOffsets;
+    public Sprite sprite;
 }

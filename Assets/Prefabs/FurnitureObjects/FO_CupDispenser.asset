@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 825951904b2e34c31bf676b7a7b609d2, type: 3}
   m_Name: FO_CupDispenser
   m_EditorClassIdentifier: 
-  furnitureName: CupDispenser
+  furnitureName: Cup Dispenser
   prefab: {fileID: 5135508306282581749, guid: d34c41fd762a34d72a662cee04320640, type: 3}
   cost: 0
   gridOffsets:
   - col: 1
     row: 0
+  sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
