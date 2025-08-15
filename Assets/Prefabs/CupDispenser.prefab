@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8940262683428206814}
   - component: {fileID: 4774546868963914336}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: SpawnCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +47,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
