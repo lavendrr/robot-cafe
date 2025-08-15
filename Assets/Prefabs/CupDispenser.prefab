@@ -93,12 +93,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1484202784462206534}
+  - component: {fileID: 291624670289519387}
   - component: {fileID: 1730687861432837268}
   - component: {fileID: 5754461012482228513}
   - component: {fileID: 4244614756176196044}
   m_Layer: 0
   m_Name: CupDispenserMesh
-  m_TagString: Untagged
+  m_TagString: Usable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -118,6 +119,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 69410849243831963}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &291624670289519387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2906781838724124673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 450c85a8838284a4ab11629c077d67f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cupPrefab: {fileID: 7634965264845135034, guid: 3f65b2f81b773fa4683e62c15f322193, type: 3}
+  spawnPoint: {fileID: 781935022212057647}
+  spawnCollider: {fileID: 4774546868963914336}
 --- !u!33 &1730687861432837268
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -234,7 +250,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5135508306282581749}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 450c85a8838284a4ab11629c077d67f0, type: 3}
   m_Name: 

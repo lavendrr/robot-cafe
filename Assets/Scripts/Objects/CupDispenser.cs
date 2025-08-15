@@ -49,8 +49,9 @@ public class CupDispenser : MonoBehaviour
         Instantiate(cupPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation, spawnPoint.transform);
     }
 
-    private void OnTriggerExit(Collider other)
+    void OnUse()
     {
         SpawnCup();
     }
+
 }
