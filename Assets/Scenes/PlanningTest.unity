@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4465788, g: 0.49641275, b: 0.5748176, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -419,75 +419,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3286662120504378361, guid: b43d0a1d076a8457e9db19f878e2cccf, type: 3}
   m_PrefabInstance: {fileID: 2047221253}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &73863721
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1185005174}
-    m_Modifications:
-    - target: {fileID: 5077110037716574959, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5077110037716574959, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5077110037716574959, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5077110037716574959, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5077110037716574959, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5077110037716574959, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5077110037716574959, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5077110037716574959, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 888
-      objectReference: {fileID: 0}
-    - target: {fileID: 5077110037716574959, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 706
-      objectReference: {fileID: 0}
-    - target: {fileID: 5077110037716574959, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5077110037716574959, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5077110037716574959, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6356904173548098940, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9192525597895644964, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-      propertyPath: m_Name
-      value: DraggableItem
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
 --- !u!224 &91373225 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3286662120504378361, guid: b43d0a1d076a8457e9db19f878e2cccf, type: 3}
@@ -1449,11 +1380,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!224 &443010098 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5077110037716574959, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-  m_PrefabInstance: {fileID: 73863721}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &446127612
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3061,7 +2987,6 @@ RectTransform:
   m_Children:
   - {fileID: 2028096180}
   - {fileID: 263533710}
-  - {fileID: 443010098}
   - {fileID: 1788459144}
   - {fileID: 706101516}
   m_Father: {fileID: 0}
@@ -4623,13 +4548,10 @@ MonoBehaviour:
   cellPrefab: {fileID: 4663460941076920510, guid: b43d0a1d076a8457e9db19f878e2cccf, type: 3}
   rows: 3
   cols: 3
-  storageIconPrefab: {fileID: 4273029311410716551, guid: fcf9bd0a361074d1a92c13f18a100843, type: 3}
-  storageGridContent: {fileID: 1627978759}
-  draggableItemPrefab: {fileID: 9192525597895644964, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
-  testFurniture:
-  - {fileID: 11400000, guid: 02a799651e88e48b4bb7f0b098f91cb4, type: 2}
-  - {fileID: 11400000, guid: 9103302160dda410da3dffe9031ac688, type: 2}
-  - {fileID: 11400000, guid: 9b5df3a53a88444238df3281afc92b25, type: 2}
+  storageIconPrefab: {fileID: 0}
+  storageGridContent: {fileID: 0}
+  draggableItemPrefab: {fileID: 0}
+  testFurniture: []
 --- !u!4 &1751085563
 Transform:
   m_ObjectHideFlags: 0
@@ -4733,8 +4655,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a16dd813b06d44ce2b6b0b136b0c2889, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  furnitureType: {fileID: 0}
-  draggableItemPrefab: {fileID: 0}
+  furnitureType: {fileID: 11400000, guid: 9103302160dda410da3dffe9031ac688, type: 2}
+  draggableItemPrefab: {fileID: 9192525597895644964, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
 --- !u!1 &1810188899
 GameObject:
   m_ObjectHideFlags: 0

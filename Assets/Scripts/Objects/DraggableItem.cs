@@ -16,7 +16,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void Init(FurnitureObject f)
     {
-        if (furnitureObject != null)
+        if (f != null)
         {
             furnitureObject = f;
         }
