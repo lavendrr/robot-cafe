@@ -16,4 +16,4 @@ MonoBehaviour:
   prefab: {fileID: 919132149155446097, guid: bab518019abb72b4497e5a0cb5bca6ef, type: 3}
   cost: 0
   gridOffsets: []
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 15f98b145dc0b4af6a5bd26b2a487bc7, type: 3}

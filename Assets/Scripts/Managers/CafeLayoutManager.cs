@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
+[System.Serializable] // TODO: Make these properties serializable (no GameObjects, no tuples)
 public class LevelLayout
 {
     public List<CafeElement> elements = new List<CafeElement>();
@@ -48,13 +49,17 @@ public class CafeLayoutManager : MonoBehaviour
             Instance = this;
         }
 
-#if !UNITY_EDITOR
-        if (SaveManager.Instance.GetCafeLayout() != null)
+        if (Application.isPlaying)
         {
+            if (SaveManager.Instance.GetCafeLayout() == null)
+            {
+                Debug.LogError("No cafe layout found in SaveManager.");
+            }
+
             DestroyCafeFurniture();
+            Debug.LogWarning("Populating cafe level with layout dimensions: " + SaveManager.Instance.GetCafeLayout().dimensions);
             PopulateCafeLevel(SaveManager.Instance.GetCafeLayout());
         }
-#endif
     }
 
     private Vector3 ConvertGridToWorldPosition(int col, int row)

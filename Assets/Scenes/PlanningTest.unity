@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465788, g: 0.49641275, b: 0.5748176, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1095,7 +1095,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 240, y: 180}
+  m_CellSize: {x: 150, y: 150}
   m_Spacing: {x: 1, y: 1}
   m_Constraint: 2
   m_ConstraintCount: 1
@@ -4546,12 +4546,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridObj: {fileID: 263533708}
   cellPrefab: {fileID: 4663460941076920510, guid: b43d0a1d076a8457e9db19f878e2cccf, type: 3}
-  rows: 3
-  cols: 3
-  storageIconPrefab: {fileID: 0}
-  storageGridContent: {fileID: 0}
-  draggableItemPrefab: {fileID: 0}
-  testFurniture: []
+  rows: 6
+  cols: 10
+  storageIconPrefab: {fileID: 4273029311410716551, guid: fcf9bd0a361074d1a92c13f18a100843, type: 3}
+  storageGridContent: {fileID: 1627978759}
+  draggableItemPrefab: {fileID: 9192525597895644964, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
+  testFurniture:
+  - {fileID: 11400000, guid: 02a799651e88e48b4bb7f0b098f91cb4, type: 2}
+  - {fileID: 11400000, guid: 9b5df3a53a88444238df3281afc92b25, type: 2}
+  - {fileID: 11400000, guid: a41cc1258ec4a453a8fa064f96e24075, type: 2}
 --- !u!4 &1751085563
 Transform:
   m_ObjectHideFlags: 0
@@ -5506,5 +5509,5 @@ SceneRoots:
   - {fileID: 1641965201}
   - {fileID: 2062466304}
   - {fileID: 1185005174}
-  - {fileID: 419423531}
   - {fileID: 1751085563}
+  - {fileID: 419423531}

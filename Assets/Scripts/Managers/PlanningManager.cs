@@ -17,9 +17,6 @@ public class PlanningManager : MonoBehaviour
     [SerializeField]
     private GameObject gridObj, cellPrefab;
 
-    [SerializeField]
-    private int rows, cols;
-
     public GameObject[,] gridArray;
     [SerializeField]
     private GameObject storageIconPrefab, storageGridContent, draggableItemPrefab;
@@ -39,6 +36,21 @@ public class PlanningManager : MonoBehaviour
             Instance = this;
         }
 
+        CreateBlueprintGrid();
+        PopulateStorageGrid();
+    }
+
+    private void CreateBlueprintGrid()
+    {
+        LevelLayout layout = SaveManager.Instance.GetCafeLayout();
+        if (layout == null)
+        {
+            Debug.LogError("LevelLayout retrieved from SaveManager was null.");
+            return;
+        }
+        int rows = layout.dimensions.rows;
+        int cols = layout.dimensions.cols;
+
         gridObj.GetComponent<GridLayoutGroup>().constraintCount = rows;
 
         gridArray = new GameObject[rows, cols];
@@ -56,8 +68,6 @@ public class PlanningManager : MonoBehaviour
                 gridArray[row, col] = clone;
             }
         }
-
-        PopulateStorageGrid();
     }
 
     private void PopulateStorageGrid()
@@ -81,18 +91,27 @@ public class PlanningManager : MonoBehaviour
         }
     }
 
-    public List<FurnitureObject> GetFinalGrid()
+    public List<CafeElement> GetFinalGrid()
     {
-        List<FurnitureObject> output = new();
+        List<CafeElement> output = new();
 
         foreach (GameObject cell in gridArray)
         {
             if (cell.GetComponent<GridSlot>().GetOccupiedStatus())
             {
-                output.Add(cell.GetComponentInChildren<DraggableItem>().furnitureObject);
+                if (cell.GetComponentInChildren<DraggableItem>() == null)
+                {
+                    continue; // This is just an offset cell, not a root cell
+                }
+                var coords = cell.GetComponent<GridSlot>().GetCoords();
+                output.Add(new CafeElement
+                {
+                    furnitureObject = cell.GetComponentInChildren<DraggableItem>().furnitureObject,
+                    rootGridCoord = new GridCoord { col = coords.Item1, row = coords.Item2 },
+                    rotation = 0
+                });
             }
         }
-
         return output;
     }
 }

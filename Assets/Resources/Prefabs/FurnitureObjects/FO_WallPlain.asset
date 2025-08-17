@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 825951904b2e34c31bf676b7a7b609d2, type: 3}
-  m_Name: FO_WallCorner
+  m_Name: FO_WallPlain
   m_EditorClassIdentifier: 
-  furnitureName: Wall Corner
-  prefab: {fileID: 919132149155446097, guid: e01348288f397e4468dc0d9a0d1638f0, type: 3}
+  furnitureName: Wall Plain
+  prefab: {fileID: 919132149155446097, guid: c2e957f8184740747a13890c83f31ccd, type: 3}
   cost: 0
   gridOffsets: []
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 15f98b145dc0b4af6a5bd26b2a487bc7, type: 3}

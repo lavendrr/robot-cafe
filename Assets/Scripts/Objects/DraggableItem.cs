@@ -16,10 +16,12 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void Init(FurnitureObject f)
     {
-        if (f != null)
+        if (f == null)
         {
-            furnitureObject = f;
+            Debug.LogError("FurnitureObject passed to DraggableItem.Init() was null.");
+            return;
         }
+        furnitureObject = f;
     }
 
     void Start()
