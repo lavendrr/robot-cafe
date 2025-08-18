@@ -66,6 +66,35 @@ public class PlanningManager : MonoBehaviour
                 clone.name = string.Format("Cell {0}, {1}", row, col);
                 // Save it to the corresponding spot in the array
                 gridArray[row, col] = clone;
+                // Color it orange if it's a delivery tile
+                if (layout.deliveryTileCoords.col == col && layout.deliveryTileCoords.row == row)
+                {
+                    clone.GetComponent<Image>().color = Color.yellow;
+                }
+            }
+        }
+
+        LoadFurnitureIntoGrid(layout);
+    }
+
+    public void LoadFurnitureIntoGrid(LevelLayout layout)
+    {
+        foreach (var element in layout.elements)
+        {
+            int row = element.rootGridCoord.col;
+            int col = element.rootGridCoord.row;
+            if (row >= 0 && row < layout.dimensions.rows && col >= 0 && col < layout.dimensions.cols)
+            {
+                var cell = gridArray[row, col];
+                GameObject spawnedItem = Instantiate(draggableItemPrefab, gridObj.transform);
+                spawnedItem.GetComponent<Image>().sprite = element.furnitureObject.sprite;
+                DraggableItem draggableItem = spawnedItem.GetComponent<DraggableItem>();
+                draggableItem.Init(element.furnitureObject);
+                if (!cell.GetComponent<GridSlot>().AttemptItemSlot(spawnedItem))
+                {
+                    Debug.LogError("Failed to slot " + element.furnitureObject.furnitureName + " into cell at (" + row + ", " + col + ")");
+                    Destroy(spawnedItem);
+                }
             }
         }
     }
@@ -107,7 +136,7 @@ public class PlanningManager : MonoBehaviour
                 output.Add(new CafeElement
                 {
                     furnitureObject = cell.GetComponentInChildren<DraggableItem>().furnitureObject,
-                    rootGridCoord = new GridCoord { col = coords.Item1, row = coords.Item2 },
+                    rootGridCoord = new GridCoord { col = coords.Item2, row = coords.Item1 },
                     rotation = 0
                 });
             }

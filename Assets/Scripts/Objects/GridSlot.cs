@@ -15,7 +15,10 @@ public class GridSlot : MonoBehaviour
 
     void Start()
     {
-        image = GetComponent<Image>();
+        if (image == null)
+        {
+            image = GetComponent<Image>();
+        }
     }
 
     public void SetCoords((int, int) coords)
@@ -97,6 +100,13 @@ public class GridSlot : MonoBehaviour
 
     public void SetOccupiedStatus(bool occ)
     {
+        // This method gets called from PlanningManager on Start, which may run before GridSlot's Start,
+        // so we need to make sure image is assigned
+        if (image == null)
+        {
+            image = GetComponent<Image>();
+        }
+
         if (occ)
         {
             image.color = Color.blue;
