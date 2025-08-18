@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 9188390}
   - component: {fileID: 9188391}
   m_Layer: 5
-  m_Name: Grid (1)
+  m_Name: BlueprintGrid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -324,7 +324,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.392}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -747,7 +747,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.392}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1001,7 +1001,7 @@ GameObject:
   - component: {fileID: 1055019477}
   - component: {fileID: 1055019476}
   m_Layer: 5
-  m_Name: StorageTitle
+  m_Name: CatalogTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1046,7 +1046,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Storage
+  m_text: Catalog
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: eeb6a9fab6a9e064c826e264b6c83659, type: 2}
   m_sharedMaterial: {fileID: 1967294445330144270, guid: eeb6a9fab6a9e064c826e264b6c83659, type: 2}
@@ -1136,7 +1136,7 @@ GameObject:
   - component: {fileID: 1079154248}
   - component: {fileID: 1079154247}
   m_Layer: 5
-  m_Name: StorageScrollView
+  m_Name: CatalogScrollView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1243,7 +1243,7 @@ GameObject:
   - component: {fileID: 1090127289}
   - component: {fileID: 1090127288}
   m_Layer: 5
-  m_Name: StoragePanel
+  m_Name: CatalogPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1735,7 +1735,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1567274877}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99998176
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1951,10 +1951,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridObj: {fileID: 9188389}
   cellPrefab: {fileID: 4663460941076920510, guid: b43d0a1d076a8457e9db19f878e2cccf, type: 3}
-  rows: 6
-  cols: 10
-  storageIconPrefab: {fileID: 4273029311410716551, guid: fcf9bd0a361074d1a92c13f18a100843, type: 3}
-  storageGridContent: {fileID: 210652445}
+  catalogIconPrefab: {fileID: 4273029311410716551, guid: fcf9bd0a361074d1a92c13f18a100843, type: 3}
+  catalogGridContent: {fileID: 210652445}
   draggableItemPrefab: {fileID: 9192525597895644964, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
   testFurniture:
   - {fileID: 11400000, guid: 02a799651e88e48b4bb7f0b098f91cb4, type: 2}

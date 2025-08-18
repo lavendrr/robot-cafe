@@ -19,7 +19,7 @@ public class PlanningManager : MonoBehaviour
 
     public GameObject[,] gridArray;
     [SerializeField]
-    private GameObject storageIconPrefab, storageGridContent, draggableItemPrefab;
+    private GameObject catalogIconPrefab, catalogGridContent, draggableItemPrefab;
     [SerializeField]
     public List<FurnitureObject> testFurniture;
 
@@ -37,7 +37,7 @@ public class PlanningManager : MonoBehaviour
         }
 
         CreateBlueprintGrid();
-        PopulateStorageGrid();
+        PopulateCatalogPanel();
     }
 
     private void CreateBlueprintGrid()
@@ -87,7 +87,7 @@ public class PlanningManager : MonoBehaviour
             {
                 var cell = gridArray[row, col];
                 GameObject spawnedItem = Instantiate(draggableItemPrefab, gridObj.transform);
-                spawnedItem.GetComponent<Image>().sprite = element.furnitureObject.sprite;
+                spawnedItem.GetComponent<Image>().sprite = element.furnitureObject.catalogSprite;
                 DraggableItem draggableItem = spawnedItem.GetComponent<DraggableItem>();
                 draggableItem.Init(element.furnitureObject);
                 if (!cell.GetComponent<GridSlot>().AttemptItemSlot(spawnedItem))
@@ -99,22 +99,22 @@ public class PlanningManager : MonoBehaviour
         }
     }
 
-    private void PopulateStorageGrid()
+    private void PopulateCatalogPanel()
     {
-        Dictionary<FurnitureObject, int> ownedFurniture = new Dictionary<FurnitureObject, int>();//SaveManager.Instance.GetStorageDict();
+        Dictionary<FurnitureObject, int> catalogFurniture = new Dictionary<FurnitureObject, int>();//SaveManager.Instance.GetCatalogList();
         // For each furniture object in the test list, add a value of 5 to the dictionary
         foreach (FurnitureObject f in testFurniture)
         {
-            ownedFurniture.Add(f, 5);
+            catalogFurniture.Add(f, f.cost);
         }
-        foreach (KeyValuePair<FurnitureObject, int> element in ownedFurniture)
+        foreach (KeyValuePair<FurnitureObject, int> element in catalogFurniture)
         {
-            // Spawn a StorageItem prefab under the storage grid Content object
-            GameObject item = Instantiate(storageIconPrefab, storageGridContent.transform);
-            // Initialize the StorageItem with the furniture icon and name
+            // Spawn a CatalogItem prefab under the catalog grid Content object
+            GameObject item = Instantiate(catalogIconPrefab, catalogGridContent.transform);
+            // Initialize the CatalogItem with the furniture icon and name
             item.GetComponent<GridItemSpawn>().furnitureType = element.Key;
             item.GetComponent<GridItemSpawn>().draggableItemPrefab = draggableItemPrefab;
-            item.GetComponent<Image>().sprite = element.Key.sprite;
+            item.GetComponent<Image>().sprite = element.Key.catalogSprite;
             item.transform.Find("NumberPip").GetComponentInChildren<TextMeshProUGUI>().text = element.Value.ToString();
             item.transform.Find("ItemName").GetComponent<TextMeshProUGUI>().text = element.Key.furnitureName;
         }

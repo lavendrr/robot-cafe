@@ -16,5 +16,5 @@ public class FurnitureObject : ScriptableObject
     public GameObject prefab;
     public int cost;
     public List<GridCoord> gridOffsets;
-    public Sprite sprite;
+    public Sprite catalogSprite;
 }
