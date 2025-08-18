@@ -17,4 +17,5 @@ public class FurnitureObject : ScriptableObject
     public int cost;
     public List<GridCoord> gridOffsets;
     public Sprite catalogSprite;
+    public string tooltipText;
 }

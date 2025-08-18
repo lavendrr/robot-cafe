@@ -15,11 +15,9 @@ public class PlanningManager : MonoBehaviour
     public static PlanningManager Instance { get; private set; }
 
     [SerializeField]
-    private GameObject gridObj, cellPrefab;
+    private GameObject gridObj, catalogGridContent, tooltipPanel, cellPrefab, catalogIconPrefab, draggableItemPrefab;
 
     public GameObject[,] gridArray;
-    [SerializeField]
-    private GameObject catalogIconPrefab, catalogGridContent, draggableItemPrefab;
     [SerializeField]
     public List<FurnitureObject> testFurniture;
 
@@ -117,9 +115,27 @@ public class PlanningManager : MonoBehaviour
             item.GetComponent<GridItemSpawn>().furnitureType = element.Key;
             item.GetComponent<GridItemSpawn>().draggableItemPrefab = draggableItemPrefab;
             item.GetComponent<Image>().sprite = element.Key.catalogSprite;
-            item.transform.Find("NumberPip").GetComponentInChildren<TextMeshProUGUI>().text = element.Value.ToString();
+            item.transform.Find("NumberPip").GetComponentInChildren<TextMeshProUGUI>().text = element.Value.ToString() + "c";
             item.transform.Find("ItemName").GetComponent<TextMeshProUGUI>().text = element.Key.furnitureName;
         }
+    }
+
+    public void ShowTooltip(FurnitureObject furnitureObject)
+    {
+        tooltipPanel.SetActive(true);
+        tooltipPanel.transform.Find("ToolTipTitle").GetComponent<TextMeshProUGUI>().text = furnitureObject.furnitureName;
+        tooltipPanel.transform.Find("ToolTipText").GetComponent<TextMeshProUGUI>().text = ParseText(furnitureObject.tooltipText);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(tooltipPanel.GetComponent<RectTransform>());
+    }
+
+    public void HideTooltip()
+    {
+        tooltipPanel.SetActive(false);
+    }
+
+    public string ParseText(string input)
+    {
+        return input.Replace("\\n", "\n");
     }
 
     public List<CafeElement> GetFinalGrid()
