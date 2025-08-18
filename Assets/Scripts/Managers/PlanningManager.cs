@@ -23,6 +23,8 @@ public class PlanningManager : MonoBehaviour
     [SerializeField]
     public List<FurnitureObject> testFurniture;
 
+    public DraggableItem currentItem = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -142,5 +144,26 @@ public class PlanningManager : MonoBehaviour
             }
         }
         return output;
+    }
+
+    public void SetCurrentItem(DraggableItem item)
+    {
+        currentItem = item;
+    }
+
+    void OnRotateRight()
+    {
+        if (currentItem != null)
+        {
+            currentItem.RotateOffsetsClockwise();
+        }
+    }
+
+    void OnRotateLeft()
+    {
+        if (currentItem != null)
+        {
+            currentItem.RotateOffsetsCounterclockwise();
+        }
     }
 }

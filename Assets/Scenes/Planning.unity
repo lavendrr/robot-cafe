@@ -1735,7 +1735,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1567274877}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99998176
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1930,6 +1930,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2051206638}
   - component: {fileID: 2051206637}
+  - component: {fileID: 2051206639}
   m_Layer: 0
   m_Name: PlanningManager
   m_TagString: Untagged
@@ -1951,8 +1952,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridObj: {fileID: 9188389}
   cellPrefab: {fileID: 4663460941076920510, guid: b43d0a1d076a8457e9db19f878e2cccf, type: 3}
-  rows: 6
-  cols: 10
   storageIconPrefab: {fileID: 4273029311410716551, guid: fcf9bd0a361074d1a92c13f18a100843, type: 3}
   storageGridContent: {fileID: 210652445}
   draggableItemPrefab: {fileID: 9192525597895644964, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
@@ -1960,6 +1959,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 02a799651e88e48b4bb7f0b098f91cb4, type: 2}
   - {fileID: 11400000, guid: 9b5df3a53a88444238df3281afc92b25, type: 2}
   - {fileID: 11400000, guid: a41cc1258ec4a453a8fa064f96e24075, type: 2}
+  currentItem: {fileID: 0}
 --- !u!4 &2051206638
 Transform:
   m_ObjectHideFlags: 0
@@ -1975,6 +1975,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2051206639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051206636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 4419d82f33d36e848b3ed5af4c8da37e, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: PlayerPlanning
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

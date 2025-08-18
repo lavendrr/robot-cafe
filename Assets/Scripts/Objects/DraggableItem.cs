@@ -13,6 +13,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Transform previousParent;
     private GameObject previousHoverCell = null;
     public FurnitureObject furnitureObject { get; private set; }
+    private List<GridCoord> itemCoords;
 
     public void Init(FurnitureObject f)
     {
@@ -22,6 +23,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             return;
         }
         furnitureObject = f;
+        itemCoords = furnitureObject.gridOffsets;
     }
 
     void Start()
@@ -34,29 +36,33 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void RotateOffsetsClockwise()
     {
         // Rotates 90 degrees clockwise
-        for (int i = 0; i < furnitureObject.gridOffsets.Count; i++)
+        for (int i = 0; i < itemCoords.Count; i++)
         {
-            GridCoord temp = furnitureObject.gridOffsets[i];
-            temp.col *= -1;
-            furnitureObject.gridOffsets[i] = temp;
+            GridCoord temp = itemCoords[i];
+            temp.col = itemCoords[i].row * -1;
+            temp.row = itemCoords[i].col;
+            itemCoords[i] = temp;
         }
     }
 
     [ContextMenu("Rotate offsets counterclockwise")]
     public void RotateOffsetsCounterclockwise()
     {
-        // Rotates 90 degrees clockwise
-        for (int i = 0; i < furnitureObject.gridOffsets.Count; i++)
+        // Rotates 90 degrees counterclockwise
+        for (int i = 0; i < itemCoords.Count; i++)
         {
-            GridCoord temp = furnitureObject.gridOffsets[i];
-            temp.row *= -1;
-            furnitureObject.gridOffsets[i] = temp;
+            GridCoord temp = itemCoords[i];
+            temp.col = itemCoords[i].row;
+            temp.row = itemCoords[i].col * -1;
+            itemCoords[i] = temp;
         }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         Debug.Log("Start drag");
+        PlanningManager.Instance.SetCurrentItem(this);
+
         // If the item was slotted into a cell, tell that cell to call its removal method and update the previous parent
         if (transform.parent != transform.root)
         {
@@ -110,6 +116,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnEndDrag(PointerEventData eventData)
     {
         Debug.Log("End drag");
+        PlanningManager.Instance.SetCurrentItem(null);
 
         // Re-enable raycasting so it can be detected by the cursor
         image.raycastTarget = true;
@@ -185,6 +192,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public List<GridCoord> GetOffsets()
     {
-        return furnitureObject.gridOffsets;
+        return itemCoords;
     }
 }
