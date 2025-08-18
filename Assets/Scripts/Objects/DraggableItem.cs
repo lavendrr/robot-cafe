@@ -123,7 +123,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             {
                 cell = element;
             }
-            else if (element.name.Contains("ItemSpawner"))
+            else if (element.name.Contains("StoragePanel") || element.name.Contains("StorageIcon"))
             {
                 spawner = element;
             }
