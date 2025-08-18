@@ -130,7 +130,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             {
                 cell = element;
             }
-            else if (element.name.Contains("ItemSpawner"))
+            else if (element.name.Contains("CatalogPanel") || element.name.Contains("CatalogIcon"))
             {
                 spawner = element;
             }
