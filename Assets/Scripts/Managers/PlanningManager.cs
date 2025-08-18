@@ -81,8 +81,8 @@ public class PlanningManager : MonoBehaviour
     {
         foreach (var element in layout.elements)
         {
-            int row = element.rootGridCoord.col;
-            int col = element.rootGridCoord.row;
+            int row = element.rootGridCoord.row;
+            int col = element.rootGridCoord.col;
             if (row >= 0 && row < layout.dimensions.rows && col >= 0 && col < layout.dimensions.cols)
             {
                 var cell = gridArray[row, col];
