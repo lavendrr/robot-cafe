@@ -23,7 +23,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             return;
         }
         furnitureObject = f;
-        itemCoords = furnitureObject.gridOffsets;
+        itemCoords = new List<GridCoord>(furnitureObject.gridOffsets);
     }
 
     void Start()
