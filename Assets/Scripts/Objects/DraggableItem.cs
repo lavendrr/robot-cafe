@@ -15,6 +15,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private GameObject previousHoverCell, currentHoverCell = null;
     public FurnitureObject furnitureObject { get; private set; }
     private List<GridCoord> itemCoords;
+    public int rotation = 0;
 
     public void Init(FurnitureObject f)
     {
@@ -29,13 +30,13 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     void Start()
     {
-        // furnitureObject.gridOffsets = new List<(int, int)> { (0, 1), (1, 0) };
         previousParent = transform.root;
     }
 
-    [ContextMenu("Rotate offsets clockwise")]
-    public void RotateOffsetsClockwise()
+    public void RotateClockwise()
     {
+        rotation = rotation + 90 % 360;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, transform.eulerAngles.z - 90 % 360)); // Screen coords are flipped
         GridSlot currentSlot = null;
         if (previousHoverCell != null)
         {
@@ -62,9 +63,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
     }
 
-    [ContextMenu("Rotate offsets counterclockwise")]
-    public void RotateOffsetsCounterclockwise()
+    public void RotateCounterclockwise()
     {
+        rotation = rotation - 90 % 360;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, transform.eulerAngles.z + 90 % 360)); // Screen coords are flipped
         GridSlot currentSlot = null;
         if (previousHoverCell != null)
         {

@@ -155,7 +155,7 @@ public class PlanningManager : MonoBehaviour
                 {
                     furnitureObject = cell.GetComponentInChildren<DraggableItem>().furnitureObject,
                     rootGridCoord = new GridCoord { col = coords.Item2, row = coords.Item1 },
-                    rotation = 0
+                    rotation = cell.GetComponentInChildren<DraggableItem>().rotation
                 });
             }
         }
@@ -171,7 +171,7 @@ public class PlanningManager : MonoBehaviour
     {
         if (currentItem != null)
         {
-            currentItem.RotateOffsetsClockwise();
+            currentItem.RotateClockwise();
         }
     }
 
@@ -179,7 +179,7 @@ public class PlanningManager : MonoBehaviour
     {
         if (currentItem != null)
         {
-            currentItem.RotateOffsetsCounterclockwise();
+            currentItem.RotateCounterclockwise();
         }
     }
 }
