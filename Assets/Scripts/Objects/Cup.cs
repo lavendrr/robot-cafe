@@ -32,16 +32,11 @@ public class Cup : MonoBehaviour
                 drinkMeshRenderer.material = fuelMaterial;
                 StartCoroutine(ScaleUpCoffeeMesh());
                 fuelType = fillType;
-                Debug.Log("Filled cup with " + fuelType.ToString());
             }
             else
             {
-                Debug.Log("Drink mesh renderer not found.");
+                Debug.LogError("Drink mesh renderer not found.");
             }
-        }
-        else
-        {
-            Debug.Log("Cup already full.");
         }
     }
 
@@ -72,7 +67,6 @@ public class Cup : MonoBehaviour
 
         drinkMeshTransform.localScale = targetScale;
         // Make the cup interactable again
-        Debug.Log("Back to interactable");
         gameObject.tag = "Grabbable";
     }
 
@@ -96,8 +90,6 @@ public class Cup : MonoBehaviour
     {
         if (other.gameObject.name == "ItemKillbox")
         {
-            //OrderManager.Instance.SpawnCup();
-            Debug.Log("Cup fell out of bounds and was replaced");
             Destroy(gameObject);
         }
     }

@@ -96,7 +96,6 @@ public class SaveManager : MonoBehaviour
                 cafeLayout = CafeLayoutPresets.GetPreset("Starter")
             };
             Save();
-            Debug.Log("Created initial save data.");
         }
         else
         {
@@ -123,14 +122,9 @@ public class SaveManager : MonoBehaviour
         StreamWriter writer = new(stream);
 
         // Write the data and close the objects
-        Debug.LogWarning("SaveData: " + JsonUtility.ToJson(serializable).ToString());
         writer.WriteLine(JsonUtility.ToJson(serializable));
         writer.Close();
         stream.Close();
-
-        // Reimport the new json file
-        // AssetDatabase.ImportAsset(path);
-        Debug.Log("Successfully saved!");
     }
 
     public void Load()
@@ -147,7 +141,6 @@ public class SaveManager : MonoBehaviour
             playerMoney = serialized.playerMoney,
             cafeLayout = SerializableToLevelLayout(serialized.cafeLayout)
         };
-        Debug.Log("Loaded save data: " + saveData.cafeLayout.dimensions.ToString());
     }
 
 #region Serialization

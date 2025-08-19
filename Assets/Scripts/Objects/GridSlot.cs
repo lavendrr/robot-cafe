@@ -171,7 +171,6 @@ public class GridSlot : MonoBehaviour
         }
         catch (IndexOutOfRangeException)
         {
-            Debug.Log("Out of range for hovering");
             foreach (GameObject cell in changedCells)
             {
                 cell.GetComponent<Image>().color = Color.red;
@@ -201,7 +200,7 @@ public class GridSlot : MonoBehaviour
         }
         catch (IndexOutOfRangeException)
         {
-            Debug.Log("Out of range for hovering");
+            return;
         }
     }
 }

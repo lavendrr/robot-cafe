@@ -13,7 +13,6 @@ public class GridItemSpawn : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("onbegindrag");
         GameObject spawnedItem = Instantiate(draggableItemPrefab, transform.root);
         spawnedItem.GetComponent<Image>().sprite = furnitureType.catalogSprite;
         draggableItem = spawnedItem.GetComponent<DraggableItem>();

@@ -42,7 +42,6 @@ public class CupDispenser : MonoBehaviour
 
         if (blocked)
         {
-            Debug.LogWarning("Cup dispenser blocked by: " + blockingCollider.name);
             return;
         }
 

@@ -176,11 +176,9 @@ public class PlayerInteractions : MonoBehaviour
         var (type, obj) = InteractionCheck();
         if (obj != null)
         {
-            Debug.LogWarning(obj.name);
             // Requires a receiver on the target GameObject
             obj.SendMessage("OnRotateRight");
         }
-        Debug.LogWarning("draggable item did the thing");
     }
 
     public void OnMove(InputValue value)

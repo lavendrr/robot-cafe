@@ -93,7 +93,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("Start drag");
         PlanningManager.Instance.SetCurrentItem(this);
 
         // If the item was slotted into a cell, tell that cell to call its removal method and update the previous parent
@@ -115,7 +114,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         GameObject hoverCell = null;
         foreach (var element in eventData.hovered)
         {
-            Debug.Log(element.name);
             if (element.name.Contains("Cell"))
             {
                 hoverCell = element;
@@ -149,7 +147,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("End drag");
         PlanningManager.Instance.SetCurrentItem(null);
 
         // Re-enable raycasting so it can be detected by the cursor
@@ -159,7 +156,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         GameObject cell = null, spawner = null;
         foreach (var element in eventData.hovered)
         {
-            Debug.Log(element.name);
             if (element.name.Contains("Cell"))
             {
                 cell = element;

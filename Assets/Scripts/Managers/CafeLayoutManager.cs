@@ -57,7 +57,6 @@ public class CafeLayoutManager : MonoBehaviour
             }
 
             DestroyCafeFurniture();
-            Debug.LogWarning("Populating cafe level with layout dimensions: " + SaveManager.Instance.GetCafeLayout().dimensions);
             PopulateCafeLevel(SaveManager.Instance.GetCafeLayout());
         }
     }
@@ -79,7 +78,7 @@ public class CafeLayoutManager : MonoBehaviour
         // Instantiate floors to cover the entire area
         if (layout.floorPrefab == null)
         {
-            Debug.LogWarning("FloorPrefab not assigned in CafeLayoutManager.");
+            Debug.LogError("FloorPrefab not assigned in CafeLayoutManager.");
             return;
         }
 
@@ -102,7 +101,7 @@ public class CafeLayoutManager : MonoBehaviour
     {
         if (layout.straightWallPrefab == null || layout.cornerWallPrefab == null || layout.deliveryTilePrefab == null)
         {
-            Debug.LogWarning("Wall prefabs not assigned in CafeLayoutManager.");
+            Debug.LogError("Wall prefabs not assigned in CafeLayoutManager.");
             return;
         }
 
@@ -129,7 +128,7 @@ public class CafeLayoutManager : MonoBehaviour
             if ((deliveryAdjacentTile.Value.col == 0 || deliveryAdjacentTile.Value.col == width - 1) &&
                 (deliveryAdjacentTile.Value.row == 0 || deliveryAdjacentTile.Value.row == height - 1))
             {
-                Debug.LogWarning("Invalid Delivery Tile. Adjacent tile is a corner.");
+                Debug.LogError("Invalid Delivery Tile. Adjacent tile is a corner.");
             }
         }
 
@@ -155,7 +154,7 @@ public class CafeLayoutManager : MonoBehaviour
                 {
                     if (isDeliveryTile)
                     {
-                        Debug.LogWarning("Invalid Delivery Tile. Tile is not an edge cell.");
+                        Debug.LogError("Invalid Delivery Tile. Tile is not an edge cell.");
                         continue;
                     }
                     continue;
@@ -169,7 +168,7 @@ public class CafeLayoutManager : MonoBehaviour
                 {
                     if (isDeliveryTile)
                     {
-                        Debug.LogWarning("Invalid Delivery Tile. Tile is a corner cell.");
+                        Debug.LogError("Invalid Delivery Tile. Tile is a corner cell.");
                     }
                     wallPrefab = layout.cornerWallPrefab;
                     if (isLeftEdge && isTopEdge) rotation = Quaternion.Euler(0, 0, 0);
@@ -222,7 +221,7 @@ public class CafeLayoutManager : MonoBehaviour
             GameObject furniturePrefab = element.furnitureObject.prefab;
             if (furniturePrefab == null)
             {
-                Debug.LogWarning($"Furniture prefab for {element.furnitureObject.furnitureName} not found.");
+                Debug.LogError($"Furniture prefab for {element.furnitureObject.furnitureName} not found.");
                 continue;
             }
 
