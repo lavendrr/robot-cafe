@@ -6,12 +6,13 @@ using UnityEngine.EventSystems;
 using System;
 using Unity.VisualScripting;
 using UnityEditor.Rendering;
+using JetBrains.Annotations;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Image image;
     public Transform previousParent;
-    private GameObject previousHoverCell = null;
+    private GameObject previousHoverCell, currentHoverCell = null;
     public FurnitureObject furnitureObject { get; private set; }
     private List<GridCoord> itemCoords;
 
@@ -35,26 +36,58 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [ContextMenu("Rotate offsets clockwise")]
     public void RotateOffsetsClockwise()
     {
+        GridSlot currentSlot = null;
+        if (previousHoverCell != null)
+        {
+            currentSlot = previousHoverCell.GetComponent<GridSlot>();
+            currentSlot.DisableHoverColor(this);
+        }
+
         // Rotates 90 degrees clockwise
         for (int i = 0; i < itemCoords.Count; i++)
         {
+            if (currentSlot != null)
+            {
+                currentSlot.DisableHoverColor(this);
+            }
             GridCoord temp = itemCoords[i];
             temp.col = itemCoords[i].row * -1;
             temp.row = itemCoords[i].col;
             itemCoords[i] = temp;
+        }
+
+        if (currentSlot != null)
+        {
+            currentSlot.HoverColor(this);
         }
     }
 
     [ContextMenu("Rotate offsets counterclockwise")]
     public void RotateOffsetsCounterclockwise()
     {
-        // Rotates 90 degrees counterclockwise
+        GridSlot currentSlot = null;
+        if (previousHoverCell != null)
+        {
+            currentSlot = previousHoverCell.GetComponent<GridSlot>();
+            currentSlot.DisableHoverColor(this);
+        }
+
+        // Rotates 90 degrees counterlockwise
         for (int i = 0; i < itemCoords.Count; i++)
         {
+            if (currentSlot != null)
+            {
+                currentSlot.DisableHoverColor(this);
+            }
             GridCoord temp = itemCoords[i];
             temp.col = itemCoords[i].row;
             temp.row = itemCoords[i].col * -1;
             itemCoords[i] = temp;
+        }
+
+        if (currentSlot != null)
+        {
+            currentSlot.HoverColor(this);
         }
     }
 
@@ -102,6 +135,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 previousHoverCell = hoverCell;
                 previousHoverCell.GetComponent<GridSlot>().HoverColor(this);
             }
+            currentHoverCell = hoverCell;
         }
         else
         {
