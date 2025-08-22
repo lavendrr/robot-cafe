@@ -15,7 +15,10 @@ public class GridSlot : MonoBehaviour
 
     void Start()
     {
-        image = GetComponent<Image>();
+        if (image == null)
+        {
+            image = GetComponent<Image>();
+        }
     }
 
     public void SetCoords((int, int) coords)
@@ -51,7 +54,7 @@ public class GridSlot : MonoBehaviour
                     // Checks the occupied status of the slot at each offset of the item, stores it in the list, and fails if any are occupied
                     foreach (GridCoord offset in offsets)
                     {
-                        GridSlot offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.y, coords.Item2 + offset.x].GetComponent<GridSlot>();
+                        GridSlot offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.row, coords.Item2 + offset.col].GetComponent<GridSlot>();
                         if (offsetCell.GetOccupiedStatus())
                         {
                             return false;
@@ -97,6 +100,13 @@ public class GridSlot : MonoBehaviour
 
     public void SetOccupiedStatus(bool occ)
     {
+        // This method gets called from PlanningManager on Start, which may run before GridSlot's Start,
+        // so we need to make sure image is assigned
+        if (image == null)
+        {
+            image = GetComponent<Image>();
+        }
+
         if (occ)
         {
             image.color = Color.blue;
@@ -120,7 +130,7 @@ public class GridSlot : MonoBehaviour
         {
             foreach (GridCoord offset in offsets)
             {
-                PlanningManager.Instance.gridArray[coords.Item1 + offset.y, coords.Item2 + offset.x].GetComponent<GridSlot>().SetOccupiedStatus(false);
+                PlanningManager.Instance.gridArray[coords.Item1 + offset.row, coords.Item2 + offset.col].GetComponent<GridSlot>().SetOccupiedStatus(false);
             }
         }
     }
@@ -146,7 +156,7 @@ public class GridSlot : MonoBehaviour
             {
                 foreach (GridCoord offset in offsets)
                 {
-                    GameObject offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.y, coords.Item2 + offset.x];
+                    GameObject offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.row, coords.Item2 + offset.col];
                     if (offsetCell.GetComponent<GridSlot>().GetOccupiedStatus())
                     {
                         offsetCell.GetComponent<Image>().color = Color.red;
@@ -161,7 +171,6 @@ public class GridSlot : MonoBehaviour
         }
         catch (IndexOutOfRangeException)
         {
-            Debug.Log("Out of range for hovering");
             foreach (GameObject cell in changedCells)
             {
                 cell.GetComponent<Image>().color = Color.red;
@@ -183,7 +192,7 @@ public class GridSlot : MonoBehaviour
             {
                 foreach (GridCoord offset in offsets)
                 {
-                    GameObject cell = PlanningManager.Instance.gridArray[coords.Item1 + offset.y, coords.Item2 + offset.x];
+                    GameObject cell = PlanningManager.Instance.gridArray[coords.Item1 + offset.row, coords.Item2 + offset.col];
                     // Reset this cell's color back to blue if occupied, or back to white if empty
                     cell.GetComponent<Image>().color = cell.GetComponent<GridSlot>().GetOccupiedStatus() ? Color.blue : Color.white;
                 }
@@ -191,7 +200,7 @@ public class GridSlot : MonoBehaviour
         }
         catch (IndexOutOfRangeException)
         {
-            Debug.Log("Out of range for hovering");
+            return;
         }
     }
 }

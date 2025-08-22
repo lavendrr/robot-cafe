@@ -6,57 +6,97 @@ using UnityEngine.EventSystems;
 using System;
 using Unity.VisualScripting;
 using UnityEditor.Rendering;
+using JetBrains.Annotations;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Image image;
     public Transform previousParent;
-    private List<GridCoord> offsets;
-    private GameObject previousHoverCell = null;
+    private GameObject previousHoverCell, currentHoverCell = null;
+    public FurnitureObject furnitureObject { get; private set; }
+    private List<GridCoord> itemCoords;
+    public int rotation = 0;
 
-    public void Init(List<GridCoord> offsets = null)
+    public void Init(FurnitureObject f)
     {
-        if (offsets != null)
+        if (f == null)
         {
-            this.offsets = offsets;
+            Debug.LogError("FurnitureObject passed to DraggableItem.Init() was null.");
+            return;
         }
+        furnitureObject = f;
+        itemCoords = new List<GridCoord>(furnitureObject.gridOffsets);
     }
 
     void Start()
     {
-        // offsets = new List<(int, int)> { (0, 1), (1, 0) };
         previousParent = transform.root;
     }
 
-    [ContextMenu("Rotate offsets clockwise")]
-    public void RotateOffsetsClockwise()
+    public void RotateClockwise()
     {
-        // Rotates 90 degrees clockwise
-        for (int i = 0; i < offsets.Count; i++)
+        rotation = rotation + 90 % 360;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, transform.eulerAngles.z - 90 % 360)); // Screen coords are flipped
+        GridSlot currentSlot = null;
+        if (previousHoverCell != null)
         {
-            // offsets[i] = (offsets[i].Item2, offsets[i].Item1 * -1);
-            GridCoord temp = offsets[i];
-            temp.x *= -1;
-            offsets[i] = temp;
+            currentSlot = previousHoverCell.GetComponent<GridSlot>();
+            currentSlot.DisableHoverColor(this);
+        }
+
+        // Rotates 90 degrees clockwise
+        for (int i = 0; i < itemCoords.Count; i++)
+        {
+            if (currentSlot != null)
+            {
+                currentSlot.DisableHoverColor(this);
+            }
+            GridCoord temp = itemCoords[i];
+            temp.col = itemCoords[i].row * -1;
+            temp.row = itemCoords[i].col;
+            itemCoords[i] = temp;
+        }
+
+        if (currentSlot != null)
+        {
+            currentSlot.HoverColor(this);
         }
     }
 
-    [ContextMenu("Rotate offsets counterclockwise")]
-    public void RotateOffsetsCounterclockwise()
+    public void RotateCounterclockwise()
     {
-        // Rotates 90 degrees clockwise
-        for (int i = 0; i < offsets.Count; i++)
+        rotation = rotation - 90 % 360;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, transform.eulerAngles.z + 90 % 360)); // Screen coords are flipped
+        GridSlot currentSlot = null;
+        if (previousHoverCell != null)
         {
-            // offsets[i] = (offsets[i].Item2 * -1, offsets[i].Item1);
-            GridCoord temp = offsets[i];
-            temp.y *= -1;
-            offsets[i] = temp;
+            currentSlot = previousHoverCell.GetComponent<GridSlot>();
+            currentSlot.DisableHoverColor(this);
+        }
+
+        // Rotates 90 degrees counterlockwise
+        for (int i = 0; i < itemCoords.Count; i++)
+        {
+            if (currentSlot != null)
+            {
+                currentSlot.DisableHoverColor(this);
+            }
+            GridCoord temp = itemCoords[i];
+            temp.col = itemCoords[i].row;
+            temp.row = itemCoords[i].col * -1;
+            itemCoords[i] = temp;
+        }
+
+        if (currentSlot != null)
+        {
+            currentSlot.HoverColor(this);
         }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("Start drag");
+        PlanningManager.Instance.SetCurrentItem(this);
+
         // If the item was slotted into a cell, tell that cell to call its removal method and update the previous parent
         if (transform.parent != transform.root)
         {
@@ -76,7 +116,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         GameObject hoverCell = null;
         foreach (var element in eventData.hovered)
         {
-            Debug.Log(element.name);
             if (element.name.Contains("Cell"))
             {
                 hoverCell = element;
@@ -96,6 +135,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 previousHoverCell = hoverCell;
                 previousHoverCell.GetComponent<GridSlot>().HoverColor(this);
             }
+            currentHoverCell = hoverCell;
         }
         else
         {
@@ -109,7 +149,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("End drag");
+        PlanningManager.Instance.SetCurrentItem(null);
 
         // Re-enable raycasting so it can be detected by the cursor
         image.raycastTarget = true;
@@ -118,12 +158,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         GameObject cell = null, spawner = null;
         foreach (var element in eventData.hovered)
         {
-            Debug.Log(element.name);
             if (element.name.Contains("Cell"))
             {
                 cell = element;
             }
-            else if (element.name.Contains("ItemSpawner"))
+            else if (element.name.Contains("CatalogPanel") || element.name.Contains("CatalogIcon"))
             {
                 spawner = element;
             }
@@ -185,6 +224,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public List<GridCoord> GetOffsets()
     {
-        return offsets;
+        return itemCoords;
     }
 }

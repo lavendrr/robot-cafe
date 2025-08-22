@@ -298,15 +298,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 87ca2dd15b416054583476b10e3240d5, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 87ca2dd15b416054583476b10e3240d5, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 87ca2dd15b416054583476b10e3240d5, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 87ca2dd15b416054583476b10e3240d5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -969,6 +969,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 523689419}
   m_CullTransparentMesh: 1
+--- !u!1 &638754237
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 638754238}
+  m_Layer: 0
+  m_Name: CafeRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &638754238
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 638754237}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &734483098
 GameObject:
   m_ObjectHideFlags: 0
@@ -1061,6 +1092,75 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.8393917, y: 2.2996998, z: 2.062311}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &741617576
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 741617578}
+  - component: {fileID: 741617577}
+  m_Layer: 0
+  m_Name: CafeLayoutManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &741617577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741617576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e836403eda264f94bd519500254efa5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CafeRoot: {fileID: 638754237}
+  GridCellSize: 1
+  TestInEditor: 0
+  dimensions: {x: 6, y: 10}
+  deliveryTileCoords: {x: 4, y: 5}
+  floorPrefab: {fileID: 919132149155446097, guid: 0f24dc610091e4075b5827916221be03, type: 3}
+  straightWallPrefab: {fileID: 919132149155446097, guid: c2e957f8184740747a13890c83f31ccd, type: 3}
+  cornerWallPrefab: {fileID: 919132149155446097, guid: e01348288f397e4468dc0d9a0d1638f0, type: 3}
+  deliveryTilePrefab: {fileID: 5019414501220453517, guid: 887ee110a273c463093526f3464e24fb, type: 3}
+  elements:
+  - furnitureObject: {fileID: 11400000, guid: 02a799651e88e48b4bb7f0b098f91cb4, type: 2}
+    rootGridCoord:
+      col: 2
+      row: 5
+    rotation: 180
+  - furnitureObject: {fileID: 11400000, guid: 9b5df3a53a88444238df3281afc92b25, type: 2}
+    rootGridCoord:
+      col: 0
+      row: 3
+    rotation: -90
+  - furnitureObject: {fileID: 11400000, guid: a41cc1258ec4a453a8fa064f96e24075, type: 2}
+    rootGridCoord:
+      col: 0
+      row: 5
+    rotation: 0
+--- !u!4 &741617578
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741617576}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3044,6 +3144,7 @@ GameObject:
   - component: {fileID: 4657218110091214673}
   - component: {fileID: 3189019585613092268}
   - component: {fileID: 4657218110091214674}
+  - component: {fileID: 4657218110091214675}
   m_Layer: 8
   m_Name: PlayerCapsule
   m_TagString: Player
@@ -3206,8 +3307,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   move: {x: 0, y: 0}
   look: {x: 0, y: 0}
-  jump: 0
-  sprint: 0
   grab: 0
   analogMovement: 0
   cursorLocked: 1
@@ -3485,7 +3584,7 @@ Transform:
   m_GameObject: {fileID: 5223733772515074136}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 20.847322, y: -8.8, z: 22.66}
+  m_LocalPosition: {x: 20.28, y: -8.8, z: 26.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3502,3 +3601,5 @@ SceneRoots:
   - {fileID: 8139320094268666568}
   - {fileID: 1772006390}
   - {fileID: 739812246}
+  - {fileID: 741617578}
+  - {fileID: 638754238}

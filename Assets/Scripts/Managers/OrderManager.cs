@@ -70,7 +70,6 @@ public class OrderManager : MonoBehaviour
         else if (currentCustomer.GetOrder().orderItem.fuelType == cupObj.GetComponent<Cup>().GetFuelType())
         {
             // Remove the order from the list, initialize a new customer, and spawn a new cup and delete the one used to fill the order
-            Debug.Log("Order filled!");
             var gain = currentCustomer.GetOrder().orderItem.cost;
             SaveManager.Instance.AdjustPlayerMoney(gain);
             AudioManager.Instance.PlaySFX(AudioManager.Instance.bellDing, position);
@@ -84,13 +83,12 @@ public class OrderManager : MonoBehaviour
             UIManager.Instance.SetOrdersCompleted(completedCounter, gain);
             UIManager.Instance.SetOrderInfo("");
 
-            SpawnCup();
+            //SpawnCup();
             Destroy(cupObj);
             return true;
         }
         else
         {
-            Debug.Log("Incorrect order.");
             currentCustomer.WrongOrder();
             return false;
         }
@@ -125,6 +123,5 @@ public class Order
             Debug.LogError("OrderManager;; The menu is empty.");
         }
         UIManager.Instance.SetOrderInfo(orderItem.name);
-        Debug.Log("New order's type is " + orderItem.name);
     }
 }

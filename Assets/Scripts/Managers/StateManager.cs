@@ -93,7 +93,6 @@ public class StateManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log(scene.name);
         if (scene.name == "Start" || scene.name == "Shift" || scene.name == "Planning")
         {
             SceneManager.SetActiveScene(scene);
@@ -173,6 +172,9 @@ public class PlanningState : State
     public override void Exit()
     {
         // Save game
+        LevelLayout newLayout = SaveManager.Instance.GetCafeLayout();
+        newLayout.elements = PlanningManager.Instance.GetFinalGrid();
+        SaveManager.Instance.SaveCafeLayout(newLayout);
         SaveManager.Instance.Save();
         SceneManager.UnloadSceneAsync("Planning");
     }
@@ -202,7 +204,7 @@ public class ShiftState : State
         if (scene.name == "Shift")
         {
             // Spawn first cup
-            OrderManager.Instance.SpawnCup();
+            //OrderManager.Instance.SpawnCup();
         }
     }
 
@@ -216,7 +218,6 @@ public class ShiftState : State
 
     public override void Exit()
     {
-        Debug.Log("Exiting Shift state");
         // Delete all stray cups
         Cup[] cups = Object.FindObjectsOfType<Cup>();
         foreach (Cup cup in cups)
@@ -275,7 +276,6 @@ public class ShiftEndState : State
     public override bool Pausable => false;
     public override void Enter()
     {
-        Debug.Log("Entering ShiftEnd state");
         // Release the player cursor
         Cursor.lockState = CursorLockMode.None;
         // Update the high score
