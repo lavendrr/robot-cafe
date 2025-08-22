@@ -36,6 +36,15 @@ public class Drink
         fuelType = FuelType.None;
         oxidized = false;
     }
+    public bool CompareDrink(Drink _drink)
+    {
+        if (_drink.fuelType == fuelType && _drink.oxidized == oxidized)
+        {
+            return true;
+        }
+        
+        return false;
+    }
 }
 
 public class MenuManager : MonoBehaviour
@@ -84,6 +93,6 @@ public class MenuManager : MonoBehaviour
         AddItem("Unleaded", FuelType.Unleaded, 2);
         AddItem("Diesel", FuelType.Diesel, 3);
         AddItem("Premium", FuelType.Premium, 5);
-        // AddItem("Oxidized Diesel", FuelType.Diesel, 8, true);
+        AddItem("Oxidized Diesel", FuelType.Diesel, 8, true);
     }
 }

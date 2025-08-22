@@ -40,6 +40,26 @@ public class Cup : MonoBehaviour
         }
     }
 
+    public void Oxidize()
+    {
+        if (recipe.fuelType != FuelType.None)
+        {
+            if (recipe.oxidized == false)
+            {
+                recipe.oxidized = true;
+                Debug.Log("Drink oxidized!");
+            }
+            else
+            {
+                Debug.Log("Drink already oxidized");
+            }
+        }
+        else
+        {
+            Debug.Log("No drink present for oxidation");
+        }
+    }
+
     // Animation function for the drink mesh
     private IEnumerator ScaleUpCoffeeMesh()
     {
