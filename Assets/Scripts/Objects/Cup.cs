@@ -3,17 +3,17 @@ using System.Collections;
 
 public class Cup : MonoBehaviour
 {
-    private FuelType fuelType = FuelType.None;
+    public Drink recipe { get; private set; }
 
-    public FuelType GetFuelType()
+    void Start()
     {
-        return fuelType;
+        recipe = new Drink(FuelType.None, false);   
     }
 
     public void Fill(FuelType fillType, Vector3 position, Material fuelMaterial)
     {
         // Fill the cup if it's empty, or do nothing if it's already full
-        if (fuelType == FuelType.None)
+        if (recipe.fuelType == FuelType.None)
         {
             // Make the cup un-grabbable (until it is set to be grabbable again by the animation function when finished)
             gameObject.tag = "Untagged";
@@ -31,7 +31,7 @@ public class Cup : MonoBehaviour
                 drinkMeshRenderer.enabled = true;
                 drinkMeshRenderer.material = fuelMaterial;
                 StartCoroutine(ScaleUpCoffeeMesh());
-                fuelType = fillType;
+                recipe.fuelType = fillType;
             }
             else
             {
@@ -73,9 +73,9 @@ public class Cup : MonoBehaviour
     public bool Empty()
     {
         // Returns true if the cup was full then emptied, returns false if the cup was already empty
-        if (fuelType != FuelType.None)
+        if (recipe.fuelType != FuelType.None)
         {
-            fuelType = FuelType.None;
+            recipe.ResetDrink();
             gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = false;
             return true;
         }

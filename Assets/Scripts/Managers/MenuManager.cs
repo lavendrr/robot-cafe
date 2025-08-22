@@ -12,14 +12,29 @@ public enum FuelType
 public class MenuItem
 {
     public string name;
-    public FuelType fuelType;
     public int cost;
-
-    public MenuItem(string _name, FuelType _fuelType, int _cost)
+    public Drink recipe;
+    public MenuItem(string _name, int _cost, Drink _recipe)
     {
         name = _name;
-        fuelType = _fuelType;
         cost = _cost;
+        recipe = _recipe;
+    }
+}
+
+public class Drink
+{
+    public FuelType fuelType = FuelType.None;
+    public bool oxidized = false;
+    public Drink(FuelType _fuelType, bool _oxidized = false)
+    {
+        fuelType = _fuelType;
+        oxidized = _oxidized;
+    }
+    public void ResetDrink()
+    {
+        fuelType = FuelType.None;
+        oxidized = false;
     }
 }
 
@@ -46,9 +61,9 @@ public class MenuManager : MonoBehaviour
         return menu.ToArray();
     }
 
-    public void AddItem(string name, FuelType fuelType, int cost)
+    public void AddItem(string name, FuelType fuelType, int cost, bool oxidant = false)
     {
-        menu.Add(new MenuItem(name, fuelType, cost));
+        menu.Add(new MenuItem(name, cost, new Drink(fuelType, oxidant)));
     }
 
     public void RemoveItem(string itemName)
@@ -62,12 +77,13 @@ public class MenuManager : MonoBehaviour
             }
         }
     }
-    
+
     // For now, add the default menu items on start
     void Start()
     {
-        AddItem("Unleaded",FuelType.Unleaded,2);
-        AddItem("Diesel",FuelType.Diesel,3);
-        AddItem("Premium",FuelType.Premium,5);
+        AddItem("Unleaded", FuelType.Unleaded, 2);
+        AddItem("Diesel", FuelType.Diesel, 3);
+        AddItem("Premium", FuelType.Premium, 5);
+        // AddItem("Oxidized Diesel", FuelType.Diesel, 8, true);
     }
 }
