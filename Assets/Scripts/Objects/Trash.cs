@@ -9,7 +9,6 @@ public class Trash : MonoBehaviour
             if (cup.GetComponent<Cup>().Empty())
             {
                 AudioManager.Instance.PlaySFX(AudioManager.Instance.trash, transform.position);
-                Debug.Log("Trashed cup contents");
             }
         }
     }

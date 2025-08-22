@@ -56,8 +56,11 @@ public class PlayerInteractions : MonoBehaviour
 
     void Update()
     {
+        // if (StateManager.Instance.GetCurrentState() is ShiftState)
+        // {
         moveAction.started += ctx => moveInput = true;
         moveAction.canceled += ctx => moveInput = false;
+        // }
     }
 
     public bool GetMoveInputState()
@@ -168,10 +171,20 @@ public class PlayerInteractions : MonoBehaviour
         }
     }
 
+    void OnRotateRight()
+    {
+        var (type, obj) = InteractionCheck();
+        if (obj != null)
+        {
+            // Requires a receiver on the target GameObject
+            obj.SendMessage("OnRotateRight");
+        }
+    }
+
     public void OnMove(InputValue value)
-		{
-			MoveInput(value.Get<Vector2>());
-		}
+    {
+        MoveInput(value.Get<Vector2>());
+    }
 
 		public void OnLook(InputValue value)
 		{
