@@ -31,7 +31,7 @@ public class Customer : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        headMesh = transform.Find("robot_head")?.GetComponent<MeshRenderer>();
+        headMesh = transform.Find("Customer_head")?.GetComponent<MeshRenderer>();
         hoverAudio = (EventInstance)AudioManager.Instance.PlaySFX(AudioManager.Instance.customerHover, transform.position, gameObject, true);
 
         SetEmotion(Emotion.Happy);

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5887684047313797040}
   - component: {fileID: 4162996052320933952}
   m_Layer: 6
-  m_Name: robot_head
+  m_Name: Customer_head
   m_TagString: Usable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 3844978085148745284}
   - component: {fileID: 8768597130254970452}
   m_Layer: 6
-  m_Name: robot_body
+  m_Name: Customer_body
   m_TagString: Usable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -257,7 +257,7 @@ GameObject:
   - component: {fileID: 7069506192869377035}
   - component: {fileID: 743051773183373514}
   m_Layer: 6
-  m_Name: arm_R
+  m_Name: Customer_arm_R
   m_TagString: Usable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -377,7 +377,7 @@ GameObject:
   - component: {fileID: 4091465084323016852}
   - component: {fileID: 7924833170170109798}
   m_Layer: 6
-  m_Name: arm_L
+  m_Name: Customer_arm_L
   m_TagString: Usable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
