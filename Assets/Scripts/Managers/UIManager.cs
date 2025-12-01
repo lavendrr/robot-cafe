@@ -18,6 +18,8 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText, scoreText;
     private int minutes;
     private float seconds;
+    [SerializeField]
+    public Sprite crosshairIcon, grabIcon, slotIcon, useIcon, talkIcon;
 
     private void Awake()
     {
@@ -118,7 +120,7 @@ public class UIManager : MonoBehaviour
     private void UpdateCrosshair()
     {
         // Update crosshair state depending on what the player is looking at
-        var (type, _) = PlayerInteractions.Instance.InteractionCheck();
+        var (type, target) = PlayerInteractions.Instance.InteractionCheck();
         if (type == InteractableType.Grabbable)
         {
             crosshair.SetGrab();
@@ -126,6 +128,10 @@ public class UIManager : MonoBehaviour
         else if (type == InteractableType.Slottable && PlayerInteractions.Instance.GetGrabStatus())
         {
             crosshair.SetSlot();
+        }
+        else if (type == InteractableType.Usable && target.name.Contains("Customer"))
+        {
+            crosshair.SetTalk(); // Functionally the same as Use, just a different icon
         }
         else if (type == InteractableType.Usable)
         {
@@ -273,25 +279,35 @@ public class Crosshair
 
     public void SetNeutral()
     {
-        img.color = Color.white;
+        img.sprite = UIManager.Instance.crosshairIcon;
         tooltip.text = "";
     }
 
     public void SetGrab()
     {
-        img.color = Color.red;
+        obj.SetActive(true);
+        img.sprite = UIManager.Instance.grabIcon;
         tooltip.text = "(E)";
     }
 
     public void SetSlot()
     {
-        img.color = Color.green;
+        obj.SetActive(true);
+        img.sprite = UIManager.Instance.slotIcon;
         tooltip.text = "(E)";
+    }
+
+    public void SetTalk()
+    {
+        obj.SetActive(true);
+        img.sprite = UIManager.Instance.talkIcon;
+        tooltip.text = "(Q)";
     }
 
     public void SetUse()
     {
-        img.color = Color.blue;
+        obj.SetActive(true);
+        img.sprite = UIManager.Instance.useIcon;
         tooltip.text = "(Q)";
     }
 }
