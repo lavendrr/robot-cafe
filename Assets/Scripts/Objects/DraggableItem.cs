@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using JetBrains.Annotations;
 
-public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Image image;
     public Transform previousParent;
@@ -95,6 +95,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        OnHover();
         PlanningManager.Instance.SetCurrentItem(this);
 
         // If the item was slotted into a cell, tell that cell to call its removal method and update the previous parent
@@ -111,6 +112,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnDrag(PointerEventData eventData)
     {
+        // OnHover();
         // Update the item's position to match the cursor
         transform.position = Input.mousePosition;
         GameObject hoverCell = null;
@@ -225,5 +227,25 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public List<GridCoord> GetOffsets()
     {
         return itemCoords;
+    }
+
+    public void OnHover()
+    {
+        PlanningManager.Instance.ShowTooltip(furnitureObject);
+    }
+
+    public void OnUnhover()
+    {
+        PlanningManager.Instance.HideTooltip();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        OnHover();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        OnUnhover();
     }
 }
