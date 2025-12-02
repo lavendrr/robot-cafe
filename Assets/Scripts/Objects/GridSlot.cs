@@ -37,10 +37,15 @@ public class GridSlot : MonoBehaviour
     }
 
     // Returns true if item was successfully slotted in
-    public bool AttemptItemSlot(GameObject dropped)
+    public bool AttemptItemSlot(GameObject dropped, int rotation = 0)
     {
         DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
+        if (draggableItem == null)
+            return false;
+
         List<GridCoord> offsets = draggableItem.GetOffsets();
+        List<Sprite> gridSprites = draggableItem.furnitureObject.gridSprites;
+
         // Checks if the cell already has something slotted in
         if (!GetOccupiedStatus())
         {
@@ -62,11 +67,15 @@ public class GridSlot : MonoBehaviour
                         offsetCells.Add(offsetCell);
                     }
                     // If all necessary slots were found to be empty, then set them to be occupied
-                    foreach (GridSlot cell in offsetCells)
+                    for (int i = 0; i < offsetCells.Count; i++)
                     {
-                        cell.SetOccupiedStatus(true);
+                        Sprite s = (gridSprites != null && gridSprites.Count > i + 1) ? gridSprites[i + 1] : null;
+                        offsetCells[i].SetOccupiedStatus(true, s, rotation);
                     }
-                    SetOccupiedStatus(true);
+                    // root sprite
+                    Sprite rootSprite = (gridSprites != null && gridSprites.Count > 0) ? gridSprites[0] : null;
+                    SetOccupiedStatus(true, rootSprite, rotation);
+
                     // Reparent the item and reset the previous parent
                     dropped.transform.SetParent(transform);
                     dropped.GetComponent<DraggableItem>().previousParent = transform.root;
@@ -81,7 +90,8 @@ public class GridSlot : MonoBehaviour
             // If there are no offsets to check and this slot was unoccupied, then the method succeeds
             else
             {
-                SetOccupiedStatus(true);
+                Sprite rootSprite = (gridSprites != null && gridSprites.Count > 0) ? gridSprites[0] : null;
+                SetOccupiedStatus(true, rootSprite, rotation);
                 dropped.transform.SetParent(transform);
                 dropped.GetComponent<DraggableItem>().previousParent = transform.root;
                 return true;
@@ -98,7 +108,8 @@ public class GridSlot : MonoBehaviour
         return occupied;
     }
 
-    public void SetOccupiedStatus(bool occ)
+    // Set occupied/unoccupied and optionally update sprite for this slot
+    public void SetOccupiedStatus(bool occ, Sprite sprite = null, int rotation = 0)
     {
         // This method gets called from PlanningManager on Start, which may run before GridSlot's Start,
         // so we need to make sure image is assigned
@@ -109,11 +120,24 @@ public class GridSlot : MonoBehaviour
 
         if (occ)
         {
-            image.color = Color.blue;
+            if (sprite != null)
+            {
+                image.color = Color.white;
+                image.sprite = sprite;
+            }
+            else
+            {
+                image.color = Color.blue;
+            }
+            // apply rotation to the image rect transform
+            image.rectTransform.localEulerAngles = new Vector3(0f, 0f, rotation);
         }
         else
         {
             image.color = Color.white;
+            // clear the sprite when unoccupied
+            image.sprite = null;
+            image.rectTransform.localEulerAngles = Vector3.zero;
         }
 
         occupied = occ;

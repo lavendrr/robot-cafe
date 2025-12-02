@@ -15,7 +15,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private GameObject previousHoverCell, currentHoverCell = null;
     public FurnitureObject furnitureObject { get; private set; }
     private List<GridCoord> itemCoords;
+    // TODO: this is part of an eventual fix for a bug where if you pick up an object, rotate it to a position
+    // where it would no longer be valid in its original cell, then drop it, it would snap back to the original cell even if it no longer fit there
+    //private int beginDragScreenRotation = 0;
     public int rotation = 0;
+    public int screenRotation = 0;
 
     public void Init(FurnitureObject f)
     {
@@ -36,7 +40,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void RotateClockwise()
     {
         rotation = rotation + 90 % 360;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, transform.eulerAngles.z - 90 % 360)); // Screen coords are flipped
+        screenRotation = screenRotation - 90 % 360; // Screen coords are flipped
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, screenRotation));
         GridSlot currentSlot = null;
         if (previousHoverCell != null)
         {
@@ -66,7 +71,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void RotateCounterclockwise()
     {
         rotation = rotation - 90 % 360;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, transform.eulerAngles.z + 90 % 360)); // Screen coords are flipped
+        screenRotation = screenRotation + 90 % 360; // Screen coords are flipped
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, screenRotation));
         GridSlot currentSlot = null;
         if (previousHoverCell != null)
         {
@@ -108,6 +114,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetParent(transform.root);
         transform.SetAsLastSibling();
         image.raycastTarget = false;
+        image.sprite = furnitureObject.catalogSprite ?? null;
+        //beginDragScreenRotation = screenRotation;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -155,6 +163,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         // Re-enable raycasting so it can be detected by the cursor
         image.raycastTarget = true;
+        image.sprite = furnitureObject.gridSprites[0] ?? null;
 
         // Checks if there are any cells underneath the item where it was released
         GameObject cell = null, spawner = null;
@@ -185,7 +194,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (cell != null)
         {
             // Slotting failed
-            if (!cell.GetComponent<GridSlot>().AttemptItemSlot(gameObject))
+            if (!cell.GetComponent<GridSlot>().AttemptItemSlot(gameObject, screenRotation))
             {
                 // Reset the color of the previous hover cell, then keep going
                 if (previousHoverCell != null)
@@ -195,7 +204,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 // If this item was previously slotted to another cell, slot it back and return
                 if (previousParent != transform.root)
                 {
-                    previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject);
+                    previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject, screenRotation);
                     return;
                 }
             }
@@ -209,7 +218,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         // If a cell wasn't found (meaning it was dropped in the void), but the object previously belonged to a cell, reset it to that cell
         else if (previousParent != transform.root)
         {
-            if (!previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject))
+            if (!previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject, screenRotation))
             {
                 transform.SetParent(previousParent);
                 return;
