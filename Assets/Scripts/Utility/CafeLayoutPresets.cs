@@ -12,8 +12,8 @@ public static class CafeLayoutPresets
                 dimensions = (6, 6),
                 deliveryTileCoords = (4, 5),
                 floorPrefab = Resources.Load<GameObject>("Meshes/SM_floor"),
-                straightWallPrefab = Resources.Load<GameObject>("Meshes/SM_wall_plain"),
-                cornerWallPrefab = Resources.Load<GameObject>("Meshes/SM_wall_corner"),
+                straightWallPrefab = Resources.Load<GameObject>("Prefabs/WallPlain"),
+                cornerWallPrefab = Resources.Load<GameObject>("Prefabs/WallCorner"),
                 deliveryTilePrefab = Resources.Load<GameObject>("Prefabs/DeliveryTile"),
                 elements = new List<CafeElement>
                 {

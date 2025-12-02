@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: FO_WallPlain
   m_EditorClassIdentifier: 
   furnitureName: Wall Plain
-  prefab: {fileID: 919132149155446097, guid: c2e957f8184740747a13890c83f31ccd, type: 3}
+  prefab: {fileID: 8150292395417477140, guid: 5dde754d95371450ba1e83ed1da0899f, type: 3}
   cost: 0
-  gridSprite: {fileID: 21300000, guid: 15f98b145dc0b4af6a5bd26b2a487bc7, type: 3}
   gridOffsets: []
   catalogSprite: {fileID: 21300000, guid: 15f98b145dc0b4af6a5bd26b2a487bc7, type: 3}
+  gridSprites: []
   tooltipText: 

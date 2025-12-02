@@ -154,8 +154,8 @@ public class SaveManager : MonoBehaviour
             deliveryTileCol = layout.deliveryTileCoords.col,
             deliveryTileRow = layout.deliveryTileCoords.row,
             floorPrefabName = layout.floorPrefab != null ? "Meshes/" + layout.floorPrefab.name : "",
-            straightWallPrefabName = layout.straightWallPrefab != null ? "Meshes/" + layout.straightWallPrefab.name : "",
-            cornerWallPrefabName = layout.cornerWallPrefab != null ? "Meshes/" + layout.cornerWallPrefab.name : "",
+            straightWallPrefabName = layout.straightWallPrefab != null ? "Prefabs/" + layout.straightWallPrefab.name : "",
+            cornerWallPrefabName = layout.cornerWallPrefab != null ? "Prefabs/" + layout.cornerWallPrefab.name : "",
             deliveryTilePrefabName = layout.deliveryTilePrefab != null ? "Prefabs/" + layout.deliveryTilePrefab.name : ""
         };
 

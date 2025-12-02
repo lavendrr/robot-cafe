@@ -156,8 +156,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 960, y: -540}
-  m_SizeDelta: {x: 1920, y: 1080}
+  m_AnchoredPosition: {x: 980.3989, y: -554.9592}
+  m_SizeDelta: {x: 1879.2021, y: 1050.0815}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9188391
 MonoBehaviour:
@@ -715,7 +715,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 15, y: -80}
+  m_AnchoredPosition: {x: 22, y: -1002}
   m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &401599049
@@ -1761,7 +1761,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 15, y: -15}
+  m_AnchoredPosition: {x: 22, y: -937}
   m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1383460895
@@ -2331,13 +2331,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2050089132}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 11, z: 0}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -5.31, y: 12.04, z: -6.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &2051206636
 GameObject:
   m_ObjectHideFlags: 0
@@ -2374,6 +2374,7 @@ MonoBehaviour:
   cellPrefab: {fileID: 4663460941076920510, guid: b43d0a1d076a8457e9db19f878e2cccf, type: 3}
   catalogIconPrefab: {fileID: 4273029311410716551, guid: fcf9bd0a361074d1a92c13f18a100843, type: 3}
   draggableItemPrefab: {fileID: 9192525597895644964, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
+  deliveryTileSprite: {fileID: 21300000, guid: 615ca7a440fdb40a085fdd835d42489f, type: 3}
   testFurniture:
   - {fileID: 11400000, guid: 02a799651e88e48b4bb7f0b098f91cb4, type: 2}
   - {fileID: 11400000, guid: 9b5df3a53a88444238df3281afc92b25, type: 2}

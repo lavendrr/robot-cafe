@@ -16,7 +16,8 @@ public class PlanningManager : MonoBehaviour
 
     [SerializeField]
     private GameObject gridObj, catalogGridContent, tooltipPanel, cellPrefab, catalogIconPrefab, draggableItemPrefab;
-
+    [SerializeField]
+    private Sprite deliveryTileSprite;
     public GameObject[,] gridArray;
     [SerializeField]
     public List<FurnitureObject> testFurniture;
@@ -69,7 +70,7 @@ public class PlanningManager : MonoBehaviour
                 // Color it orange if it's a delivery tile
                 if (layout.deliveryTileCoords.col == col && layout.deliveryTileCoords.row == row)
                 {
-                    clone.GetComponent<Image>().color = Color.yellow;
+                    clone.GetComponent<Image>().sprite = deliveryTileSprite;
                 }
             }
         }
