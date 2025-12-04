@@ -35,10 +35,44 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         previousParent = transform.root;
     }
 
+    #region Rotation Methods
+
+    public void SetRotation(int rotation)
+    {
+        this.rotation = rotation;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotation));
+
+        /*
+        * Synchronize itemCoords with the new rotation
+        * Use the furnitureObject.gridOffsets as the canonical unrotated offsets,
+        * then apply 90 degree rotation to the offset coords
+        * as many times as needed to achieve the desired rotation
+        */
+        if (furnitureObject == null || furnitureObject.gridOffsets == null)
+        {
+            Debug.LogError("Error getting furnitureObject.gridOffsets in DraggableItem.SetRotation()");
+            return;
+        }
+
+        itemCoords = new List<GridCoord>(furnitureObject.gridOffsets);
+
+        int normalized = ((rotation % 360) + 360) % 360;
+        int steps = (normalized / 90) % 4;
+
+        for (int s = 0; s < steps; s++)
+        {
+            for (int i = 0; i < itemCoords.Count; i++)
+            {
+                GridCoord temp = itemCoords[i];
+                temp.col = itemCoords[i].row;
+                temp.row = itemCoords[i].col * -1;
+                itemCoords[i] = temp;
+            }
+        }
+    }
+
     public void RotateCounterclockwise()
     {
-        rotation = (rotation + 90) % 360;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotation));
         GridSlot currentSlot = null;
         if (previousHoverCell != null)
         {
@@ -46,18 +80,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             currentSlot.DisableHoverColor(this);
         }
 
-        // Rotates 90 degrees counterclockwise
-        for (int i = 0; i < itemCoords.Count; i++)
-        {
-            if (currentSlot != null)
-            {
-                currentSlot.DisableHoverColor(this);
-            }
-            GridCoord temp = itemCoords[i];
-            temp.col = itemCoords[i].row;
-            temp.row = itemCoords[i].col * -1;
-            itemCoords[i] = temp;
-        }
+        SetRotation((rotation + 90) % 360);
 
         if (currentSlot != null)
         {
@@ -67,34 +90,30 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void RotateClockwise()
     {
-        rotation = (rotation - 90) % 360;
-        if (rotation < 0) rotation += 360;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotation));
         GridSlot currentSlot = null;
         if (previousHoverCell != null)
         {
             currentSlot = previousHoverCell.GetComponent<GridSlot>();
             currentSlot.DisableHoverColor(this);
         }
-
-        // Rotates 90 degrees clockwise
-        for (int i = 0; i < itemCoords.Count; i++)
-        {
-            if (currentSlot != null)
-            {
-                currentSlot.DisableHoverColor(this);
-            }
-            GridCoord temp = itemCoords[i];
-            temp.col = itemCoords[i].row * -1;
-            temp.row = itemCoords[i].col;
-            itemCoords[i] = temp;
-        }
+        
+        SetRotation((rotation - 90) % 360);
 
         if (currentSlot != null)
         {
             currentSlot.HoverColor(this);
         }
     }
+
+    public void ReturnToPreviousSlotAndRotation()
+    {
+        SetRotation(beginDragRotation);
+        transform.position = previousParent.position;
+        previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject, rotation);
+    }
+
+    #endregion
+    #region Drag Methods
 
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -109,6 +128,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
         // Unparent the cell, set it as last sibling so it's on top of the rest of the UI, and turn raycasting off so it doesn't obscure the cursor's detection
         transform.SetParent(transform.root);
+        // Reapply rotation after unparenting
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotation));
         transform.SetAsLastSibling();
         image.raycastTarget = false;
         image.sprite = furnitureObject.catalogSprite ?? null;
@@ -231,15 +252,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         Destroy(gameObject);
     }
-
-    public void ReturnToPreviousSlotAndRotation()
-    {
-        rotation = beginDragRotation;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotation));
-        itemCoords = new List<GridCoord>(beginDragItemCoords);
-        transform.position = previousParent.position;
-        previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject, rotation);
-    }
+    #endregion
+    #region Accessor Methods
 
     public List<GridCoord> GetOffsets()
     {
@@ -266,3 +280,4 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         OnUnhover();
     }
 }
+#endregion
