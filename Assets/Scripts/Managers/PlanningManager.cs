@@ -93,7 +93,7 @@ public class PlanningManager : MonoBehaviour
                 draggableItem.Init(element.furnitureObject);
                 draggableItem.rotation = element.rotation;
                 draggableItem.image.sprite = element.furnitureObject.gridSprites[0];
-                if (!cell.GetComponent<GridSlot>().AttemptItemSlot(spawnedItem, draggableItem.screenRotation))
+                if (!cell.GetComponent<GridSlot>().AttemptItemSlot(spawnedItem, draggableItem.rotation))
                 {
                     Debug.LogError("Failed to slot " + element.furnitureObject.furnitureName + " into cell at (" + row + ", " + col + ")");
                     Destroy(spawnedItem);

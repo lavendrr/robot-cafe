@@ -17,9 +17,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private List<GridCoord> itemCoords;
     // TODO: this is part of an eventual fix for a bug where if you pick up an object, rotate it to a position
     // where it would no longer be valid in its original cell, then drop it, it would snap back to the original cell even if it no longer fit there
-    //private int beginDragScreenRotation = 0;
+    //private int beginDragRotation = 0;
     public int rotation = 0;
-    public int screenRotation = 0;
 
     public void Init(FurnitureObject f)
     {
@@ -37,11 +36,41 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         previousParent = transform.root;
     }
 
+    public void RotateCounterclockwise()
+    {
+        rotation = (rotation + 90) % 360;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotation));
+        GridSlot currentSlot = null;
+        if (previousHoverCell != null)
+        {
+            currentSlot = previousHoverCell.GetComponent<GridSlot>();
+            currentSlot.DisableHoverColor(this);
+        }
+
+        // Rotates 90 degrees counterclockwise
+        for (int i = 0; i < itemCoords.Count; i++)
+        {
+            if (currentSlot != null)
+            {
+                currentSlot.DisableHoverColor(this);
+            }
+            GridCoord temp = itemCoords[i];
+            temp.col = itemCoords[i].row;
+            temp.row = itemCoords[i].col * -1;
+            itemCoords[i] = temp;
+        }
+
+        if (currentSlot != null)
+        {
+            currentSlot.HoverColor(this);
+        }
+    }
+
     public void RotateClockwise()
     {
-        rotation = rotation + 90 % 360;
-        screenRotation = screenRotation - 90 % 360; // Screen coords are flipped
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, screenRotation));
+        rotation = (rotation - 90) % 360;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotation));
+        if (rotation < 0) rotation += 360;
         GridSlot currentSlot = null;
         if (previousHoverCell != null)
         {
@@ -68,37 +97,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
     }
 
-    public void RotateCounterclockwise()
-    {
-        rotation = rotation - 90 % 360;
-        screenRotation = screenRotation + 90 % 360; // Screen coords are flipped
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, screenRotation));
-        GridSlot currentSlot = null;
-        if (previousHoverCell != null)
-        {
-            currentSlot = previousHoverCell.GetComponent<GridSlot>();
-            currentSlot.DisableHoverColor(this);
-        }
-
-        // Rotates 90 degrees counterlockwise
-        for (int i = 0; i < itemCoords.Count; i++)
-        {
-            if (currentSlot != null)
-            {
-                currentSlot.DisableHoverColor(this);
-            }
-            GridCoord temp = itemCoords[i];
-            temp.col = itemCoords[i].row;
-            temp.row = itemCoords[i].col * -1;
-            itemCoords[i] = temp;
-        }
-
-        if (currentSlot != null)
-        {
-            currentSlot.HoverColor(this);
-        }
-    }
-
     public void OnBeginDrag(PointerEventData eventData)
     {
         OnHover();
@@ -115,7 +113,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetAsLastSibling();
         image.raycastTarget = false;
         image.sprite = furnitureObject.catalogSprite ?? null;
-        //beginDragScreenRotation = screenRotation;
+        //beginDragRotation = rotation;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -194,7 +192,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (cell != null)
         {
             // Slotting failed
-            if (!cell.GetComponent<GridSlot>().AttemptItemSlot(gameObject, screenRotation))
+            if (!cell.GetComponent<GridSlot>().AttemptItemSlot(gameObject, rotation))
             {
                 // Reset the color of the previous hover cell, then keep going
                 if (previousHoverCell != null)
@@ -204,7 +202,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 // If this item was previously slotted to another cell, slot it back and return
                 if (previousParent != transform.root)
                 {
-                    previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject, screenRotation);
+                    previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject, rotation);
                     return;
                 }
             }
@@ -218,7 +216,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         // If a cell wasn't found (meaning it was dropped in the void), but the object previously belonged to a cell, reset it to that cell
         else if (previousParent != transform.root)
         {
-            if (!previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject, screenRotation))
+            if (!previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject, rotation))
             {
                 transform.SetParent(previousParent);
                 return;
