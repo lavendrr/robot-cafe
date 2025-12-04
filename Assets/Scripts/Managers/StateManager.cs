@@ -288,6 +288,17 @@ public class ShiftEndState : State
         UIManager.Instance.UpdateShiftEndUI(score);
         // Save game
         SaveManager.Instance.Save();
+
+        // Leaderboard
+        if(SaveManager.Instance.GetCurrentDay() == 0)
+        {
+            Debug.Log("Saving leaderboard stuff");
+            SaveManager.Instance.SaveLeaderboardEntry(score);
+            SaveManager.Instance.SaveLeaderboard();
+        }
+        Debug.Log("Saving leaderboard stuff 2");
+        SaveManager.Instance.SaveLeaderboardEntry(score + 1);
+        SaveManager.Instance.SaveLeaderboard();
     }
 
     public override void Update()

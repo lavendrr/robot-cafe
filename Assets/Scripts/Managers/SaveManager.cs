@@ -3,6 +3,9 @@ using UnityEditor;
 using System.IO;
 using System.Collections.Generic;
 using FMODUnity;
+using System;
+using Unity.VisualScripting;
+using System.Linq;
 
 
 public class SaveData
@@ -58,6 +61,27 @@ public class SerializableSaveData
     public SerializableLevelLayout cafeLayout;
 }
 
+[System.Serializable]
+public struct LeaderboardEntry
+{
+    public string playerName;
+    public int dayOneScore;
+    public int highScore;
+
+    public LeaderboardEntry(string playerName, int dayOneScore, int highScore)
+    {
+        this.playerName = playerName;
+        this.dayOneScore = dayOneScore;
+        this.highScore = highScore;
+    }
+}
+
+[System.Serializable]
+public class Leaderboard<T>
+{
+    public List<T> list;
+}
+
 
 public class SaveManager : MonoBehaviour
 {
@@ -66,6 +90,10 @@ public class SaveManager : MonoBehaviour
     [SerializeField]
     private SaveData saveData = new SaveData();
     private string path = "Assets/SaveData/saveData.json";
+    private string leaderboardPath = "Assets/SaveData/leaderboard.json";
+
+    // public List<LeaderboardEntry> leaderboard = new();
+    public Leaderboard<LeaderboardEntry> leaderboard = new();
 
     private void Awake()
     {
@@ -100,6 +128,11 @@ public class SaveManager : MonoBehaviour
         else
         {
             Load();
+        }
+
+        if (File.Exists(leaderboardPath))
+        {
+            
         }
     }
 
@@ -141,6 +174,31 @@ public class SaveManager : MonoBehaviour
             playerMoney = serialized.playerMoney,
             cafeLayout = SerializableToLevelLayout(serialized.cafeLayout)
         };
+    }
+
+    public void SaveLeaderboardEntry(int dayOneScore)
+    {
+        LeaderboardEntry entry = new LeaderboardEntry("Test Player", dayOneScore, 100);
+        leaderboard.list.Add(entry);
+    }
+
+    public void SaveLeaderboard()
+    {
+        Debug.Log("Running SaveLeaderboard");
+        // Create the file path and appropriate stream and writer objects
+        FileStream stream = new(leaderboardPath, FileMode.Create); // The Create mode allows the program to overwrite the existing file with the same name if it exists
+        StreamWriter writer = new(stream);
+
+        // Write the data and close the objects
+        // foreach(LeaderboardEntry entry in leaderboard)
+        // {
+        //     writer.WriteLine(JsonUtility.ToJson(entry));
+        // }
+
+        writer.WriteLine(JsonUtility.ToJson(leaderboard));
+        
+        writer.Close();
+        stream.Close();
     }
 
 #region Serialization
