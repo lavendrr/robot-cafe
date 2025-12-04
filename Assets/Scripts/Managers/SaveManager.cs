@@ -176,10 +176,25 @@ public class SaveManager : MonoBehaviour
         };
     }
 
-    public void SaveLeaderboardEntry(int dayOneScore)
+    public bool SaveLeaderboardEntry(int dayOneScore)
     {
-        LeaderboardEntry entry = new LeaderboardEntry("Test Player", dayOneScore, 100);
-        leaderboard.list.Add(entry);
+        LeaderboardEntry newEntry = new LeaderboardEntry("Test Player", dayOneScore, dayOneScore);
+        if(leaderboard.list.Count >= 2)
+        {
+            int index = 0;
+            foreach(LeaderboardEntry entry in leaderboard.list)
+            {
+                if(newEntry.highScore >= entry.highScore)
+                {
+                    leaderboard.list[index] = newEntry;
+                    return true;
+                }
+                index++;
+            }
+            return false;
+        }
+        leaderboard.list.Add(newEntry);
+        return true;
     }
 
     public void SaveLeaderboard()

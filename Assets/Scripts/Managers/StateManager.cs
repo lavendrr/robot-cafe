@@ -293,12 +293,12 @@ public class ShiftEndState : State
         if(SaveManager.Instance.GetCurrentDay() == 0)
         {
             Debug.Log("Saving leaderboard stuff");
-            SaveManager.Instance.SaveLeaderboardEntry(score);
+            Debug.Log(SaveManager.Instance.SaveLeaderboardEntry(score + 5));
             SaveManager.Instance.SaveLeaderboard();
         }
-        Debug.Log("Saving leaderboard stuff 2");
-        SaveManager.Instance.SaveLeaderboardEntry(score + 1);
-        SaveManager.Instance.SaveLeaderboard();
+        // Debug.Log("Saving leaderboard stuff 2");
+        // SaveManager.Instance.SaveLeaderboardEntry(score + 1);
+        // SaveManager.Instance.SaveLeaderboard();
     }
 
     public override void Update()
