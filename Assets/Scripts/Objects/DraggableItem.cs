@@ -15,9 +15,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private GameObject previousHoverCell, currentHoverCell = null;
     public FurnitureObject furnitureObject { get; private set; }
     private List<GridCoord> itemCoords;
-    // TODO: this is part of an eventual fix for a bug where if you pick up an object, rotate it to a position
-    // where it would no longer be valid in its original cell, then drop it, it would snap back to the original cell even if it no longer fit there
-    //private int beginDragRotation = 0;
+    private List<GridCoord> beginDragItemCoords;
+    private int beginDragRotation = 0;
     public int rotation = 0;
 
     public void Init(FurnitureObject f)
@@ -69,8 +68,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void RotateClockwise()
     {
         rotation = (rotation - 90) % 360;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotation));
         if (rotation < 0) rotation += 360;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotation));
         GridSlot currentSlot = null;
         if (previousHoverCell != null)
         {
@@ -113,7 +112,9 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetAsLastSibling();
         image.raycastTarget = false;
         image.sprite = furnitureObject.catalogSprite ?? null;
-        //beginDragRotation = rotation;
+        // Save the rotation and coords at the beginning of the drag in case we need to reset
+        beginDragRotation = rotation;
+        beginDragItemCoords = new List<GridCoord>(itemCoords);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -202,7 +203,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 // If this item was previously slotted to another cell, slot it back and return
                 if (previousParent != transform.root)
                 {
-                    previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject, rotation);
+                    ReturnToPreviousSlotAndRotation();
                     return;
                 }
             }
@@ -218,7 +219,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         {
             if (!previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject, rotation))
             {
-                transform.SetParent(previousParent);
+                ReturnToPreviousSlotAndRotation();
                 return;
             }
             // Slotting succeeded
@@ -229,6 +230,15 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         Destroy(gameObject);
+    }
+
+    public void ReturnToPreviousSlotAndRotation()
+    {
+        rotation = beginDragRotation;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotation));
+        itemCoords = new List<GridCoord>(beginDragItemCoords);
+        transform.position = previousParent.position;
+        previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject, rotation);
     }
 
     public List<GridCoord> GetOffsets()
