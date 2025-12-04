@@ -179,7 +179,7 @@ public class SaveManager : MonoBehaviour
     public bool SaveLeaderboardEntry(int dayOneScore)
     {
         LeaderboardEntry newEntry = new LeaderboardEntry("Test Player", dayOneScore, dayOneScore);
-        if(leaderboard.list.Count >= 2)
+        if(leaderboard.list.Count >= 3)
         {
             int index = 0;
             foreach(LeaderboardEntry entry in leaderboard.list)
@@ -194,6 +194,7 @@ public class SaveManager : MonoBehaviour
             return false;
         }
         leaderboard.list.Add(newEntry);
+        leaderboard.list.Sort(ScoreComparison);
         return true;
     }
 
@@ -213,6 +214,22 @@ public class SaveManager : MonoBehaviour
     public void LoadLeaderboard()
     {
         JsonUtility.FromJsonOverwrite(File.ReadAllText(leaderboardPath), leaderboard);
+    }
+
+    public int ScoreComparison(LeaderboardEntry a, LeaderboardEntry b)
+    {
+        if (a.highScore > b.highScore)
+        {
+            return -1;
+        }
+        else if (a.highScore == b.highScore)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
     }
 
 #region Serialization
