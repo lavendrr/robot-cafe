@@ -132,7 +132,7 @@ public class SaveManager : MonoBehaviour
 
         if (File.Exists(leaderboardPath))
         {
-            
+            LoadLeaderboard();
         }
     }
 
@@ -189,16 +189,15 @@ public class SaveManager : MonoBehaviour
         FileStream stream = new(leaderboardPath, FileMode.Create); // The Create mode allows the program to overwrite the existing file with the same name if it exists
         StreamWriter writer = new(stream);
 
-        // Write the data and close the objects
-        // foreach(LeaderboardEntry entry in leaderboard)
-        // {
-        //     writer.WriteLine(JsonUtility.ToJson(entry));
-        // }
-
         writer.WriteLine(JsonUtility.ToJson(leaderboard));
         
         writer.Close();
         stream.Close();
+    }
+
+    public void LoadLeaderboard()
+    {
+        JsonUtility.FromJsonOverwrite(File.ReadAllText(leaderboardPath), leaderboard);
     }
 
 #region Serialization
