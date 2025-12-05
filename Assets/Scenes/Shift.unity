@@ -428,7 +428,7 @@ GameObject:
   - component: {fileID: 353401302}
   - component: {fileID: 353401301}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: TimerPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -445,7 +445,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1690728793}
   m_Father: {fileID: 2135739427}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -852,7 +853,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &523689420
 RectTransform:
   m_ObjectHideFlags: 0
@@ -869,7 +870,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 210, y: 0}
+  m_AnchoredPosition: {x: 240, y: 0}
   m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &523689421
@@ -1016,7 +1017,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &734483099
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1296,7 +1297,7 @@ GameObject:
   - component: {fileID: 878893937}
   - component: {fileID: 878893936}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: OrderInfoPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1313,7 +1314,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 927101951}
   m_Father: {fileID: 2135739427}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1389,11 +1391,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2135739427}
+  m_Father: {fileID: 878893935}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -25}
+  m_AnchoredPosition: {x: 10.78595, y: -25}
   m_SizeDelta: {x: 467, y: 50}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &927101952
@@ -1523,11 +1525,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2135739427}
+  m_Father: {fileID: 1871826035}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 204.26544, y: -222}
+  m_AnchoredPosition: {x: 215.05145, y: -25}
   m_SizeDelta: {x: 408.5309, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1080097573
@@ -1550,7 +1552,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Money: 0'
+  m_text: 'Credits: 000'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8ddb28555c55fe940b0817e74f34fbc7, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 26f6a9a396a192c4fa08eac04aa6219f, type: 2}
@@ -1639,7 +1641,7 @@ GameObject:
   - component: {fileID: 1119516972}
   - component: {fileID: 1119516971}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: OrdersCompletedPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1656,7 +1658,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1391894022}
   m_Father: {fileID: 2135739427}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1871,11 +1874,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2135739427}
+  m_Father: {fileID: 1119516970}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 204.26544, y: -90}
+  m_AnchoredPosition: {x: 215.05145, y: -25}
   m_SizeDelta: {x: 408.5309, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1391894023
@@ -2096,7 +2099,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1665050011
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2185,11 +2188,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2135739427}
+  m_Father: {fileID: 353401300}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 204.26544, y: -156}
+  m_AnchoredPosition: {x: 215.05145, y: -25}
   m_SizeDelta: {x: 408.5309, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1690728794
@@ -2318,6 +2321,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14c05dc8452a64e50a089347857e3e88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameUI: {fileID: 2135739426}
+  shiftEndUI: {fileID: 734483098}
+  dialogueUI: {fileID: 1665050010}
+  moneyDoober: {fileID: 523689419}
+  crosshairObj: {fileID: 440677626}
+  orderInfo: {fileID: 927101952}
+  ordersCompleted: {fileID: 1391894023}
+  timerText: {fileID: 1690728794}
+  moneyText: {fileID: 1080097573}
+  scoreText: {fileID: 1297408625}
   crosshairIcon: {fileID: 21300000, guid: 230d3c2ff488a45d3bf41c13d0b5e5f9, type: 3}
   grabIcon: {fileID: 21300000, guid: e548d02eb0cf74de39427e312f1a923f, type: 3}
   slotIcon: {fileID: 21300000, guid: 5d6346134859744c590ecbe0afa3ff8f, type: 3}
@@ -2562,7 +2575,7 @@ GameObject:
   - component: {fileID: 1871826037}
   - component: {fileID: 1871826036}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: MoneyPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2581,12 +2594,13 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 523689420}
+  - {fileID: 1080097572}
   m_Father: {fileID: 2135739427}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -388.37927, y: 50.5}
-  m_SizeDelta: {x: -755.1865, y: -495}
+  m_AnchoredPosition: {x: -367.52, y: 50.5}
+  m_SizeDelta: {x: -713.48, y: -495}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1871826036
 MonoBehaviour:
@@ -2820,13 +2834,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 440677627}
-  - {fileID: 927101951}
   - {fileID: 878893935}
-  - {fileID: 1391894022}
   - {fileID: 1119516970}
-  - {fileID: 1690728793}
   - {fileID: 353401300}
-  - {fileID: 1080097572}
   - {fileID: 1871826035}
   m_Father: {fileID: 1537475421}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

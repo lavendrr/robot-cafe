@@ -13,8 +13,10 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    private GameObject gameUI, shiftEndUI, dialogueUI, moneyDoober;
+    [SerializeField]
+    private GameObject gameUI, shiftEndUI, dialogueUI, moneyDoober, crosshairObj;
     private Crosshair crosshair;
+    [SerializeField]
     private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText, scoreText;
     private int minutes;
     private float seconds;
@@ -33,19 +35,7 @@ public class UIManager : MonoBehaviour
             Instance = this;
         }
 
-        gameUI = GameObject.Find("GameUI");
-        shiftEndUI = GameObject.Find("ShiftEndUI");
-        scoreText = GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>();
-        shiftEndUI.SetActive(false);
-        crosshair = new Crosshair(GameObject.Find("Crosshair"));
-        orderInfo = GameObject.Find("OrderInfo").GetComponent<TextMeshProUGUI>();
-        timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
-        ordersCompleted = GameObject.Find("OrdersCompleted").GetComponent<TextMeshProUGUI>();
-        moneyText = GameObject.Find("Money").GetComponent<TextMeshProUGUI>();
-        moneyDoober = GameObject.Find("MoneyDoober");
-        dialogueUI = GameObject.Find("DialogueUI");
-        dialogueUI.SetActive(false);
-        moneyDoober.SetActive(false);
+        crosshair = new Crosshair(crosshairObj);
     }
 
     private void Start()
@@ -172,7 +162,7 @@ public class UIManager : MonoBehaviour
     public void SetOrdersCompleted(int completed, int gain = -1)
     {
         ordersCompleted.text = "Orders Completed: " + completed.ToString();
-        moneyText.text = SaveManager.Instance.GetPlayerMoney().ToString() + " Credits";
+        moneyText.text = "Credits: " + SaveManager.Instance.GetPlayerMoney().ToString();
         // Animate money doober
         if (gain != -1)
         {
@@ -198,7 +188,7 @@ public class UIManager : MonoBehaviour
         string dayCount = "Day " + SaveManager.Instance.GetDayCount().ToString();
         string ordersCompleted = "Orders Completed: " + score.ToString();
         string highScore = "High Score: " + SaveManager.Instance.GetHighScore().ToString();
-        scoreText.text = dayCount + "\n" + ordersCompleted + "\n" + highScore;
+        scoreText.text = $"{dayCount}\n{ordersCompleted}\n{highScore}";
     }
 
     // Game State Functions
