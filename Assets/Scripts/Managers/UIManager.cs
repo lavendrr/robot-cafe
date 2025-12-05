@@ -8,16 +8,15 @@ using Unity.VisualScripting;
 using System;
 using UnityEngine.Rendering;
 using System.Linq;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    [SerializeField]
-    private GameObject gameUI, shiftEndUI, dialogueUI, moneyDoober, crosshairObj;
+    private GameObject gameUI, shiftEndUI, dialogueUI, moneyDoober, leaderboardUI;
     private Crosshair crosshair;
-    [SerializeField]
-    private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText, scoreText;
+    private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText, scoreText, leaderboardText;
     private int minutes;
     private float seconds;
     [SerializeField]
@@ -35,7 +34,22 @@ public class UIManager : MonoBehaviour
             Instance = this;
         }
 
-        crosshair = new Crosshair(crosshairObj);
+        gameUI = GameObject.Find("GameUI");
+        shiftEndUI = GameObject.Find("ShiftEndUI");
+        scoreText = GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>();
+        shiftEndUI.SetActive(false);
+        crosshair = new Crosshair(GameObject.Find("Crosshair"));
+        orderInfo = GameObject.Find("OrderInfo").GetComponent<TextMeshProUGUI>();
+        timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
+        ordersCompleted = GameObject.Find("OrdersCompleted").GetComponent<TextMeshProUGUI>();
+        moneyText = GameObject.Find("Money").GetComponent<TextMeshProUGUI>();
+        moneyDoober = GameObject.Find("MoneyDoober");
+        dialogueUI = GameObject.Find("DialogueUI");
+        leaderboardUI = GameObject.Find("LeaderboardUI");
+        leaderboardText = leaderboardUI.GetComponentInChildren<TextMeshProUGUI>();
+        leaderboardUI.SetActive(false);
+        dialogueUI.SetActive(false);
+        moneyDoober.SetActive(false);
     }
 
     private void Start()
@@ -162,7 +176,7 @@ public class UIManager : MonoBehaviour
     public void SetOrdersCompleted(int completed, int gain = -1)
     {
         ordersCompleted.text = "Orders Completed: " + completed.ToString();
-        moneyText.text = "Credits: " + SaveManager.Instance.GetPlayerMoney().ToString();
+        moneyText.text = SaveManager.Instance.GetPlayerMoney().ToString() + " Credits";
         // Animate money doober
         if (gain != -1)
         {
@@ -188,7 +202,17 @@ public class UIManager : MonoBehaviour
         string dayCount = "Day " + SaveManager.Instance.GetDayCount().ToString();
         string ordersCompleted = "Orders Completed: " + score.ToString();
         string highScore = "High Score: " + SaveManager.Instance.GetHighScore().ToString();
-        scoreText.text = $"{dayCount}\n{ordersCompleted}\n{highScore}";
+        scoreText.text = dayCount + "\n" + ordersCompleted + "\n" + highScore;
+    }
+
+    public void DisplayLeaderboard(List<LeaderboardEntry> lb)
+    {
+        // string lbText = leaderboardText.text;
+        foreach(LeaderboardEntry row in lb)
+        {
+            leaderboardText.text += $"\n{row.playerName} --------- {row.highScore}";
+        }
+        leaderboardUI.SetActive(true);
     }
 
     // Game State Functions
