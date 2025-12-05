@@ -18,6 +18,11 @@ public static class CafeLayoutPresets
                 elements = new List<CafeElement>
                 {
                     new() {
+                        furnitureObject = Resources.Load<FurnitureObject>("Prefabs/FurnitureObjects/FO_ChargingDock"),
+                        rootGridCoord = new GridCoord { col = 3, row = 2 },
+                        rotation = 0
+                    },
+                    new() {
                         furnitureObject = Resources.Load<FurnitureObject>("Prefabs/FurnitureObjects/FO_CoffeeMachine"),
                         rootGridCoord = new GridCoord { col = 2, row = 5 },
                         rotation = 180

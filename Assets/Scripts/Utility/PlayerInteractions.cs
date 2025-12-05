@@ -16,7 +16,7 @@ public class PlayerInteractions : MonoBehaviour
     private PlayerInput playerInput;
     private InputAction moveAction;
 
-    private GameObject mainCamera;
+    [SerializeField] private GameObject mainCamera;
     private GameObject grabbedObject;
     private bool moveInput;
 
@@ -49,7 +49,6 @@ public class PlayerInteractions : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["move"];
     }
