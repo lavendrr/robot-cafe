@@ -2230,7 +2230,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1245546007
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2873,11 +2873,13 @@ MonoBehaviour:
   dialogueUI: {fileID: 1665050010}
   moneyDoober: {fileID: 523689419}
   crosshairObj: {fileID: 440677626}
+  leaderboardUI: {fileID: 1245546006}
   orderInfo: {fileID: 927101952}
   ordersCompleted: {fileID: 1391894023}
   timerText: {fileID: 1690728794}
   moneyText: {fileID: 1080097573}
   scoreText: {fileID: 1297408625}
+  leaderboardText: {fileID: 428432480}
   crosshairIcon: {fileID: 21300000, guid: 230d3c2ff488a45d3bf41c13d0b5e5f9, type: 3}
   grabIcon: {fileID: 21300000, guid: e548d02eb0cf74de39427e312f1a923f, type: 3}
   slotIcon: {fileID: 21300000, guid: 5d6346134859744c590ecbe0afa3ff8f, type: 3}

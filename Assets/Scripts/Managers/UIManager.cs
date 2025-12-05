@@ -14,10 +14,10 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance { get; private set; }
 
     [SerializeField]
-    private GameObject gameUI, shiftEndUI, dialogueUI, moneyDoober, crosshairObj;
+    private GameObject gameUI, shiftEndUI, dialogueUI, moneyDoober, crosshairObj, leaderboardUI;
     private Crosshair crosshair;
     [SerializeField]
-    private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText, scoreText;
+    private TextMeshProUGUI orderInfo, ordersCompleted, timerText, moneyText, scoreText, leaderboardText;
     private int minutes;
     private float seconds;
     [SerializeField]
@@ -173,12 +173,12 @@ public class UIManager : MonoBehaviour
             moneyDoober.SetActive(true);
             // animate
             textTransform.DOMoveX(endPos, 0.5f).OnComplete(() =>
-                {
-                    StartCoroutine(StateManager.Instance.Delay(1f, done =>
+            {
+                StartCoroutine(StateManager.Instance.Delay(1f, done =>
                 {
                     moneyDoober.SetActive(false);
                 }));
-                }
+            }
             );
         }
     }
@@ -189,6 +189,16 @@ public class UIManager : MonoBehaviour
         string ordersCompleted = "Orders Completed: " + score.ToString();
         string highScore = "High Score: " + SaveManager.Instance.GetHighScore().ToString();
         scoreText.text = $"{dayCount}\n{ordersCompleted}\n{highScore}";
+    }
+
+    public void DisplayLeaderboard(Leaderboard<LeaderboardEntry> lb)
+    {
+        // string lbText = leaderboardText.text;
+        foreach(LeaderboardEntry row in lb.list)
+        {
+            leaderboardText.text += $"\n{row.playerName} --------- {row.highScore}";
+        }
+        leaderboardUI.SetActive(true);
     }
 
     // Game State Functions

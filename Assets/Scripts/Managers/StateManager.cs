@@ -295,7 +295,7 @@ public class ShiftEndState : State
             Debug.Log("Saving leaderboard stuff");
             Debug.Log(SaveManager.Instance.SaveLeaderboardEntry(score + 5));
             SaveManager.Instance.SaveLeaderboard();
-            UIManager.Instance.DisplayLeaderboard(SaveManager.Instance.leaderboard.list);
+            UIManager.Instance.DisplayLeaderboard(SaveManager.Instance.leaderboard);
         }
         // Debug.Log("Saving leaderboard stuff 2");
         // SaveManager.Instance.SaveLeaderboardEntry(score + 1);
