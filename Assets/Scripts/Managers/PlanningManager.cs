@@ -91,7 +91,7 @@ public class PlanningManager : MonoBehaviour
                 GameObject spawnedItem = Instantiate(gridItemPrefab, gridObj.transform);
                 spawnedItem.GetComponent<Image>().sprite = element.furnitureObject.catalogSprite;
                 GridItem gridItem = spawnedItem.GetComponent<GridItem>();
-                gridItem.Init(element.furnitureObject);
+                gridItem.Init(element.furnitureObject, false);
                 gridItem.SetRotation(element.rotation);
                 gridItem.image.sprite = element.furnitureObject.gridSprites[0];
                 if (!cell.GetComponent<GridSlot>().AttemptItemSlot(spawnedItem, element.rotation))
@@ -187,9 +187,15 @@ public class PlanningManager : MonoBehaviour
         }
     }
 
-    public void AdjustFurnitureCost(int adjustment)
+    public void AdjustFurnitureCost(int adjustment, bool isNew)
     {
-        furnitureCost += adjustment;
-        Debug.Log($"Adjusted furniture cost by {adjustment} to a total of {furnitureCost}");
+        if (isNew)
+        {
+            furnitureCost += adjustment;
+            Debug.Log($"Adjusted furniture cost by {adjustment} to a total of {furnitureCost}");
+            return;
+        }
+        
+        Debug.Log($"Item isn't new, cost remains the same at {furnitureCost}");
     }
 }
