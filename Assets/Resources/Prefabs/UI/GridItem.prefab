@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3789143620696068011}
   - component: {fileID: 8744485895079396093}
   m_Layer: 5
-  m_Name: DraggableItem
+  m_Name: GridItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

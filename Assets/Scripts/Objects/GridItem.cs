@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using JetBrains.Annotations;
 
-public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Image image;
     public Transform previousParent;
@@ -23,7 +23,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if (f == null)
         {
-            Debug.LogError("FurnitureObject passed to DraggableItem.Init() was null.");
+            Debug.LogError("FurnitureObject passed to GridItem.Init() was null.");
             return;
         }
         furnitureObject = f;
@@ -50,7 +50,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         */
         if (furnitureObject == null || furnitureObject.gridOffsets == null)
         {
-            Debug.LogError("Error getting furnitureObject.gridOffsets in DraggableItem.SetRotation()");
+            Debug.LogError("Error getting furnitureObject.gridOffsets in GridItem.SetRotation()");
             return;
         }
 

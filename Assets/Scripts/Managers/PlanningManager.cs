@@ -15,14 +15,14 @@ public class PlanningManager : MonoBehaviour
     public static PlanningManager Instance { get; private set; }
 
     [SerializeField]
-    private GameObject gridObj, catalogGridContent, tooltipPanel, cellPrefab, catalogIconPrefab, draggableItemPrefab;
+    private GameObject gridObj, catalogGridContent, tooltipPanel, cellPrefab, catalogIconPrefab, gridItemPrefab;
     [SerializeField]
     private Sprite deliveryTileSprite;
     public GameObject[,] gridArray;
     [SerializeField]
     public List<FurnitureObject> testFurniture;
 
-    public DraggableItem currentItem = null;
+    public GridItem currentItem = null;
 
     // Start is called before the first frame update
     void Start()
@@ -87,12 +87,12 @@ public class PlanningManager : MonoBehaviour
             if (row >= 0 && row < layout.dimensions.rows && col >= 0 && col < layout.dimensions.cols)
             {
                 var cell = gridArray[row, col];
-                GameObject spawnedItem = Instantiate(draggableItemPrefab, gridObj.transform);
+                GameObject spawnedItem = Instantiate(gridItemPrefab, gridObj.transform);
                 spawnedItem.GetComponent<Image>().sprite = element.furnitureObject.catalogSprite;
-                DraggableItem draggableItem = spawnedItem.GetComponent<DraggableItem>();
-                draggableItem.Init(element.furnitureObject);
-                draggableItem.SetRotation(element.rotation);
-                draggableItem.image.sprite = element.furnitureObject.gridSprites[0];
+                GridItem gridItem = spawnedItem.GetComponent<GridItem>();
+                gridItem.Init(element.furnitureObject);
+                gridItem.SetRotation(element.rotation);
+                gridItem.image.sprite = element.furnitureObject.gridSprites[0];
                 if (!cell.GetComponent<GridSlot>().AttemptItemSlot(spawnedItem, element.rotation))
                 {
                     Debug.LogError("Failed to slot " + element.furnitureObject.furnitureName + " into cell at (" + row + ", " + col + ")");
@@ -115,8 +115,8 @@ public class PlanningManager : MonoBehaviour
             // Spawn a CatalogItem prefab under the catalog grid Content object
             GameObject item = Instantiate(catalogIconPrefab, catalogGridContent.transform);
             // Initialize the CatalogItem with the furniture icon and name
-            item.GetComponent<GridItemSpawn>().furnitureType = element.Key;
-            item.GetComponent<GridItemSpawn>().draggableItemPrefab = draggableItemPrefab;
+            item.GetComponent<GridItemSpawner>().furnitureType = element.Key;
+            item.GetComponent<GridItemSpawner>().gridItemPrefab = gridItemPrefab;
             item.GetComponent<Image>().sprite = element.Key.catalogSprite;
             item.transform.Find("NumberPip").GetComponentInChildren<TextMeshProUGUI>().text = element.Value.ToString() + "c";
             item.transform.Find("ItemName").GetComponent<TextMeshProUGUI>().text = element.Key.furnitureName;
@@ -149,23 +149,23 @@ public class PlanningManager : MonoBehaviour
         {
             if (cell.GetComponent<GridSlot>().GetOccupiedStatus())
             {
-                if (cell.GetComponentInChildren<DraggableItem>() == null)
+                if (cell.GetComponentInChildren<GridItem>() == null)
                 {
                     continue; // This is just an offset cell, not a root cell
                 }
                 var coords = cell.GetComponent<GridSlot>().GetCoords();
                 output.Add(new CafeElement
                 {
-                    furnitureObject = cell.GetComponentInChildren<DraggableItem>().furnitureObject,
+                    furnitureObject = cell.GetComponentInChildren<GridItem>().furnitureObject,
                     rootGridCoord = new GridCoord { col = coords.Item2, row = coords.Item1 },
-                    rotation = cell.GetComponentInChildren<DraggableItem>().rotation
+                    rotation = cell.GetComponentInChildren<GridItem>().rotation
                 });
             }
         }
         return output;
     }
 
-    public void SetCurrentItem(DraggableItem item)
+    public void SetCurrentItem(GridItem item)
     {
         currentItem = item;
     }

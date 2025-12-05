@@ -2373,7 +2373,7 @@ MonoBehaviour:
   tooltipPanel: {fileID: 191944231}
   cellPrefab: {fileID: 4663460941076920510, guid: b43d0a1d076a8457e9db19f878e2cccf, type: 3}
   catalogIconPrefab: {fileID: 4273029311410716551, guid: fcf9bd0a361074d1a92c13f18a100843, type: 3}
-  draggableItemPrefab: {fileID: 9192525597895644964, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
+  gridItemPrefab: {fileID: 9192525597895644964, guid: b5d6bcab364fc402da131a60663a8555, type: 3}
   deliveryTileSprite: {fileID: 21300000, guid: 615ca7a440fdb40a085fdd835d42489f, type: 3}
   testFurniture:
   - {fileID: 11400000, guid: 02a799651e88e48b4bb7f0b098f91cb4, type: 2}

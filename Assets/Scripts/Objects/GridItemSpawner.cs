@@ -4,30 +4,30 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class GridItemSpawn : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+public class GridItemSpawner : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField]
     public FurnitureObject furnitureType;
-    public GameObject draggableItemPrefab;
-    private DraggableItem draggableItem;
+    public GameObject gridItemPrefab;
+    private GridItem gridItem;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        GameObject spawnedItem = Instantiate(draggableItemPrefab, transform.root);
+        GameObject spawnedItem = Instantiate(gridItemPrefab, transform.root);
         spawnedItem.GetComponent<Image>().sprite = furnitureType.catalogSprite;
-        draggableItem = spawnedItem.GetComponent<DraggableItem>();
-        draggableItem.Init(furnitureType);
-        draggableItem.OnBeginDrag(eventData);
+        gridItem = spawnedItem.GetComponent<GridItem>();
+        gridItem.Init(furnitureType);
+        gridItem.OnBeginDrag(eventData);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        draggableItem.OnDrag(eventData);
+        gridItem.OnDrag(eventData);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        draggableItem.OnEndDrag(eventData);
+        gridItem.OnEndDrag(eventData);
     }
 
     public void OnHover()

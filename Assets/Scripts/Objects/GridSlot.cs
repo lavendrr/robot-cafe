@@ -39,12 +39,12 @@ public class GridSlot : MonoBehaviour
     // Returns true if item was successfully slotted in
     public bool AttemptItemSlot(GameObject dropped, int rotation = 0)
     {
-        DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
-        if (draggableItem == null)
+        GridItem gridItem = dropped.GetComponent<GridItem>();
+        if (gridItem == null)
             return false;
 
-        List<GridCoord> offsets = draggableItem.GetOffsets();
-        List<Sprite> gridSprites = draggableItem.furnitureObject.gridSprites;
+        List<GridCoord> offsets = gridItem.GetOffsets();
+        List<Sprite> gridSprites = gridItem.furnitureObject.gridSprites;
 
         // Checks if the cell already has something slotted in
         if (!GetOccupiedStatus())
@@ -78,7 +78,7 @@ public class GridSlot : MonoBehaviour
 
                     // Reparent the item and reset the previous parent
                     dropped.transform.SetParent(transform);
-                    dropped.GetComponent<DraggableItem>().previousParent = transform.root;
+                    dropped.GetComponent<GridItem>().previousParent = transform.root;
                     return true;
                 }
                 catch (IndexOutOfRangeException)
@@ -93,7 +93,7 @@ public class GridSlot : MonoBehaviour
                 Sprite rootSprite = (gridSprites != null && gridSprites.Count > 0) ? gridSprites[0] : null;
                 SetOccupiedStatus(true, rootSprite, rotation);
                 dropped.transform.SetParent(transform);
-                dropped.GetComponent<DraggableItem>().previousParent = transform.root;
+                dropped.GetComponent<GridItem>().previousParent = transform.root;
                 return true;
             }
         }
@@ -144,7 +144,7 @@ public class GridSlot : MonoBehaviour
     }
 
     // Called when an item is removed from a slot
-    public void OnRemove(DraggableItem item)
+    public void OnRemove(GridItem item)
     {
         SetOccupiedStatus(false);
 
@@ -159,7 +159,7 @@ public class GridSlot : MonoBehaviour
         }
     }
 
-    public void HoverColor(DraggableItem item)
+    public void HoverColor(GridItem item)
     {
         if (GetOccupiedStatus())
         {
@@ -204,7 +204,7 @@ public class GridSlot : MonoBehaviour
 
     }
 
-    public void DisableHoverColor(DraggableItem item)
+    public void DisableHoverColor(GridItem item)
     {
         // Set this cell's color back to blue if occupied, or back to white if empty
         image.color = GetOccupiedStatus() ? Color.blue : Color.white;
