@@ -20,3 +20,4 @@ MonoBehaviour:
   gridSprites:
   - {fileID: 21300000, guid: b97aca809040e47099053e92d8fef68a, type: 3}
   tooltipText: For those drinks that should never see the light of day.\n\n>Usable
+  isSellable: 1

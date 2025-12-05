@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
@@ -19,4 +20,5 @@ public class FurnitureObject : ScriptableObject
     public Sprite catalogSprite;
     public List<Sprite> gridSprites;
     public string tooltipText;
+    public Boolean isSellable;
 }
