@@ -125,6 +125,7 @@ public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         {
             previousParent = transform.parent;
             transform.parent.GetComponent<GridSlot>().OnRemove(this);
+            PlanningManager.Instance.AdjustFurnitureCost(-1 * furnitureObject.cost);
         }
         // Unparent the cell, set it as last sibling so it's on top of the rest of the UI, and turn raycasting off so it doesn't obscure the cursor's detection
         transform.SetParent(transform.root);
@@ -225,6 +226,7 @@ public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
                 if (previousParent != transform.root)
                 {
                     ReturnToPreviousSlotAndRotation();
+                    PlanningManager.Instance.AdjustFurnitureCost(furnitureObject.cost);
                     return;
                 }
             }
@@ -232,6 +234,7 @@ public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             else
             {
                 previousHoverCell = null;
+                PlanningManager.Instance.AdjustFurnitureCost(furnitureObject.cost);
                 return;
             }
         }
@@ -241,11 +244,13 @@ public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             if (!previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject, rotation))
             {
                 ReturnToPreviousSlotAndRotation();
+                PlanningManager.Instance.AdjustFurnitureCost(furnitureObject.cost);
                 return;
             }
             // Slotting succeeded
             else
             {
+                PlanningManager.Instance.AdjustFurnitureCost(furnitureObject.cost);
                 return;
             }
         }

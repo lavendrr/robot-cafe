@@ -79,7 +79,6 @@ public class GridSlot : MonoBehaviour
                     // Reparent the item and reset the previous parent
                     dropped.transform.SetParent(transform);
                     dropped.GetComponent<GridItem>().previousParent = transform.root;
-                    return true;
                 }
                 catch (IndexOutOfRangeException)
                 {
@@ -94,13 +93,14 @@ public class GridSlot : MonoBehaviour
                 SetOccupiedStatus(true, rootSprite, rotation);
                 dropped.transform.SetParent(transform);
                 dropped.GetComponent<GridItem>().previousParent = transform.root;
-                return true;
             }
         }
         else
         {
             return false;
         }
+        
+        return true;
     }
 
     public bool GetOccupiedStatus()

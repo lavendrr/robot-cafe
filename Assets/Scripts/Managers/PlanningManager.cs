@@ -23,6 +23,7 @@ public class PlanningManager : MonoBehaviour
     public List<FurnitureObject> testFurniture;
 
     public GridItem currentItem = null;
+    public int furnitureCost { get; private set; }
 
     // Start is called before the first frame update
     void Start()
@@ -184,5 +185,11 @@ public class PlanningManager : MonoBehaviour
         {
             currentItem.RotateCounterclockwise();
         }
+    }
+
+    public void AdjustFurnitureCost(int adjustment)
+    {
+        furnitureCost += adjustment;
+        Debug.Log($"Adjusted furniture cost by {adjustment} to a total of {furnitureCost}");
     }
 }
