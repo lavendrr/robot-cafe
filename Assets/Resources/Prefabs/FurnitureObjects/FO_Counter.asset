@@ -15,7 +15,8 @@ MonoBehaviour:
   furnitureName: Counter
   prefab: {fileID: 919132149155446097, guid: 3655d8f12dd3c254782cceba0ff95d1f, type: 3}
   cost: 10
-  gridSprite: {fileID: 21300000, guid: e054b0990d90247b895614a927bceed1, type: 3}
   gridOffsets: []
   catalogSprite: {fileID: 21300000, guid: 15f98b145dc0b4af6a5bd26b2a487bc7, type: 3}
+  gridSprites: []
   tooltipText: Just a simple surface, great for holding things.
+  isSellable: 1

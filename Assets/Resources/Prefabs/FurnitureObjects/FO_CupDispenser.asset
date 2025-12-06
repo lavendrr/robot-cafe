@@ -20,3 +20,4 @@ MonoBehaviour:
   gridSprites:
   - {fileID: 21300000, guid: 5f86b5d84bbd143999fa949f9ac64241, type: 3}
   tooltipText: Don't worry about where they come from.\n\n>Usable
+  isSellable: 1

@@ -202,7 +202,8 @@ public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             }
         }
 
-        if (spawner != null)
+        // Item was dropped back into the catalog
+        if (spawner != null && furnitureObject.isSellable)
         {
             if (previousParent != transform.root)
             {
