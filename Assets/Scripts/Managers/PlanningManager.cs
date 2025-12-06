@@ -25,6 +25,9 @@ public class PlanningManager : MonoBehaviour
     public GridItem currentItem = null;
     public int furnitureCost { get; private set; }
 
+    [SerializeField]
+    private Button startShiftButton;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -193,9 +196,17 @@ public class PlanningManager : MonoBehaviour
         {
             furnitureCost += adjustment;
             Debug.Log($"Adjusted furniture cost by {adjustment} to a total of {furnitureCost}");
+            if(SaveManager.Instance.GetPlayerMoney() - furnitureCost < 0)
+            {
+                startShiftButton.interactable = false;
+            }
+            else
+            {
+                startShiftButton.interactable = true;
+            }
             return;
         }
-        
+
         Debug.Log($"Item isn't new, cost remains the same at {furnitureCost}");
     }
 }
