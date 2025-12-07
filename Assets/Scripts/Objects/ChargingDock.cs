@@ -12,6 +12,7 @@ public class ChargingDock : MonoBehaviour
 			return;
 		}
 
-		Instantiate(playerPrefab, transform.position, transform.rotation);
+		// Spawn player & parent it to the root to make sure that it stays within the scene (mainly for editor testing where the scene gets unloaded on play)
+		Instantiate(playerPrefab, transform.position, transform.rotation, transform.parent.root);
 	}
 }
