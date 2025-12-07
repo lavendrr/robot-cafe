@@ -3,10 +3,14 @@ using TMPro;
 
 public class PlanningUI : MonoBehaviour
 {
+    [SerializeField]
+    private TextMeshProUGUI dayCountText, moneyText, costText;
+
     private void Start()
     {
         UpdatePlanningUI();
     }
+
     public void B_StartShift()
     {
         AudioManager.Instance.PlaySFX(AudioManager.Instance.UIClick);
@@ -15,7 +19,13 @@ public class PlanningUI : MonoBehaviour
 
     private void UpdatePlanningUI()
     {
-        GameObject.Find("PUI_DayCountText").GetComponent<TextMeshProUGUI>().text = "Planning - Day " + SaveManager.Instance.GetDayCount().ToString();
-        GameObject.Find("PUI_MoneyText").GetComponent<TextMeshProUGUI>().text = SaveManager.Instance.GetPlayerMoney().ToString() + " Credits";
+        dayCountText.text = $"Planning - Day {SaveManager.Instance.GetDayCount()}";
+        moneyText.text = $"{SaveManager.Instance.GetPlayerMoney()} Credits";
+    }
+
+    public void UpdateFurnitureCostText()
+    {
+        string colorTag = PlanningManager.Instance.furnitureCost > SaveManager.Instance.GetPlayerMoney() ? "red" : "white";
+        costText.text = $"Cost: <color={colorTag}>{PlanningManager.Instance.furnitureCost} Credits</color>";
     }
 }
