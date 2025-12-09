@@ -14,7 +14,8 @@ public class LevelLayout
     public GameObject floorPrefab;
     public GameObject straightWallPrefab;
     public GameObject cornerWallPrefab;
-    public GameObject deliveryTilePrefab;
+    public FurnitureObject deliveryTileFO;
+    public GameObject windowEndcapPrefab;
 }
 
 [ExecuteAlways]
@@ -34,7 +35,8 @@ public class CafeLayoutManager : MonoBehaviour
     public GameObject floorPrefab;
     public GameObject straightWallPrefab;
     public GameObject cornerWallPrefab;
-    public GameObject deliveryTilePrefab;
+    public FurnitureObject deliveryTileFO;
+    public GameObject windowEndcapPrefab;
     public List<CafeElement> elements = new List<CafeElement>();
 
     private void Start()
@@ -99,7 +101,8 @@ public class CafeLayoutManager : MonoBehaviour
 
     public void PopulateWalls(LevelLayout layout)
     {
-        if (layout.straightWallPrefab == null || layout.cornerWallPrefab == null || layout.deliveryTilePrefab == null)
+        if (layout.straightWallPrefab == null || layout.cornerWallPrefab == null || layout.deliveryTileFO.prefab == null
+            || layout.windowEndcapPrefab == null)
         {
             Debug.LogError("Wall prefabs not assigned in CafeLayoutManager.");
             return;
@@ -108,68 +111,117 @@ public class CafeLayoutManager : MonoBehaviour
         int width = layout.dimensions.cols;
         int height = layout.dimensions.rows;
 
-        // Calculate delivery-adjacent tile coordinates (to the left of delivery tile, relative to orientation)
-        (int col, int row) deliveryTile = layout.deliveryTileCoords;
-        (int col, int row)? deliveryAdjacentTile = null;
+        (int col, int row) deliveryTileRoot = layout.deliveryTileCoords;
+        int deliveryTileWidth = layout.deliveryTileFO.gridOffsets.Count + 1;
 
-        // Determine which edge the delivery tile is on and calculate the adjacent tile
-        if (deliveryTile.row == 0) // Top edge
-            deliveryAdjacentTile = (deliveryTile.col + 1, deliveryTile.row);
-        else if (deliveryTile.col == width - 1) // Right edge
-            deliveryAdjacentTile = (deliveryTile.col, deliveryTile.row + 1);
-        else if (deliveryTile.row == height - 1) // Bottom edge
-            deliveryAdjacentTile = (deliveryTile.col - 1, deliveryTile.row);
-        else if (deliveryTile.col == 0) // Left edge
-            deliveryAdjacentTile = (deliveryTile.col, deliveryTile.row - 1);
+        // Compute the two adjacent edge tiles beside the delivery tile (left and right along the edge)
+        (int col, int row)? leftAdjacent = null;
+        (int col, int row)? rightAdjacent = null;
 
-        // Check if the adjacent tile is a corner
-        if (deliveryAdjacentTile.HasValue)
+        if (deliveryTileRoot.row == 0) // Top edge -> left/right along columns
         {
-            if ((deliveryAdjacentTile.Value.col == 0 || deliveryAdjacentTile.Value.col == width - 1) &&
-                (deliveryAdjacentTile.Value.row == 0 || deliveryAdjacentTile.Value.row == height - 1))
+            leftAdjacent = (deliveryTileRoot.col - deliveryTileWidth, deliveryTileRoot.row);
+            rightAdjacent = (deliveryTileRoot.col + 1, deliveryTileRoot.row);
+        }
+        else if (deliveryTileRoot.col == width - 1) // Right edge -> up/down along rows
+        {
+            leftAdjacent = (deliveryTileRoot.col, deliveryTileRoot.row - deliveryTileWidth); // up
+            rightAdjacent = (deliveryTileRoot.col, deliveryTileRoot.row + 1); // down
+        }
+        else if (deliveryTileRoot.row == height - 1) // Bottom edge -> left/right along columns
+        {
+            leftAdjacent = (deliveryTileRoot.col - deliveryTileWidth, deliveryTileRoot.row);
+            rightAdjacent = (deliveryTileRoot.col + 1, deliveryTileRoot.row);
+        }
+        else if (deliveryTileRoot.col == 0) // Left edge -> up/down along rows
+        {
+            leftAdjacent = (deliveryTileRoot.col, deliveryTileRoot.row - deliveryTileWidth); // up
+            rightAdjacent = (deliveryTileRoot.col, deliveryTileRoot.row + 1); // down
+        }
+
+        // Filter out-of-bounds adjacent tiles
+        bool leftValid = leftAdjacent.HasValue && leftAdjacent.Value.col >= 0 && leftAdjacent.Value.col < width && leftAdjacent.Value.row >= 0 && leftAdjacent.Value.row < height;
+        bool rightValid = rightAdjacent.HasValue && rightAdjacent.Value.col >= 0 && rightAdjacent.Value.col < width && rightAdjacent.Value.row >= 0 && rightAdjacent.Value.row < height;
+
+        // Prevents the delivery window from being adjacent to a corner (no current support for corner window endcaps)
+        if (leftValid)
+        {
+            var t = leftAdjacent.Value;
+            if ((t.col == 0 || t.col == width - 1) && (t.row == 0 || t.row == height - 1))
             {
-                Debug.LogError("Invalid Delivery Tile. Adjacent tile is a corner.");
+                Debug.LogError("Invalid Delivery Tile. Left adjacent tile is a corner.");
+                return;
+            }
+        }
+        if (rightValid)
+        {
+            var t = rightAdjacent.Value;
+            if ((t.col == 0 || t.col == width - 1) && (t.row == 0 || t.row == height - 1))
+            {
+                Debug.LogError("Invalid Delivery Tile. Right adjacent tile is a corner.");
+                return;
             }
         }
 
-        GameObject wallPrefab;
         for (int col = 0; col < width; col++)
         {
             for (int row = 0; row < height; row++)
             {
-                // Skip the delivery-adjacent tile
-                if (deliveryAdjacentTile.HasValue && col == deliveryAdjacentTile.Value.col && row == deliveryAdjacentTile.Value.row)
-                    continue;
-
                 // Check if the tile is an edge tile
                 bool isLeftEdge = (col == 0);
                 bool isRightEdge = (col == width - 1);
                 bool isTopEdge = (row == 0);
                 bool isBottomEdge = (row == height - 1);
 
-                // Check if this is the delivery tile
-                bool isDeliveryTile = (col == layout.deliveryTileCoords.col && row == layout.deliveryTileCoords.row);
-
+                // Skip interior tiles
                 if (!isLeftEdge && !isRightEdge && !isBottomEdge && !isTopEdge)
-                {
-                    if (isDeliveryTile)
-                    {
-                        Debug.LogError("Invalid Delivery Tile. Tile is not an edge cell.");
-                        continue;
-                    }
                     continue;
-                }
 
                 // Check for corner tiles (two perpendicular edges at once)
                 bool isCorner = (isLeftEdge || isRightEdge) && (isBottomEdge || isTopEdge);
 
-                Quaternion rotation = Quaternion.identity;
-                if (isCorner)
+                // Check if this is the delivery tile
+                bool isDeliveryTile = IsDeliveryTile(layout, col, row);
+
+                // If this is the delivery tile, handle instantiation (or error if it's a corner)
+                if (isDeliveryTile)
                 {
-                    if (isDeliveryTile)
+                    if (isCorner)
                     {
                         Debug.LogError("Invalid Delivery Tile. Tile is a corner cell.");
+                        continue;
                     }
+
+                    if (col != layout.deliveryTileCoords.col || row != layout.deliveryTileCoords.row)
+                    {
+                        // This is a delivery offset tile, we only want to instantiate on the root tile
+                        continue;
+                    }
+
+                    Quaternion deliveryRotation = Quaternion.identity;
+                    if (isTopEdge) deliveryRotation = Quaternion.Euler(0, 0, 0);
+                    else if (isRightEdge) deliveryRotation = Quaternion.Euler(0, 90, 0);
+                    else if (isBottomEdge) deliveryRotation = Quaternion.Euler(0, 180, 0);
+                    else if (isLeftEdge) deliveryRotation = Quaternion.Euler(0, 270, 0);
+
+                    Vector3 deliveryPos = ConvertGridToWorldPosition(col, row);
+                    GameObject deliveryInstance = Instantiate(layout.deliveryTileFO.prefab, deliveryPos, deliveryRotation);
+                    deliveryInstance.name = $"DeliveryTile{col}_{row}";
+                    if (CafeRoot != null)
+                        deliveryInstance.transform.SetParent(CafeRoot.transform);
+
+                    continue;
+                }
+
+                bool isLeftWindowAdj = leftValid && col == leftAdjacent.Value.col && row == leftAdjacent.Value.row;
+                bool isRightWindowAdj = rightValid && col == rightAdjacent.Value.col && row == rightAdjacent.Value.row;
+                bool isWindowAdj = isLeftWindowAdj || isRightWindowAdj;
+
+                GameObject wallPrefab;
+                Quaternion rotation = Quaternion.identity;
+
+                if (isCorner)
+                {
                     wallPrefab = layout.cornerWallPrefab;
                     if (isLeftEdge && isTopEdge) rotation = Quaternion.Euler(0, 0, 0);
                     else if (isRightEdge && isTopEdge) rotation = Quaternion.Euler(0, 90, 0);
@@ -178,12 +230,15 @@ public class CafeLayoutManager : MonoBehaviour
                 }
                 else
                 {
-                    if (isDeliveryTile)
+                    if (isWindowAdj)
                     {
-                        wallPrefab = layout.deliveryTilePrefab;
-                    } else {
+                        wallPrefab = layout.windowEndcapPrefab;
+                    }
+                    else
+                    {
                         wallPrefab = layout.straightWallPrefab;
                     }
+
                     if (isTopEdge) rotation = Quaternion.Euler(0, 0, 0);
                     else if (isRightEdge) rotation = Quaternion.Euler(0, 90, 0);
                     else if (isBottomEdge) rotation = Quaternion.Euler(0, 180, 0);
@@ -192,12 +247,34 @@ public class CafeLayoutManager : MonoBehaviour
 
                 Vector3 wallPosition = ConvertGridToWorldPosition(col, row);
                 GameObject wallInstance = Instantiate(wallPrefab, wallPosition, rotation);
-                if (isDeliveryTile)
+
+                // If this is the right adjacent window endcap, flip its local scale on the appropriate axis.
+                if (isRightWindowAdj)
                 {
-                    wallInstance.name = $"DeliveryTile{col}_{row}";
-                } else {
-                    wallInstance.name = $"Wall{col}_{row}";
+                    Vector3 s = wallInstance.transform.localScale;
+                    float yaw = rotation.eulerAngles.y % 360f;
+                    // For horizontal-facing walls (0 or 180) mirror X; for vertical-facing (90 or 270) mirror Z
+                    if (Mathf.Approximately(yaw, 0f) || Mathf.Approximately(yaw, 180f))
+                    {
+                        s.x *= -1f;
+                    }
+                    else
+                    {
+                        s.z *= -1f;
+                    }
+                    wallInstance.transform.localScale = s;
                 }
+
+                if (isWindowAdj)
+                {
+                    if (isLeftWindowAdj) wallInstance.name = $"WindowEndcap_Left{col}_{row}";
+                    else wallInstance.name = $"WindowEndcap_Right{col}_{row}";
+                }
+                else
+                {
+                    wallInstance.name = isCorner ? $"Corner{col}_{row}" : $"Wall{col}_{row}";
+                }
+
                 if (CafeRoot != null)
                 {
                     wallInstance.transform.SetParent(CafeRoot.transform);
@@ -259,9 +336,45 @@ public class CafeLayoutManager : MonoBehaviour
             floorPrefab = floorPrefab,
             straightWallPrefab = straightWallPrefab,
             cornerWallPrefab = cornerWallPrefab,
-            deliveryTilePrefab = deliveryTilePrefab,
+            deliveryTileFO = deliveryTileFO,
+            windowEndcapPrefab = windowEndcapPrefab,
             elements = elements
         };
+    }
+
+    private bool IsDeliveryTile(LevelLayout layout, int col, int row)
+    {
+        if (layout == null || layout.deliveryTileFO == null || layout.deliveryTileFO.gridOffsets == null)
+            return false;
+
+        int width = layout.dimensions.cols;
+        int height = layout.dimensions.rows;
+
+        (int col, int row) root = layout.deliveryTileCoords;
+        int deliveryTileWidth = layout.deliveryTileFO.gridOffsets.Count + 1;
+        if (deliveryTileWidth < 1) deliveryTileWidth = 1;
+
+        // Exact root tile is always part of the delivery tile
+        if (col == root.col && row == root.row)
+            return true;
+
+        // Horizontal edge (top or bottom): tile spans columns [root.col - (w-1) .. root.col] on the same row
+        if (root.row == 0 || root.row == height - 1)
+        {
+            int startCol = root.col - (deliveryTileWidth - 1);
+            int endCol = root.col;
+            return row == root.row && col >= startCol && col <= endCol;
+        }
+
+        // Vertical edge (left or right): tile spans rows [root.row - (w-1) .. root.row] on the same column
+        if (root.col == 0 || root.col == width - 1)
+        {
+            int startRow = root.row - (deliveryTileWidth - 1);
+            int endRow = root.row;
+            return col == root.col && row >= startRow && row <= endRow;
+        }
+
+        return false;
     }
 
     private void OnValidate()

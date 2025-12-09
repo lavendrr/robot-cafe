@@ -44,6 +44,7 @@ public struct CafeElement
         public string straightWallPrefabName;
         public string cornerWallPrefabName;
         public string deliveryTilePrefabName;
+        public string windowEndcapPrefabName;
     }
 
 [System.Serializable]
@@ -156,7 +157,8 @@ public class SaveManager : MonoBehaviour
             floorPrefabName = layout.floorPrefab != null ? "Meshes/" + layout.floorPrefab.name : "",
             straightWallPrefabName = layout.straightWallPrefab != null ? "Prefabs/" + layout.straightWallPrefab.name : "",
             cornerWallPrefabName = layout.cornerWallPrefab != null ? "Prefabs/" + layout.cornerWallPrefab.name : "",
-            deliveryTilePrefabName = layout.deliveryTilePrefab != null ? "Prefabs/" + layout.deliveryTilePrefab.name : ""
+            deliveryTilePrefabName = layout.deliveryTileFO != null ? "Prefabs/FurnitureObjects/" + layout.deliveryTileFO.name : "",
+            windowEndcapPrefabName = layout.windowEndcapPrefab != null ? "Prefabs/" + layout.windowEndcapPrefab.name : ""
         };
 
         foreach (var element in layout.elements)
@@ -181,7 +183,8 @@ public class SaveManager : MonoBehaviour
             floorPrefab = !string.IsNullOrEmpty(serializable.floorPrefabName) ? Resources.Load<GameObject>(serializable.floorPrefabName) : null,
             straightWallPrefab = !string.IsNullOrEmpty(serializable.straightWallPrefabName) ? Resources.Load<GameObject>(serializable.straightWallPrefabName) : null,
             cornerWallPrefab = !string.IsNullOrEmpty(serializable.cornerWallPrefabName) ? Resources.Load<GameObject>(serializable.cornerWallPrefabName) : null,
-            deliveryTilePrefab = !string.IsNullOrEmpty(serializable.deliveryTilePrefabName) ? Resources.Load<GameObject>(serializable.deliveryTilePrefabName) : null,
+            deliveryTileFO = !string.IsNullOrEmpty(serializable.deliveryTilePrefabName) ? Resources.Load<FurnitureObject>(serializable.deliveryTilePrefabName) : null,
+            windowEndcapPrefab = !string.IsNullOrEmpty(serializable.windowEndcapPrefabName) ? Resources.Load<GameObject>(serializable.windowEndcapPrefabName) : null,
             elements = new List<CafeElement>()
         };
 

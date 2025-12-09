@@ -1007,7 +1007,8 @@ MonoBehaviour:
   floorPrefab: {fileID: 919132149155446097, guid: 0f24dc610091e4075b5827916221be03, type: 3}
   straightWallPrefab: {fileID: 8150292395417477140, guid: 5dde754d95371450ba1e83ed1da0899f, type: 3}
   cornerWallPrefab: {fileID: 3286007604592690854, guid: 389e4f946085148be8114ae260ae8e13, type: 3}
-  deliveryTilePrefab: {fileID: 5019414501220453517, guid: 887ee110a273c463093526f3464e24fb, type: 3}
+  deliveryTileFO: {fileID: 11400000, guid: cdf9446ee9ebe4cc1ba6cd64dd8fd61b, type: 2}
+  windowEndcapPrefab: {fileID: 8150292395417477140, guid: c72e77428e172492296bfb8a0bd11de0, type: 3}
 --- !u!4 &741617578
 Transform:
   m_ObjectHideFlags: 0

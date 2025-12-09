@@ -10,11 +10,12 @@ public static class CafeLayoutPresets
             "Starter", new LevelLayout
             {
                 dimensions = (6, 6),
-                deliveryTileCoords = (4, 5),
+                deliveryTileCoords = (3, 5),
                 floorPrefab = Resources.Load<GameObject>("Meshes/SM_floor"),
                 straightWallPrefab = Resources.Load<GameObject>("Prefabs/WallPlain"),
                 cornerWallPrefab = Resources.Load<GameObject>("Prefabs/WallCorner"),
-                deliveryTilePrefab = Resources.Load<GameObject>("Prefabs/DeliveryTile"),
+                deliveryTileFO = Resources.Load<FurnitureObject>("Prefabs/FurnitureObjects/FO_WindowDelivery"),
+                windowEndcapPrefab = Resources.Load<GameObject>("Prefabs/WindowEndcap"),
                 elements = new List<CafeElement>
                 {
                     new() {
