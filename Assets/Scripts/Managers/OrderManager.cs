@@ -10,7 +10,7 @@ public class OrderManager : MonoBehaviour
 
     [SerializeField]
     private GameObject cupPrefab, customerPrefab;
-    private GameObject cupSpawn, customerRoot;
+    private GameObject cupSpawn, customerTarget;
     public List<GameObject> customerList = new();
     public int completedCounter = 0;
 
@@ -27,14 +27,12 @@ public class OrderManager : MonoBehaviour
         }
 
         cupSpawn = GameObject.Find("CupSpawn");
-        customerRoot = GameObject.Find("CustomerRoot");
         // Subscribe to the state change event
         StateManager.Instance.OnStateChanged += HandleStateChange;
 
         if (StateManager.Instance.GetCurrentState().GetType() == typeof(ShiftState))
         {
             ResetOrders();
-            NewCustomer();
         }
     }
 
@@ -53,13 +51,16 @@ public class OrderManager : MonoBehaviour
         if (newState.GetType() == typeof(ShiftState))
         {
             ResetOrders();
-            NewCustomer();
         }
     }
 
     public void NewCustomer()
     {
-        customerList.Add(Instantiate(customerPrefab, customerRoot.transform));
+        if (customerTarget == null)
+        {
+            customerTarget = CafeLayoutManager.Instance.deliveryWindowObject.transform.Find("CustomerTarget").gameObject;
+        }
+        customerList.Add(Instantiate(customerPrefab, customerTarget.transform));
     }
 
     public bool FillOrder(GameObject cupObj, Vector3 position)

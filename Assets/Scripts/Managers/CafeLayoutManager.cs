@@ -38,6 +38,7 @@ public class CafeLayoutManager : MonoBehaviour
     public FurnitureObject deliveryTileFO;
     public GameObject windowEndcapPrefab;
     public List<CafeElement> elements = new List<CafeElement>();
+    public GameObject deliveryWindowObject;
 
     void Start()
     {
@@ -55,11 +56,17 @@ public class CafeLayoutManager : MonoBehaviour
         {
             if (SaveManager.Instance.GetCafeLayout() == null)
             {
-                Debug.LogError("No cafe layout found in SaveManager.");
+                Debug.LogError("No cafe layout found in SaveManager, spawning Starter preset.");
+                SaveManager.Instance.SaveCafeLayout(CafeLayoutPresets.GetPreset("Starter"));
             }
 
             DestroyCafeFurniture();
             PopulateCafeLevel(SaveManager.Instance.GetCafeLayout());
+
+            if (StateManager.Instance.GetCurrentState().GetType() == typeof(ShiftState) && OrderManager.Instance)
+            {
+                OrderManager.Instance.NewCustomer();
+            }
         }
     }
     void OnDestroy()
@@ -214,6 +221,7 @@ public class CafeLayoutManager : MonoBehaviour
                     Vector3 deliveryPos = ConvertGridToWorldPosition(col, row);
                     GameObject deliveryInstance = Instantiate(layout.deliveryTileFO.prefab, deliveryPos, deliveryRotation);
                     deliveryInstance.name = $"DeliveryTile{col}_{row}";
+                    deliveryWindowObject = deliveryInstance;
                     if (CafeRoot != null)
                         deliveryInstance.transform.SetParent(CafeRoot.transform);
 
@@ -319,7 +327,7 @@ public class CafeLayoutManager : MonoBehaviour
         }
     }
 
-    private void DestroyCafeFurniture()
+    public void DestroyCafeFurniture()
     {
         if (CafeRoot == null)
             return;
