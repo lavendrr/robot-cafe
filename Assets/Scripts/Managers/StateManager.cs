@@ -18,7 +18,7 @@ public class StateManager : MonoBehaviour
 
     public Player player;
 
-    private void Awake()
+    void Awake()
     {
         if (Instance == null)
         {
@@ -30,7 +30,16 @@ public class StateManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
+    void Start()
     {
         // Subscribe to the scene loaded event
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -56,7 +65,7 @@ public class StateManager : MonoBehaviour
         OnStateChanged?.Invoke(newState);
     }
 
-    private void Update()
+    void Update()
     {
         if (currentState != null)
         {
@@ -97,11 +106,6 @@ public class StateManager : MonoBehaviour
         {
             SceneManager.SetActiveScene(scene);
         }
-    }
-
-    void OnDestroy()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }
 

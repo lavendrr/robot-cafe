@@ -39,7 +39,7 @@ public class CafeLayoutManager : MonoBehaviour
     public GameObject windowEndcapPrefab;
     public List<CafeElement> elements = new List<CafeElement>();
 
-    private void Start()
+    void Start()
     {
         // If there is an instance, and it's not me, delete myself
         if (Instance != null && Instance != this)
@@ -60,6 +60,13 @@ public class CafeLayoutManager : MonoBehaviour
 
             DestroyCafeFurniture();
             PopulateCafeLevel(SaveManager.Instance.GetCafeLayout());
+        }
+    }
+    void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
         }
     }
 

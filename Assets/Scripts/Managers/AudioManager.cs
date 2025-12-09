@@ -14,7 +14,7 @@ public class AudioManager : MonoBehaviour
 
     private bool playerActive = false;
 
-    private void Awake()
+    void Awake()
     {
         // If there is an instance, and it's not me, delete myself
         if (Instance != null && Instance != this)
@@ -27,7 +27,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    void Start()
     {
         // Subscribe to the state change event
         StateManager.Instance.OnStateChanged += HandleStateChange;
@@ -43,10 +43,14 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         // Unsubscribe from the state change event
         StateManager.Instance.OnStateChanged -= HandleStateChange;
+        if (Instance == this)
+        {
+            Instance = null;
+        }
     }
 
     private void HandleStateChange(State newState)

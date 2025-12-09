@@ -23,6 +23,14 @@ public class CameraManager : MonoBehaviour
         }
     }
 
+    void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
     void Start()
     {
         // Ensure both cameras are initially enabled correctly

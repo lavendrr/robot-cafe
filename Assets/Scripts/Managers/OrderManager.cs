@@ -14,7 +14,7 @@ public class OrderManager : MonoBehaviour
     public List<GameObject> customerList = new();
     public int completedCounter = 0;
 
-    private void Awake()
+    void Awake()
     {
         // If there is an instance, and it's not me, delete myself.
         if (Instance != null && Instance != this)
@@ -38,10 +38,14 @@ public class OrderManager : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         // Unsubscribe from the state change event
         StateManager.Instance.OnStateChanged -= HandleStateChange;
+        if (Instance == this)
+        {
+            Instance = null;
+        }
     }
 
     private void HandleStateChange(State newState)

@@ -68,7 +68,7 @@ public class SaveManager : MonoBehaviour
     private SaveData saveData = new SaveData();
     private string path = "Assets/SaveData/saveData.json";
 
-    private void Awake()
+    void Awake()
     {
         // If there is an instance, and it's not me, delete myself.
         if (Instance != null && Instance != this)
@@ -78,6 +78,14 @@ public class SaveManager : MonoBehaviour
         else
         {
             Instance = this;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
         }
     }
 

@@ -23,7 +23,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     public Sprite crosshairIcon, grabIcon, slotIcon, useIcon, talkIcon;
 
-    private void Awake()
+    void Awake()
     {
         // If there is an instance, and it's not me, delete myself.
         if (Instance != null && Instance != this)
@@ -38,7 +38,7 @@ public class UIManager : MonoBehaviour
         crosshair = new Crosshair(crosshairObj);
     }
 
-    private void Start()
+    void Start()
     {
         // Subscribe to the state change event
         StateManager.Instance.OnStateChanged += HandleStateChange;
@@ -56,13 +56,18 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         // Unsubscribe from the state change event
         StateManager.Instance.OnStateChanged -= HandleStateChange;
 
         // Unsubscribe from the game paused event
         StateManager.Instance.OnGamePausedChanged -= OnGamePausedChanged;
+
+        if (Instance == this)
+        {
+            Instance = null;
+        }
     }
 
     private void HandleStateChange(State newState)

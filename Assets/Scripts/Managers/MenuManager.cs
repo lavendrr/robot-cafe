@@ -28,7 +28,7 @@ public class MenuManager : MonoBehaviour
     public static MenuManager Instance { get; private set; }
     private List<MenuItem> menu = new List<MenuItem>();
 
-    private void Awake()
+    void Awake()
     {
         if (Instance == null)
         {
@@ -38,6 +38,14 @@ public class MenuManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
         }
     }
 

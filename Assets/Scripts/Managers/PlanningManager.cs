@@ -47,6 +47,14 @@ public class PlanningManager : MonoBehaviour
         PopulateCatalogPanel();
     }
 
+    void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
     private void CreateBlueprintGrid()
     {
         LevelLayout layout = SaveManager.Instance.GetCafeLayout();

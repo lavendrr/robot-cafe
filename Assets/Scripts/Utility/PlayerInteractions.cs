@@ -62,7 +62,10 @@ public class PlayerInteractions : MonoBehaviour
 
     void OnDestroy()
     {
-        Instance = null;
+        if (Instance == this)
+        {
+            Instance = null;
+        }
     }
 
     public bool GetMoveInputState()
