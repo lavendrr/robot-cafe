@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -55,11 +56,13 @@ public class PlayerInteractions : MonoBehaviour
 
     void Update()
     {
-        // if (StateManager.Instance.GetCurrentState() is ShiftState)
-        // {
         moveAction.started += ctx => moveInput = true;
         moveAction.canceled += ctx => moveInput = false;
-        // }
+    }
+
+    void OnDestroy()
+    {
+        Instance = null;
     }
 
     public bool GetMoveInputState()

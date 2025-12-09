@@ -50,7 +50,10 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateCrosshair();
+        if (PlayerInteractions.Instance is not null)
+        {
+            UpdateCrosshair();
+        }
     }
 
     private void OnDestroy()
