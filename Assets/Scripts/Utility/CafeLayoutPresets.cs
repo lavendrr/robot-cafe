@@ -25,17 +25,17 @@ public static class CafeLayoutPresets
                     },
                     new() {
                         furnitureObject = Resources.Load<FurnitureObject>("Prefabs/FurnitureObjects/FO_CoffeeMachine"),
-                        rootGridCoord = new GridCoord { col = 2, row = 5 },
-                        rotation = 180
+                        rootGridCoord = new GridCoord { col = 0, row = 4 },
+                        rotation = 90
                     },
                     new() {
                         furnitureObject = Resources.Load<FurnitureObject>("Prefabs/FurnitureObjects/FO_CupDispenser"),
-                        rootGridCoord = new GridCoord { col = 0, row = 3 },
-                        rotation = -90
+                        rootGridCoord = new GridCoord { col = 0, row = 5 },
+                        rotation = -270
                     },
                     new() {
                         furnitureObject = Resources.Load<FurnitureObject>("Prefabs/FurnitureObjects/FO_TrashBin"),
-                        rootGridCoord = new GridCoord { col = 0, row = 5 },
+                        rootGridCoord = new GridCoord { col = 4, row = 5 },
                         rotation = 0
                     },
                 }
