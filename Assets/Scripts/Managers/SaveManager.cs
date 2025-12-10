@@ -7,6 +7,7 @@ using FMODUnity;
 
 public class SaveData
 {
+    public int saveDataVersion = 0;
     public int currentDay = 0;
     public string playerName = "";
     public string cafeName = "";
@@ -50,6 +51,8 @@ public struct CafeElement
 [System.Serializable]
 public class SerializableSaveData
 {
+
+    public int saveDataVersion;
     public int currentDay;
     public string playerName;
     public string cafeName;
@@ -67,6 +70,8 @@ public class SaveManager : MonoBehaviour
     [SerializeField]
     private SaveData saveData = new SaveData();
     private string path = "Assets/SaveData/saveData.json";
+    // bump this when introducing breaking changes to the save data format
+    private const int CURRENT_SAVEDATA_VERSION = 1;
 
     void Awake()
     {
@@ -96,6 +101,7 @@ public class SaveManager : MonoBehaviour
         {
             saveData = new SaveData
             {
+                saveDataVersion = CURRENT_SAVEDATA_VERSION,
                 currentDay = 0,
                 playerName = "Player",
                 cafeName = "Robot Cafe",
@@ -118,6 +124,7 @@ public class SaveManager : MonoBehaviour
         // Convert to serializable form
         SerializableSaveData serializable = new SerializableSaveData
         {
+            saveDataVersion = saveData.saveDataVersion,
             currentDay = saveData.currentDay,
             playerName = saveData.playerName,
             cafeName = saveData.cafeName,
@@ -138,10 +145,32 @@ public class SaveManager : MonoBehaviour
 
     public void Load()
     {
-        SerializableSaveData serialized = new SerializableSaveData();
-        JsonUtility.FromJsonOverwrite(File.ReadAllText(path), serialized);
+        string json = File.ReadAllText(path);
+        var serialized = JsonUtility.FromJson<SerializableSaveData>(json);
+
+        if (serialized == null || serialized.saveDataVersion != CURRENT_SAVEDATA_VERSION)
+        {
+            Debug.LogWarning($"Save file version outdated or invalid. Recreating fresh save.");
+            // Recreate fresh save data
+            saveData = new SaveData
+            {
+                saveDataVersion = CURRENT_SAVEDATA_VERSION,
+                currentDay = 0,
+                playerName = "Player",
+                cafeName = "Robot Cafe",
+                highScore = 0,
+                dayCount = 0,
+                playerMoney = 0,
+                cafeLayout = CafeLayoutPresets.GetPreset("Starter")
+            };
+            Save();
+            return;
+        }
+
+        // Version matches, load normally
         saveData = new SaveData
         {
+            saveDataVersion = serialized.saveDataVersion,
             currentDay = serialized.currentDay,
             playerName = serialized.playerName,
             cafeName = serialized.cafeName,
