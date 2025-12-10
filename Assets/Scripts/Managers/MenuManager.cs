@@ -31,7 +31,7 @@ public class MenuManager : MonoBehaviour
     public static MenuManager Instance { get; private set; }
     private List<MenuItem> menu = new List<MenuItem>();
     string[] FO_names;
-    public Dictionary<string, FurnitureObject> FO_dictionary = new Dictionary<string, FurnitureObject>();
+    private Dictionary<string, FurnitureObject> FO_dictionary = new Dictionary<string, FurnitureObject>();
     string prefix = "Prefabs/FurnitureObjects/";
 
     void Awake()
@@ -52,8 +52,14 @@ public class MenuManager : MonoBehaviour
 
             foreach (string file in FO_names)
             {
-                FO_dictionary.Add(Path.GetFileNameWithoutExtension(file), null);
+                FO_dictionary.Add(file.Split("Assets/Resources/Prefabs/FurnitureObjects/")[1].Split(".asset")[0], null);
             }
+
+            // Test print of all located FurnitureObjects
+            // foreach (var key in FO_dictionary.Keys)
+            // {
+            //     Debug.Log(key);
+            // }
         }
         else
         {
@@ -69,7 +75,7 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public FurnitureObject AccessFurnitureObject(string name)
+    public FurnitureObject GetFurnitureObject(string name)
     {
         if (FO_dictionary[name] == null || !FO_dictionary.ContainsKey(name))
         {
