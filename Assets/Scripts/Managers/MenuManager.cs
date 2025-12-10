@@ -30,8 +30,8 @@ public class MenuManager : MonoBehaviour
 {
     public static MenuManager Instance { get; private set; }
     private List<MenuItem> menu = new List<MenuItem>();
-    string[] FO_names = Directory.GetFiles("Assets/Resources/Prefabs/FurnitureObjects/", "*.asset", SearchOption.TopDirectoryOnly);
-    public Dictionary<string, FurnitureObject> FO_dictionary;
+    string[] FO_names;
+    public Dictionary<string, FurnitureObject> FO_dictionary = new Dictionary<string, FurnitureObject>();
     string prefix = "Prefabs/FurnitureObjects/";
 
     void Awake()
@@ -39,9 +39,20 @@ public class MenuManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+
+            string folderPath = Path.Combine(Application.dataPath, "Resources/Prefabs/FurnitureObjects");
+            if (Directory.Exists(folderPath))
+            {
+                FO_names = Directory.GetFiles(folderPath, "*.asset", SearchOption.TopDirectoryOnly);
+            }
+            else
+            {
+                FO_names = new string[0];
+            }
+
             foreach (string file in FO_names)
             {
-                FO_dictionary.Add(file.Split("Assets/Resources/Prefabs/FurnitureObjects/")[1], null);
+                FO_dictionary.Add(Path.GetFileNameWithoutExtension(file), null);
             }
         }
         else
@@ -60,7 +71,7 @@ public class MenuManager : MonoBehaviour
 
     public FurnitureObject AccessFurnitureObject(string name)
     {
-        if(FO_dictionary[name] == null)
+        if (FO_dictionary[name] == null || !FO_dictionary.ContainsKey(name))
         {
             FO_dictionary[name] = Resources.Load<FurnitureObject>(prefix + name);
         }
@@ -93,7 +104,7 @@ public class MenuManager : MonoBehaviour
     // For now, add the default menu items on start
     void Start()
     {
-        AddItem("Unleaded",FuelType.Unleaded,2, new List<FurnitureObject>{Resources.Load<FurnitureObject>("Prefabs/FurnitureObjects/FO_CoffeeMachine")});
+        AddItem("Unleaded",FuelType.Unleaded,2);
         AddItem("Diesel",FuelType.Diesel,3);
         AddItem("Premium",FuelType.Premium,5);
     }
