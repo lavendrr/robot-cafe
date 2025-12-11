@@ -123,7 +123,7 @@ public class MenuManager : MonoBehaviour
     // For now, add the default menu items on start
     void Start()
     {
-        AddItem("Unleaded",FuelType.Unleaded,2, new string[] {"FO_CoffeeMachine", "FO_WindowDelivery"});
+        AddItem("Unleaded",FuelType.Unleaded,2, new string[] {"FO_CoffeeMachine"});
         AddItem("Diesel",FuelType.Diesel,3);
         AddItem("Premium",FuelType.Premium,5);
 

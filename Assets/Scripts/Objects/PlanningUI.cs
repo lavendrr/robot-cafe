@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class PlanningUI : MonoBehaviour
 {
@@ -14,6 +15,38 @@ public class PlanningUI : MonoBehaviour
     public void B_StartShift()
     {
         AudioManager.Instance.PlaySFX(AudioManager.Instance.UIClick);
+
+        bool validMenu = true;
+
+        List<CafeElement> cafeElements = PlanningManager.Instance.GetFinalGrid();
+        List<FurnitureObject> furnitureList = new(); // Might be able to get this in one go with a lambda function?
+        Dictionary<MenuItem, FurnitureObject> invalidList = new();
+        foreach (CafeElement element in cafeElements)
+        {
+            furnitureList.Add(element.furnitureObject);
+        }
+
+        foreach (MenuItem item in MenuManager.Instance.ListItems())
+        {
+            foreach (FurnitureObject requiredObject in item.requiredFurniture)
+            {
+                if (!furnitureList.Contains(requiredObject))
+                {
+                    validMenu = false;
+                    invalidList[item] = requiredObject;
+                }
+            }
+        }
+
+        if (!validMenu)
+        {
+            foreach (MenuItem item in invalidList.Keys)
+            {
+                Debug.Log($"{item.name} is missing required furniture object {invalidList[item].furnitureName}");
+            }
+            return;
+        }
+
         StateManager.Instance.ChangeState(new ShiftState());
     }
 
