@@ -17,12 +17,25 @@ public class MenuItem
     public int cost;
     public List<FurnitureObject> requiredFurniture;
 
-    public MenuItem(string _name, FuelType _fuelType, int _cost, List<FurnitureObject> _requiredFurniture = null)
+    public MenuItem(string _name, FuelType _fuelType, int _cost, string[] _requiredFurniture = null)
     {
         name = _name;
         fuelType = _fuelType;
         cost = _cost;
-        requiredFurniture = _requiredFurniture == null ? new List<FurnitureObject>() : _requiredFurniture;
+        requiredFurniture = GenerateFOList(_requiredFurniture);
+    }
+
+    private List<FurnitureObject> GenerateFOList(string[] input)
+    {
+        List<FurnitureObject> output = new();
+        if (input is not null)
+        {
+            foreach (string item in input)
+            {
+                output.Add(MenuManager.Instance.GetFurnitureObject(item));
+            }
+        }
+        return output;
     }
 }
 
@@ -90,7 +103,7 @@ public class MenuManager : MonoBehaviour
         return menu.ToArray();
     }
 
-    public void AddItem(string name, FuelType fuelType, int cost, List<FurnitureObject> requiredFurniture = null)
+    public void AddItem(string name, FuelType fuelType, int cost, string[] requiredFurniture = null)
     {
         menu.Add(new MenuItem(name, fuelType, cost, requiredFurniture));
     }
@@ -110,8 +123,16 @@ public class MenuManager : MonoBehaviour
     // For now, add the default menu items on start
     void Start()
     {
-        AddItem("Unleaded",FuelType.Unleaded,2);
+        AddItem("Unleaded",FuelType.Unleaded,2, new string[] {"FO_CoffeeMachine", "FO_WindowDelivery"});
         AddItem("Diesel",FuelType.Diesel,3);
         AddItem("Premium",FuelType.Premium,5);
+
+        // foreach (MenuItem item in menu)
+        // {
+        //     foreach (FurnitureObject obj in item.requiredFurniture)
+        //     {
+        //         Debug.Log($"{item.name} requires {obj.furnitureName}");
+        //     }
+        // }
     }
 }
