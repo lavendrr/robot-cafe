@@ -1,13 +1,42 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class Cup : MonoBehaviour
 {
     private FuelType fuelType = FuelType.None;
 
+    private Dictionary<FuelType, float> drinkComp = new();
+
     public FuelType GetFuelType()
     {
         return fuelType;
+    }
+
+    public Dictionary<FuelType, float> GetDrinkComp()
+    {
+        return drinkComp;
+    }
+
+    // Returns true if the drink overflowed from this fill
+    public bool FillPartial(FuelType fuel, float fillAmount)
+    {
+        if (!drinkComp.ContainsKey(fuel))
+        {
+            drinkComp[fuel] = 0f;
+        }
+
+        drinkComp[fuel] = drinkComp[fuel] + fillAmount;
+
+        Debug.Log($"Partial fill of {fuel} w/ amount {fillAmount}");
+
+        if (drinkComp.Sum(x => x.Value) >= 100f)
+        {
+            Debug.Log("Overflowed");
+            return true;
+        }
+        return false;
     }
 
     public void Fill(FuelType fillType, Vector3 position, Material fuelMaterial)
@@ -38,6 +67,7 @@ public class Cup : MonoBehaviour
                 Debug.LogError("Drink mesh renderer not found.");
             }
         }
+        FillPartial(fillType, 50f);
     }
 
     // Animation function for the drink mesh
