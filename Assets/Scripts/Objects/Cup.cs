@@ -6,7 +6,7 @@ using System.Linq;
 public class Cup : MonoBehaviour
 {
     private FuelType fuelType = FuelType.None;
-
+    bool filling = false;
     private Dictionary<FuelType, float> drinkComp = new();
 
     public FuelType GetFuelType()
@@ -42,14 +42,18 @@ public class Cup : MonoBehaviour
     public void Fill(FuelType fillType, Vector3 position, Material fuelMaterial)
     {
         // Fill the cup if it's empty, or do nothing if it's already full
-        if (fuelType == FuelType.None)
+        // if (fuelType == FuelType.None)
+        var animator = transform.parent.parent.parent.gameObject.GetComponentInChildren<Animator>();
+
+        if (!filling)
         {
+            filling = true;
             // Make the cup un-grabbable (until it is set to be grabbable again by the animation function when finished)
             gameObject.tag = "Untagged";
 
             // Animate the lever
-            var animator = transform.parent.parent.parent.gameObject.GetComponentInChildren<Animator>();
-            animator.SetTrigger("LeverPull");
+            // var animator = transform.parent.parent.parent.gameObject.GetComponentInChildren<Animator>();
+            animator.SetTrigger("LeverPullStart");
 
             AudioManager.Instance.PlaySFX(AudioManager.Instance.pourCoffee, position);
 
@@ -66,6 +70,11 @@ public class Cup : MonoBehaviour
             {
                 Debug.LogError("Drink mesh renderer not found.");
             }
+        }
+        else
+        {
+            filling = false;
+            animator.SetTrigger("LeverPullStop");
         }
         FillPartial(fillType, 50f);
     }
