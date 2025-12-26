@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class Cup : MonoBehaviour
 {
@@ -28,8 +29,13 @@ public class Cup : MonoBehaviour
         }
 
         drinkComp[fuel] = drinkComp[fuel] + fillAmount;
+        UpdateCoffeeMesh();
 
         Debug.Log($"Partial fill of {fuel} w/ amount {fillAmount}");
+        foreach (KeyValuePair<FuelType, float> pair in drinkComp)
+        {
+            Debug.Log($"Drink has {pair.Key} at {pair.Value}");
+        }
 
         if (drinkComp.Sum(x => x.Value) >= 100f)
         {
@@ -63,7 +69,7 @@ public class Cup : MonoBehaviour
             {
                 drinkMeshRenderer.enabled = true;
                 drinkMeshRenderer.material = fuelMaterial;
-                StartCoroutine(ScaleUpCoffeeMesh());
+                StartCoroutine(ScaleUpCoffeeMesh(fillType));
                 fuelType = fillType;
             }
             else
@@ -76,35 +82,62 @@ public class Cup : MonoBehaviour
             filling = false;
             animator.SetTrigger("LeverPullStop");
         }
-        FillPartial(fillType, 50f);
     }
 
-    // Animation function for the drink mesh
-    private IEnumerator ScaleUpCoffeeMesh()
+    // Static update function for the drink mesh
+    private void UpdateCoffeeMesh()
     {
-        float elapsedTime = 0f;
         Vector3 startScale = new Vector3(0.81f, 0.094f, 0.81f);
         Vector3 targetScale = Vector3.one;
-        float duration = 1.5f;
 
         Transform drinkMeshTransform = transform.Find("SM_drink");
         if (drinkMeshTransform == null)
         {
             Debug.LogError("Drink mesh transform not found.");
-            yield break;
+            return;
         }
+        drinkMeshTransform.localScale = Vector3.Lerp(startScale, targetScale, Math.Clamp(drinkComp.Sum(x => x.Value)/100, 0, 1));
+    }
+
+    // Animation function for the drink mesh
+    private IEnumerator ScaleUpCoffeeMesh(FuelType fuel)
+    {
+        float elapsedTime = 0f;
+        // Vector3 startScale = new Vector3(0.81f, 0.094f, 0.81f);
+        // Vector3 targetScale = Vector3.one;
+        float duration = 1.5f;
+
+        // Transform drinkMeshTransform = transform.Find("SM_drink");
+        // if (drinkMeshTransform == null)
+        // {
+        //     Debug.LogError("Drink mesh transform not found.");
+        //     yield break;
+        // }
+
+        int a = 0;
 
 
         while (elapsedTime < duration)
         {
             // Use linear interpolation to scale the mesh up
             float t = elapsedTime / duration;
-            drinkMeshTransform.localScale = Vector3.Lerp(startScale, targetScale, t);
+            //drinkMeshTransform.localScale = Vector3.Lerp(startScale, targetScale, t);
             elapsedTime += Time.deltaTime;
-            yield return null;
+
+            FillPartial(fuel, 1f);
+            if (!filling)
+            {
+                Debug.Log("Stopped filling");
+                gameObject.tag = "Grabbable";
+                yield break;
+            }
+            a++;
+            yield return new WaitForSeconds(0.015f);
         }
 
-        drinkMeshTransform.localScale = targetScale;
+        Debug.Log(a);
+
+        //drinkMeshTransform.localScale = targetScale;
         // Make the cup interactable again
         gameObject.tag = "Grabbable";
     }
