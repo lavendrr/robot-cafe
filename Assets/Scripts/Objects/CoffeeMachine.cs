@@ -31,7 +31,7 @@ public class CoffeeMachine : MonoBehaviour
         var cupObj = slot.GetSlottedObj();
         if (cupObj != null)
         {
-            cupObj.GetComponent<Cup>().Fill(coffeeMachineType, slot.gameObject.transform.position, fuelMaterial);
+            cupObj.GetComponent<Cup>().ToggleFill(coffeeMachineType, slot.gameObject.transform.position, fuelMaterial);
         }
     }
 }

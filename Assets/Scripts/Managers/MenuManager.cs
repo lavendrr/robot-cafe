@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using System;
+using System.Linq;
 
 public enum FuelType
 {
@@ -10,17 +12,23 @@ public enum FuelType
     Premium
 }
 
+public class Drink
+{
+    public Dictionary<FuelType, float> comp = new();
+    public List<string> toppings = new();
+}
+
 public class MenuItem
 {
     public string name;
-    public FuelType fuelType;
+    public Drink drink = new();
     public int cost;
     public List<FurnitureObject> requiredFurniture;
 
-    public MenuItem(string _name, FuelType _fuelType, int _cost, string[] _requiredFurniture = null)
+    public MenuItem(string _name, Dictionary<FuelType, float> _drinkComp, int _cost, string[] _requiredFurniture = null)
     {
         name = _name;
-        fuelType = _fuelType;
+        drink.comp = _drinkComp;
         cost = _cost;
         requiredFurniture = GenerateFOList(_requiredFurniture);
     }
@@ -36,6 +44,28 @@ public class MenuItem
             }
         }
         return output;
+    }
+
+    public bool CompareDrink(Drink compare)
+    {
+        if (drink.comp.Count != compare.comp.Count)
+        {
+            return false;
+        }
+        
+        foreach (var x in drink.comp)
+        {
+            if (!compare.comp.Keys.Contains(x.Key))
+            {
+                return false;
+            }
+            if (!(x.Value - 20f <= compare.comp[x.Key] && compare.comp[x.Key] <= x.Value + 20f))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 
@@ -103,9 +133,9 @@ public class MenuManager : MonoBehaviour
         return menu.ToArray();
     }
 
-    public void AddItem(string name, FuelType fuelType, int cost, string[] requiredFurniture = null)
+    public void AddItem(string name, Dictionary<FuelType, float> drinkComp, int cost, string[] requiredFurniture = null)
     {
-        menu.Add(new MenuItem(name, fuelType, cost, requiredFurniture));
+        menu.Add(new MenuItem(name, drinkComp, cost, requiredFurniture));
     }
 
     public void RemoveItem(string itemName)
@@ -123,9 +153,9 @@ public class MenuManager : MonoBehaviour
     // For now, add the default menu items on start
     void Start()
     {
-        AddItem("Unleaded",FuelType.Unleaded,2, new string[] {"FO_CoffeeMachine"});
-        AddItem("Diesel",FuelType.Diesel,3);
-        AddItem("Premium",FuelType.Premium,5);
+        AddItem("Unleaded", new Dictionary<FuelType, float>() {{FuelType.Unleaded, 100f}}, 2, new string[] {"FO_CoffeeMachine"});
+        AddItem("Diesel", new Dictionary<FuelType, float>() {{FuelType.Diesel, 100f}},3);
+        AddItem("Premium", new Dictionary<FuelType, float>() {{FuelType.Premium, 100f}}, 5);
 
         // foreach (MenuItem item in menu)
         // {
