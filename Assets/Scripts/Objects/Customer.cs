@@ -27,6 +27,8 @@ public class Customer : MonoBehaviour
     private Order order;
     private MeshRenderer headMesh;
     public EventInstance hoverAudio;
+    float orderTimer = 0f;
+    bool ordered = false;
 
     void Start()
     {
@@ -35,6 +37,14 @@ public class Customer : MonoBehaviour
         hoverAudio = (EventInstance)AudioManager.Instance.PlaySFX(AudioManager.Instance.customerHover, transform.position, gameObject, true);
 
         SetEmotion(Emotion.Happy);
+    }
+
+    void Update()
+    {
+        if (ordered)
+        {
+            orderTimer += Time.deltaTime;
+        }
     }
 
     public Order GetOrder()
@@ -46,6 +56,7 @@ public class Customer : MonoBehaviour
     {
         // If the order is null, place a new order. This stops repeated order taking
         order ??= new Order();
+        ordered = true;
     }
 
     public void WrongOrder()
@@ -65,6 +76,8 @@ public class Customer : MonoBehaviour
     {
         animator.SetTrigger("Leave");
         SetEmotion(Emotion.Starry);
+        ordered = false;
+        Debug.Log($"Order took {orderTimer} seconds");
     }
 
     public void Destroy()
