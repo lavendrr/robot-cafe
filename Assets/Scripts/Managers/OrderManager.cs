@@ -72,7 +72,7 @@ public class OrderManager : MonoBehaviour
             currentCustomer.WrongOrder();
             return false;
         }
-        else if (currentCustomer.GetOrder().orderItem.fuelType == cupObj.GetComponent<Cup>().GetFuelType())
+        else if (currentCustomer.GetOrder().orderItem.CompareDrink(cupObj.GetComponent<Cup>().drink))
         {
             // Remove the order from the list, initialize a new customer, and spawn a new cup and delete the one used to fill the order
             var gain = currentCustomer.GetOrder().orderItem.cost;

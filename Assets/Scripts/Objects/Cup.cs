@@ -1,82 +1,95 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 public class Cup : MonoBehaviour
 {
-    private FuelType fuelType = FuelType.None;
+    bool filling = false;
+    [SerializeField]
+    MeshRenderer drinkMeshRenderer;
+    public Drink drink = new();
 
-    public FuelType GetFuelType()
+    public Dictionary<FuelType, float> GetDrinkComp()
     {
-        return fuelType;
+        return drink.comp;
     }
 
-    public void Fill(FuelType fillType, Vector3 position, Material fuelMaterial)
+    public void ToggleFill(FuelType fillType, Vector3 position, Material fuelMaterial)
     {
         // Fill the cup if it's empty, or do nothing if it's already full
-        if (fuelType == FuelType.None)
+        var animator = transform.parent.parent.parent.gameObject.GetComponentInChildren<Animator>();
+
+        if (!filling)
         {
+            filling = true;
             // Make the cup un-grabbable (until it is set to be grabbable again by the animation function when finished)
             gameObject.tag = "Untagged";
 
             // Animate the lever
-            var animator = transform.parent.parent.parent.gameObject.GetComponentInChildren<Animator>();
-            animator.SetTrigger("LeverPull");
+            animator.SetTrigger("LeverPullStart");
 
             AudioManager.Instance.PlaySFX(AudioManager.Instance.pourCoffee, position);
 
-            // Activate the drink mesh and animate it
-            MeshRenderer drinkMeshRenderer = gameObject.GetComponentsInChildren<MeshRenderer>()[1];
-            if (drinkMeshRenderer != null)
-            {
-                drinkMeshRenderer.enabled = true;
-                drinkMeshRenderer.material = fuelMaterial;
-                StartCoroutine(ScaleUpCoffeeMesh());
-                fuelType = fillType;
-            }
-            else
-            {
-                Debug.LogError("Drink mesh renderer not found.");
-            }
+            drinkMeshRenderer.material = fuelMaterial;
+            StartCoroutine(Fill(fillType, 1f));
+        }
+        else
+        {
+            filling = false;
+            animator.SetTrigger("LeverPullStop");
         }
     }
 
-    // Animation function for the drink mesh
-    private IEnumerator ScaleUpCoffeeMesh()
+    // Static update function for the drink mesh
+    private void UpdateCoffeeMesh()
     {
-        float elapsedTime = 0f;
         Vector3 startScale = new Vector3(0.81f, 0.094f, 0.81f);
         Vector3 targetScale = Vector3.one;
-        float duration = 1.5f;
 
-        Transform drinkMeshTransform = transform.Find("SM_drink");
-        if (drinkMeshTransform == null)
+        Transform drinkMeshTransform = drinkMeshRenderer.transform;
+        drinkMeshTransform.localScale = Vector3.Lerp(startScale, targetScale, Math.Clamp(drink.comp.Sum(x => x.Value)/100, 0, 1));
+    }
+
+    // Animation function for the drink mesh
+    private IEnumerator Fill(FuelType fuel, float fillAmount)
+    {
+        if (!drink.comp.ContainsKey(fuel))
         {
-            Debug.LogError("Drink mesh transform not found.");
-            yield break;
+            drink.comp[fuel] = 0f;
         }
 
-
-        while (elapsedTime < duration)
+        while (filling)
         {
-            // Use linear interpolation to scale the mesh up
-            float t = elapsedTime / duration;
-            drinkMeshTransform.localScale = Vector3.Lerp(startScale, targetScale, t);
-            elapsedTime += Time.deltaTime;
-            yield return null;
+            drink.comp[fuel] = drink.comp[fuel] + fillAmount;
+            UpdateCoffeeMesh();
+
+            foreach (KeyValuePair<FuelType, float> pair in drink.comp)
+            {
+                Debug.Log($"Drink has {pair.Key} at {pair.Value}");
+            }
+
+            if (drink.comp.Sum(x => x.Value) >= 100f)
+            {
+                Debug.Log("Overflowed");
+            }
+            yield return new WaitForSeconds(0.015f);
         }
 
-        drinkMeshTransform.localScale = targetScale;
+        Debug.Log("Stopped filling");
         // Make the cup interactable again
         gameObject.tag = "Grabbable";
+        yield break;
     }
 
     public bool Empty()
     {
         // Returns true if the cup was full then emptied, returns false if the cup was already empty
-        if (fuelType != FuelType.None)
+        if (drink.comp.Count != 0)
         {
-            fuelType = FuelType.None;
-            gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = false;
+            drink.comp.Clear();
+            UpdateCoffeeMesh();
             return true;
         }
         else
