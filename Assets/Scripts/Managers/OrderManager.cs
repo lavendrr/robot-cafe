@@ -17,6 +17,7 @@ public class OrderManager : MonoBehaviour
     private GameObject cupSpawn, customerTarget;
     public List<GameObject> customerList = new();
     public int completedCounter = 0;
+    private bool closed = false;
 
     void Awake()
     {
@@ -83,17 +84,20 @@ public class OrderManager : MonoBehaviour
             SaveManager.Instance.AdjustPlayerMoney(gain);
             AudioManager.Instance.PlaySFX(AudioManager.Instance.bellDing, position);
 
-            currentCustomer.Leave();
-            customerList.RemoveAt(0);
-
-            NewCustomer();
             completedCounter++;
-
             UIManager.Instance.SetOrdersCompleted(completedCounter, gain);
             UIManager.Instance.SetOrderInfo("");
 
-            //SpawnCup();
             Destroy(cupObj);
+
+            customerList.RemoveAt(0);
+            currentCustomer.Leave();
+            
+            if (!closed)
+            {
+                NewCustomer();
+            }
+
             return true;
         }
         else
@@ -112,6 +116,19 @@ public class OrderManager : MonoBehaviour
     {
         customerList = new List<GameObject>();
         completedCounter = 0;
+    }
+
+    public void CloseCafe()
+    {
+        closed = true;
+    }
+
+    public void TryEndShift()
+    {
+        if (closed)
+        {
+            StateManager.Instance.ChangeState(new ShiftEndState());
+        }
     }
 }
 

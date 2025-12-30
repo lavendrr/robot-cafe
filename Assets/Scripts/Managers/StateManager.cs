@@ -223,20 +223,6 @@ public class ShiftState : State
 
     public override void Exit()
     {
-        // Delete all stray cups
-        Cup[] cups = Object.FindObjectsOfType<Cup>();
-        foreach (Cup cup in cups)
-        {
-            cup.Destroy();
-        }
-
-        // Delete all stray customers
-        Customer[] customers = Object.FindObjectsOfType<Customer>();
-        foreach (Customer customer in customers)
-        {
-            customer.Destroy();
-        }
-
         // Unsubscribe from the scene load event
         SceneManager.sceneLoaded -= OnSceneLoaded;
         // Unsubscribe to game paused events
@@ -256,7 +242,7 @@ public class ShiftState : State
         }
         else
         {
-            StateManager.Instance.ChangeState(new ShiftEndState());
+            OrderManager.Instance.CloseCafe();
         }
     }
 

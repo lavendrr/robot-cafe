@@ -83,6 +83,7 @@ public class Customer : MonoBehaviour
     public void Destroy()
     {
         AudioManager.Instance.RemoveInstance(hoverAudio);
+        OrderManager.Instance.TryEndShift();
         Destroy(gameObject);
     }
 
