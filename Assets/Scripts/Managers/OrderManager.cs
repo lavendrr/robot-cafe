@@ -10,6 +10,9 @@ public class OrderManager : MonoBehaviour
     public static OrderManager Instance { get; private set; }
 
     [SerializeField]
+    public AnimationCurve curve;
+
+    [SerializeField]
     private GameObject cupPrefab, customerPrefab;
     private GameObject cupSpawn, customerTarget;
     public List<GameObject> customerList = new();
@@ -121,9 +124,7 @@ public class Order
         MenuItem[] menuItems = MenuManager.Instance.ListItems();
         if (menuItems.Length > 0)
         {
-            int randomIndex = UnityEngine.Random.Range(0, menuItems.Length);
-            orderItem = menuItems[randomIndex];
-            GetWeightedOrder();
+            orderItem = GetWeightedOrder();
         }
         else
         {
@@ -140,26 +141,25 @@ public class Order
         
         // Fill an array with default probabilities
         float[] probs = Enumerable.Repeat(1 / (float) menu.Length, menu.Length).ToArray();
-        foreach (float f in probs)
-        {
-            Debug.Log(f);
-        }
-        Debug.Log("---");
-        probs = probs.Select((x, y) => x * (avg / menu[y].cost)).ToArray();
-        foreach (float f in probs)
-        {
-            Debug.Log(f);
-        }
-        Debug.Log("---");
-        float preScaleSum = probs.Sum();
-        Debug.Log($"pre scale sum: {preScaleSum}");
-        probs = probs.Select(x => x * (1 / preScaleSum)).ToArray();
-        foreach (float f in probs)
-        {
-            Debug.Log(f);
-        }
-        Debug.Log($"post scale sum: {probs.Sum()}");
 
-        return menu[0];
+        // Populate with scaled probabilities based on cost
+        probs = probs.Select((x, y) => x * (avg / menu[y].cost)).ToArray();
+
+        // Random choice using previously calculated probabilities
+        float choice = UnityEngine.Random.value * probs.Sum();
+
+        foreach ((float prob, int index) in probs.Select((prob, index) => (prob, index)))
+        {
+            if (choice < prob)
+            {
+                return menu[index];
+            }
+            else
+            {
+                choice -= prob;
+            }
+        }
+        // Return statement in case the choice equals the maximum value
+        return menu[probs.Length - 1];
     }
 }
