@@ -352,6 +352,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleSeating",
+                    "type": "Button",
+                    "id": "f1955fcb-36fa-41dd-b095-57d8b0585a11",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -374,6 +383,17 @@
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "RotateLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2d8e8afc-0520-4596-8f2e-4c7f7392634a",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "ToggleSeating",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

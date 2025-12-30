@@ -7,6 +7,7 @@ using System.Linq;
 using UnityEngine.UI;
 using Unity.VisualScripting;
 using TMPro;
+using UnityEngine.EventSystems;
 
 // TODO - change the color thing from colliders to cursor hover to avoid overlapping cell issue
 
@@ -29,6 +30,8 @@ public class PlanningManager : MonoBehaviour
 
     [SerializeField]
     private Button startShiftButton;
+
+    public GridSlot hoverCell;
 
     // Start is called before the first frame update
     void Start()
@@ -197,6 +200,14 @@ public class PlanningManager : MonoBehaviour
         if (currentItem != null)
         {
             currentItem.RotateCounterclockwise();
+        }
+    }
+
+    void OnToggleSeating()
+    {
+        if (hoverCell is not null)
+        {
+            hoverCell.ToggleSeating();
         }
     }
 

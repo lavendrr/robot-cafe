@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Diagnostics.Tracing;
 
-public class GridSlot : MonoBehaviour
+public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField]
     private bool occupied = false;
     [SerializeField]
     private Image image;
     private (int, int) coords;
+    public bool seating { get; private set; } = false;
 
     void Start()
     {
@@ -226,5 +228,30 @@ public class GridSlot : MonoBehaviour
         {
             return;
         }
+    }
+
+    public void ToggleSeating()
+    {
+        if (!GetOccupiedStatus())
+        {
+            seating = !seating;
+            Debug.Log($"Cell {coords} is now {(seating ? "seating" : "furniture")}");
+        }
+        else
+        {
+            Debug.Log("Tile is occupied, can't change tile type");
+        }
+        
+        image.color = seating ? Color.yellow : Color.white;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        PlanningManager.Instance.hoverCell = this;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        PlanningManager.Instance.hoverCell = null;
     }
 }
