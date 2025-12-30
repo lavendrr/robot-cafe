@@ -133,7 +133,7 @@ public class Order
         UIManager.Instance.SetOrderInfo(orderItem.name);
     }
 
-    public MenuItem GetWeightedOrder()
+    MenuItem GetWeightedOrder()
     {
         MenuItem[] menu = MenuManager.Instance.ListItems();
         // Get the average menu item cost
