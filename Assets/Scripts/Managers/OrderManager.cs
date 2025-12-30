@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -122,11 +123,43 @@ public class Order
         {
             int randomIndex = UnityEngine.Random.Range(0, menuItems.Length);
             orderItem = menuItems[randomIndex];
+            GetWeightedOrder();
         }
         else
         {
             Debug.LogError("OrderManager;; The menu is empty.");
         }
         UIManager.Instance.SetOrderInfo(orderItem.name);
+    }
+
+    public MenuItem GetWeightedOrder()
+    {
+        MenuItem[] menu = MenuManager.Instance.ListItems();
+        // Get the average menu item cost
+        float avg = (float) menu.Sum(x => x.cost) / menu.Length;
+        
+        // Fill an array with default probabilities
+        float[] probs = Enumerable.Repeat(1 / (float) menu.Length, menu.Length).ToArray();
+        foreach (float f in probs)
+        {
+            Debug.Log(f);
+        }
+        Debug.Log("---");
+        probs = probs.Select((x, y) => x * (avg / menu[y].cost)).ToArray();
+        foreach (float f in probs)
+        {
+            Debug.Log(f);
+        }
+        Debug.Log("---");
+        float preScaleSum = probs.Sum();
+        Debug.Log($"pre scale sum: {preScaleSum}");
+        probs = probs.Select(x => x * (1 / preScaleSum)).ToArray();
+        foreach (float f in probs)
+        {
+            Debug.Log(f);
+        }
+        Debug.Log($"post scale sum: {probs.Sum()}");
+
+        return menu[0];
     }
 }
