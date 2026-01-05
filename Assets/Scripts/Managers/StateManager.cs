@@ -1,9 +1,7 @@
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
-using GameConsts;
 
 public class StateManager : MonoBehaviour
 {

@@ -1,13 +1,8 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
-using Unity.VisualScripting;
-using System;
-using UnityEngine.Rendering;
-using System.Linq;
 
 public class UIManager : MonoBehaviour
 {

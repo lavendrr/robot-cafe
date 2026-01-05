@@ -1,13 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using UnityEngine;
-using System.Linq;
 using UnityEngine.UI;
-using Unity.VisualScripting;
 using TMPro;
-using UnityEngine.EventSystems;
 
 // TODO - change the color thing from colliders to cursor hover to avoid overlapping cell issue
 
