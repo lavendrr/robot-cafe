@@ -19,8 +19,10 @@ public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     private int beginDragRotation = 0;
     public int rotation = 0;
     public bool isNew = false;
+    public bool isSeating;
 
-    public void Init(FurnitureObject f, bool isNew)
+    // Needs to pull a seating type from furnitureObject at some point
+    public void Init(FurnitureObject f, bool isNew, bool isSeating = false)
     {
         if (f == null)
         {
@@ -30,6 +32,7 @@ public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         furnitureObject = f;
         itemCoords = new List<GridCoord>(furnitureObject.gridOffsets);
         this.isNew = isNew;
+        this.isSeating = isSeating;
     }
 
     void Start()

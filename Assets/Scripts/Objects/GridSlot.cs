@@ -49,7 +49,7 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         List<Sprite> gridSprites = gridItem.furnitureObject.gridSprites;
 
         // Checks if the cell already has something slotted in
-        if (!GetOccupiedStatus())
+        if (!GetOccupiedStatus(gridItem.isSeating))
         {
             // Call this next block if the item being slotted extends beyond one cell
             if (offsets != null)
@@ -62,7 +62,7 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     foreach (GridCoord offset in offsets)
                     {
                         GridSlot offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.row, coords.Item2 + offset.col].GetComponent<GridSlot>();
-                        if (offsetCell.GetOccupiedStatus())
+                        if (offsetCell.GetOccupiedStatus(gridItem.isSeating))
                         {
                             return false;
                         }
@@ -105,9 +105,10 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         return true;
     }
 
-    public bool GetOccupiedStatus()
+    public bool GetOccupiedStatus(bool ?isSourceSeating = null)
     {
-        return occupied;
+        // Return the actual occupied status if passed null or if the source seating type matches, otherwise always return occupied (incompatible)
+        return isSourceSeating == seating || isSourceSeating is null ? occupied : true;
     }
 
     // Set occupied/unoccupied and optionally update sprite for this slot
@@ -163,7 +164,7 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void HoverColor(GridItem item)
     {
-        if (GetOccupiedStatus())
+        if (GetOccupiedStatus(item.isSeating))
         {
             image.color = Color.red;
         }
@@ -183,7 +184,7 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 foreach (GridCoord offset in offsets)
                 {
                     GameObject offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.row, coords.Item2 + offset.col];
-                    if (offsetCell.GetComponent<GridSlot>().GetOccupiedStatus())
+                    if (offsetCell.GetComponent<GridSlot>().GetOccupiedStatus(item.isSeating))
                     {
                         offsetCell.GetComponent<Image>().color = Color.red;
                     }
@@ -208,8 +209,8 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void DisableHoverColor(GridItem item)
     {
-        // Set this cell's color back to blue if occupied, or back to white if empty
-        image.color = GetOccupiedStatus() ? Color.blue : Color.white;
+        // Set this cell's color back to blue if occupied, yellow if empty & seating, or white if empty and non-seating
+        image.color = GetOccupiedStatus() ? Color.blue : seating ? Color.yellow : Color.white;
         try
         {
             // If the item took up more than one cell, set the corresponding cells to be empty as well
@@ -219,8 +220,8 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 foreach (GridCoord offset in offsets)
                 {
                     GameObject cell = PlanningManager.Instance.gridArray[coords.Item1 + offset.row, coords.Item2 + offset.col];
-                    // Reset this cell's color back to blue if occupied, or back to white if empty
-                    cell.GetComponent<Image>().color = cell.GetComponent<GridSlot>().GetOccupiedStatus() ? Color.blue : Color.white;
+                    // Reset this cell's color back to blue if occupied, yellow if empty & seating, or white if empty and non-seating
+                    cell.GetComponent<Image>().color = cell.GetComponent<GridSlot>().GetOccupiedStatus() ? Color.blue : cell.GetComponent<GridSlot>().seating ? Color.yellow : Color.white;
                 }
             }
         }
