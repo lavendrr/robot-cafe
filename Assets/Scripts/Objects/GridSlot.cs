@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Linq;
 
 public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -234,7 +235,19 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (!GetOccupiedStatus())
         {
-            areaType = areaType == FurnitureArea.kitchen ? FurnitureArea.dining : FurnitureArea.kitchen;
+            if (areaType == FurnitureArea.kitchen)
+            {
+                if (CheckDiningAreaContinuity())
+                {
+                    areaType = FurnitureArea.dining;
+                    PlanningManager.Instance.numDiningTiles += 1;
+                }
+            }
+            else
+            {
+                areaType = FurnitureArea.kitchen;
+                PlanningManager.Instance.numDiningTiles -= 1;
+            }
             Debug.Log($"Cell {coords} is now {(areaType == FurnitureArea.kitchen ? "kitchen" : "dining")}");
         }
         else
@@ -243,6 +256,49 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         
         image.color = areaType == FurnitureArea.dining ? Color.yellow : Color.white;
+    }
+
+    private bool CheckDiningAreaContinuity()
+    {
+        if (PlanningManager.Instance.numDiningTiles == 0)
+        {
+            Debug.Log("Initial dining tile placed");
+            return true;
+        }
+        
+        GridSlot[] slotsToCheck = new GridSlot[4];
+        slotsToCheck = slotsToCheck.Select((slot, index) =>
+        {
+            try
+            {
+                switch (index)
+                {
+                    case 0:
+                        return PlanningManager.Instance.gridArray[coords.Item1 - 1, coords.Item2].GetComponent<GridSlot>();
+                    case 1:
+                        return PlanningManager.Instance.gridArray[coords.Item1, coords.Item2 + 1].GetComponent<GridSlot>();
+                    case 2:
+                        return PlanningManager.Instance.gridArray[coords.Item1 + 1, coords.Item2].GetComponent<GridSlot>();
+                    case 3:
+                        return PlanningManager.Instance.gridArray[coords.Item1, coords.Item2 - 1].GetComponent<GridSlot>();
+                }
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return null;
+            }
+            return null;
+        }).ToArray();
+
+        foreach (GridSlot slot in slotsToCheck)
+        {
+            if (slot != null && slot.areaType == FurnitureArea.dining)
+            {
+                Debug.Log($"Slot {slot.coords.Item1}, {slot.coords.Item2} is valid, passing continuity check");
+                return true;
+            }
+        }
+        return false;
     }
 
     public void OnPointerEnter(PointerEventData eventData)

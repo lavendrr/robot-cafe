@@ -31,6 +31,7 @@ public class PlanningManager : MonoBehaviour
     private Button startShiftButton;
 
     public GridSlot hoverCell;
+    public int numDiningTiles = 0;
 
     // Start is called before the first frame update
     void Start()
