@@ -202,9 +202,9 @@ public class PlanningManager : MonoBehaviour
         }
     }
 
-    void OnToggleSeating()
+    void OnToggleAreaType()
     {
-        if (hoverCell is not null)
+        if (hoverCell is not null && currentItem == null)
         {
             hoverCell.ToggleAreaType();
         }

@@ -354,7 +354,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ToggleSeating",
+                    "name": "ToggleAreaType",
                     "type": "Button",
                     "id": "f1955fcb-36fa-41dd-b095-57d8b0585a11",
                     "expectedControlType": "Button",
@@ -393,7 +393,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
-                    "action": "ToggleSeating",
+                    "action": "ToggleAreaType",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
