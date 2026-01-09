@@ -20,3 +20,4 @@ MonoBehaviour:
   gridSprites: []
   tooltipText: 
   isSellable: 1
+  validAreas: 0000000001000000

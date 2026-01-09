@@ -20,4 +20,5 @@ public class FurnitureObject : ScriptableObject
     public List<Sprite> gridSprites;
     public string tooltipText;
     public Boolean isSellable;
+    public List<FurnitureArea> validAreas;
 }

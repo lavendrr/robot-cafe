@@ -11,7 +11,7 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [SerializeField]
     private Image image;
     private (int, int) coords;
-    public bool seating { get; private set; } = false;
+    public FurnitureArea areaType { get; private set; } = FurnitureArea.kitchen;
 
     void Start()
     {
@@ -47,7 +47,7 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         List<Sprite> gridSprites = gridItem.furnitureObject.gridSprites;
 
         // Checks if the cell already has something slotted in
-        if (!GetOccupiedStatus(gridItem.isSeating))
+        if (!GetOccupiedStatus(gridItem.furnitureObject.validAreas))
         {
             // Call this next block if the item being slotted extends beyond one cell
             if (offsets != null)
@@ -60,7 +60,7 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     foreach (GridCoord offset in offsets)
                     {
                         GridSlot offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.row, coords.Item2 + offset.col].GetComponent<GridSlot>();
-                        if (offsetCell.GetOccupiedStatus(gridItem.isSeating))
+                        if (offsetCell.GetOccupiedStatus(gridItem.furnitureObject.validAreas))
                         {
                             return false;
                         }
@@ -103,10 +103,11 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         return true;
     }
 
-    public bool GetOccupiedStatus(bool ?isSourceSeating = null)
+    public bool GetOccupiedStatus(List<FurnitureArea> validAreas = null)
     {
-        // Return the actual occupied status if passed null or if the source seating type matches, otherwise always return occupied (incompatible)
-        return isSourceSeating == seating || isSourceSeating is null ? occupied : true;
+        // Return the actual occupied status if passed null or if the source area type matches, otherwise always return occupied (incompatible)
+        if (validAreas is null || validAreas.Contains(areaType)) return occupied;
+        return true;    
     }
 
     // Set occupied/unoccupied and optionally update sprite for this slot
@@ -162,7 +163,7 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void HoverColor(GridItem item)
     {
-        if (GetOccupiedStatus(item.isSeating))
+        if (GetOccupiedStatus(item.furnitureObject.validAreas))
         {
             image.color = Color.red;
         }
@@ -182,7 +183,7 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 foreach (GridCoord offset in offsets)
                 {
                     GameObject offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.row, coords.Item2 + offset.col];
-                    if (offsetCell.GetComponent<GridSlot>().GetOccupiedStatus(item.isSeating))
+                    if (offsetCell.GetComponent<GridSlot>().GetOccupiedStatus(item.furnitureObject.validAreas))
                     {
                         offsetCell.GetComponent<Image>().color = Color.red;
                     }
@@ -207,8 +208,8 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void DisableHoverColor(GridItem item)
     {
-        // Set this cell's color back to blue if occupied, yellow if empty & seating, or white if empty and non-seating
-        image.color = GetOccupiedStatus() ? Color.blue : seating ? Color.yellow : Color.white;
+        // Set this cell's color back to blue if occupied, yellow if empty & dining, or white if empty and non-kitchen
+        image.color = GetOccupiedStatus() ? Color.blue : areaType == FurnitureArea.dining ? Color.yellow : Color.white;
         try
         {
             // If the item took up more than one cell, set the corresponding cells to be empty as well
@@ -218,8 +219,8 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 foreach (GridCoord offset in offsets)
                 {
                     GameObject cell = PlanningManager.Instance.gridArray[coords.Item1 + offset.row, coords.Item2 + offset.col];
-                    // Reset this cell's color back to blue if occupied, yellow if empty & seating, or white if empty and non-seating
-                    cell.GetComponent<Image>().color = cell.GetComponent<GridSlot>().GetOccupiedStatus() ? Color.blue : cell.GetComponent<GridSlot>().seating ? Color.yellow : Color.white;
+                    // Reset this cell's color back to blue if occupied, yellow if empty & dining, or white if empty and kitchen
+                    cell.GetComponent<Image>().color = cell.GetComponent<GridSlot>().GetOccupiedStatus() ? Color.blue : cell.GetComponent<GridSlot>().areaType == FurnitureArea.dining ? Color.yellow : Color.white;
                 }
             }
         }
@@ -229,19 +230,19 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
-    public void ToggleSeating()
+    public void ToggleAreaType()
     {
         if (!GetOccupiedStatus())
         {
-            seating = !seating;
-            Debug.Log($"Cell {coords} is now {(seating ? "seating" : "furniture")}");
+            areaType = areaType == FurnitureArea.kitchen ? FurnitureArea.dining : FurnitureArea.kitchen;
+            Debug.Log($"Cell {coords} is now {(areaType == FurnitureArea.kitchen ? "kitchen" : "dining")}");
         }
         else
         {
             Debug.Log("Tile is occupied, can't change tile type");
         }
         
-        image.color = seating ? Color.yellow : Color.white;
+        image.color = areaType == FurnitureArea.dining ? Color.yellow : Color.white;
     }
 
     public void OnPointerEnter(PointerEventData eventData)

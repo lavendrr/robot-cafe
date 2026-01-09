@@ -20,3 +20,4 @@ MonoBehaviour:
   gridSprites: []
   tooltipText: Just a simple surface, great for holding things.
   isSellable: 1
+  validAreas: 0000000001000000

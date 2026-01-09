@@ -5,6 +5,11 @@ using TMPro;
 
 // TODO - change the color thing from colliders to cursor hover to avoid overlapping cell issue
 
+public enum FurnitureArea
+{
+    kitchen, dining
+}
+
 public class PlanningManager : MonoBehaviour
 {
     public static PlanningManager Instance { get; private set; }
@@ -201,7 +206,7 @@ public class PlanningManager : MonoBehaviour
     {
         if (hoverCell is not null)
         {
-            hoverCell.ToggleSeating();
+            hoverCell.ToggleAreaType();
         }
     }
 

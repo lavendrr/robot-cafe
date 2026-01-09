@@ -24,3 +24,4 @@ MonoBehaviour:
   - {fileID: -2021800748, guid: 1e7f7b7ef2e5443a08407be37c2726ad, type: 3}
   tooltipText: A machine that dispenses Unleaded, Diesel, and Premium fuel.\n\n>Usable
   isSellable: 1
+  validAreas: 00000000
