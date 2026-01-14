@@ -122,12 +122,22 @@ public class DrinkEditorUI : MonoBehaviour
 
     public void RemoveBaseIngredient(FuelType fuelType)
     {
+        // Delete ingredient row
+        int ingIndex = CurrentItem.drink.comp.Keys.ToList().IndexOf(fuelType);
+        Destroy(ingRows[ingIndex].gameObject);
+        ingRows.RemoveAt(ingIndex);
+
+        // Remove ingredient from drink comp
         if (!CurrentItem.drink.comp.Remove(fuelType))
             return;
 
+        // Update cup to rebuild slider
         NormalizeBaseIngredients();
         UpdateCupSlider();
         OnDrinkChanged?.Invoke();
+
+        // Update remaining ingredient rows
+        UpdateRatios();
     }
 
     private void UpdateCupSlider()

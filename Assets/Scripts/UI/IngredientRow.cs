@@ -9,4 +9,9 @@ public class IngredientRow : MonoBehaviour
 {
     [SerializeField]
     public TextMeshProUGUI LabelText, PortionText;
+
+    public void RemoveIngredient()
+    {
+        DrinkEditorUI.Instance.RemoveBaseIngredient((FuelType)Enum.Parse(typeof(FuelType), LabelText.text));
+    }
 }
