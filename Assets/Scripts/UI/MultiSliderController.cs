@@ -1,27 +1,34 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MultiSliderController : MonoBehaviour
 {
+    public Action OnMultiSliderChanged;
     public RectTransform track;
     public GameObject handlePrefab;
 
     public List<MultiSliderHandle> handles = new();
     public float padding = 0.1f; // minimum value between two handles or handle and the edge
     public float snapIncrement = 0.1f;
-    //public List<float> sections = new();
+    public List<float> segmentPercentages;
 
-    private void Start()
-    {
-        Build(3);
-    }
-
-    public void Build(int ingredientCount)
+    public void Build()
     {
         // Clear old
         foreach (var h in handles)
             Destroy(h.gameObject);
         handles.Clear();
+        segmentPercentages = new List<float>();
+
+        int ingredientCount = DrinkEditorUI.Instance?.CurrentItem?.drink.comp.Count ?? 0;
+
+        // Handle 0 ingredient case
+        if (ingredientCount < 1)
+        {
+            return;
+        }
 
         // Create N-1 handles
         for (int i = 0; i < ingredientCount - 1; i++)
@@ -32,7 +39,12 @@ public class MultiSliderController : MonoBehaviour
             handleScript.sliderController = this;
             handleScript.snapIncrement = snapIncrement;
             handles.Add(handleScript);
+            segmentPercentages.Add(1.0f/ingredientCount);
         }
+
+        // Add one more segment representation for the one between
+        // the uppermost handle and the top of the slider
+        segmentPercentages.Add(1.0f/ingredientCount);
 
         // Evenly space handles within [padding, 1 - padding], snapping to increment
         float pad = Mathf.Clamp(padding, 0f, 0.49f);
@@ -79,6 +91,36 @@ public class MultiSliderController : MonoBehaviour
         }
     }
 
+    public void UpdateSegments()
+    {
+        for (int i = 0; i < segmentPercentages.Count; i++)
+        {
+            float lowerBound;
+            if (i == 0)
+            {
+                lowerBound = 0;
+            } else {
+                lowerBound = handles[i - 1].currentValue;
+            }
+
+            float upperBound;
+            if (i == segmentPercentages.Count - 1)
+            {
+                upperBound = 1;
+            } else {
+                upperBound = handles[i].currentValue;
+            }
+
+            segmentPercentages[i] = upperBound - lowerBound;
+        }
+    }
+
+    public void HandleMoved()
+    {
+        UpdateSegments();
+        OnMultiSliderChanged?.Invoke();
+    }
+
     public List<float> GetPercentages()
     {
         List<float> values = new();
@@ -94,17 +136,4 @@ public class MultiSliderController : MonoBehaviour
         values.Add(1f - prev);
         return values;
     }
-
-    // public void UpdateVisuals()
-    // {
-    //     var percentages = GetPercentages();
-
-    //     for (int i = 0; i < sections.Count; i++)
-    //     {
-    //         sections[i].percentage = percentages[i];
-    //         sections[i].fillImage.fillAmount = percentages[i];
-    //         sections[i].percentageLabel.text = Mathf.RoundToInt(percentages[i] * 100) + "%";
-    //     }
-    // }
-
 }

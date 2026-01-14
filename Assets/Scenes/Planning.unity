@@ -205,7 +205,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1697933797958950791, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 147.04501
       objectReference: {fileID: 0}
     - target: {fileID: 1697933797958950791, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -273,7 +273,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4022845651575504038, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 82.525
       objectReference: {fileID: 0}
     - target: {fileID: 4022845651575504038, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -309,7 +309,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6226997810611934968, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 49.52
       objectReference: {fileID: 0}
     - target: {fileID: 6226997810611934968, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -437,7 +437,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1697933797958950791, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 147.04501
       objectReference: {fileID: 0}
     - target: {fileID: 1697933797958950791, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -505,7 +505,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4022845651575504038, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 82.525
       objectReference: {fileID: 0}
     - target: {fileID: 4022845651575504038, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -541,7 +541,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6226997810611934968, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 49.52
       objectReference: {fileID: 0}
     - target: {fileID: 6226997810611934968, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1622,8 +1622,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 673472726}
+  - component: {fileID: 673472727}
   m_Layer: 5
-  m_Name: MenuEditingUI
+  m_Name: DrinkEditorUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1652,6 +1653,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &673472727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673472725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d07bfc1e22da148ce8b2be1af34f4e2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CupSlider: {fileID: 1551941896}
+  IngredientRowPrefab: {fileID: 5439520827200201290, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
+  BasePanel: {fileID: 1624255373}
 --- !u!1 &764795410
 GameObject:
   m_ObjectHideFlags: 0
@@ -2502,35 +2518,35 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2438991220610054598, guid: 2e9892dcd12494e77a533ea77abeaa37, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2438991220610054598, guid: 2e9892dcd12494e77a533ea77abeaa37, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2438991220610054598, guid: 2e9892dcd12494e77a533ea77abeaa37, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1551941896}
+      objectReference: {fileID: 673472725}
     - target: {fileID: 2438991220610054598, guid: 2e9892dcd12494e77a533ea77abeaa37, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2438991220610054598, guid: 2e9892dcd12494e77a533ea77abeaa37, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Build
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2438991220610054598, guid: 2e9892dcd12494e77a533ea77abeaa37, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: MultiSliderController, Assembly-CSharp
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2438991220610054598, guid: 2e9892dcd12494e77a533ea77abeaa37, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2438991220610054598, guid: 2e9892dcd12494e77a533ea77abeaa37, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2574256792440207371, guid: 2e9892dcd12494e77a533ea77abeaa37, type: 3}
       propertyPath: m_Pivot.x
@@ -3210,6 +3226,9 @@ MonoBehaviour:
   track: {fileID: 1551941891}
   handlePrefab: {fileID: 2922013018109121151, guid: a7f402622d6c54093a19d65bc383284d, type: 3}
   handles: []
+  padding: 0.1
+  snapIncrement: 0.1
+  segmentPercentages: []
 --- !u!1 &1567274876
 GameObject:
   m_ObjectHideFlags: 0
@@ -3397,8 +3416,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 50, y: 0}
-  m_SizeDelta: {x: 700, y: 700}
+  m_AnchoredPosition: {x: 100, y: 0}
+  m_SizeDelta: {x: 600, y: 700}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1624255375
 MonoBehaviour:
@@ -3965,6 +3984,8 @@ MonoBehaviour:
   currentItem: {fileID: 0}
   planningUI: {fileID: 764795412}
   startShiftButton: {fileID: 1045454135}
+  hoverCell: {fileID: 0}
+  numDiningTiles: 0
 --- !u!4 &2051206638
 Transform:
   m_ObjectHideFlags: 0

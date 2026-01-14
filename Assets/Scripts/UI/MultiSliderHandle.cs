@@ -6,6 +6,7 @@ public class MultiSliderHandle : MonoBehaviour, IDragHandler, IBeginDragHandler
 {
     public RectTransform track;
     public MultiSliderController sliderController;
+    public float currentValue;
     public float minValue;
     public float maxValue;
 
@@ -23,6 +24,7 @@ public class MultiSliderHandle : MonoBehaviour, IDragHandler, IBeginDragHandler
 
     public void SetNormalizedValue(float value)
     {
+        currentValue = value;
         float y = Mathf.Lerp(0, track.rect.height, value);
         rect.anchoredPosition = new Vector2(0, y);
     }
@@ -72,6 +74,7 @@ public class MultiSliderHandle : MonoBehaviour, IDragHandler, IBeginDragHandler
         value = Mathf.Clamp(value, minValue, maxValue);
         SetNormalizedValue(value);
 
-        sliderController.UpdateConstraints();        
+        sliderController.UpdateConstraints();
+        sliderController.HandleMoved();  
     }
 }
