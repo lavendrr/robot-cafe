@@ -12,9 +12,9 @@ public class DrinkEditorUI : MonoBehaviour
     [SerializeField]
     public MultiSliderController CupSlider;
     [SerializeField]
-    private GameObject IngredientRowPrefab, BasePanel;
+    private GameObject IngredientRowPrefab, BaseIngredientList;
 
-    private List<GameObject> ingRows = new();
+    private List<IngredientRow> ingRows = new();
 
     public Action OnDrinkChanged;
     public Action OnToppingsChanged;
@@ -97,12 +97,11 @@ public class DrinkEditorUI : MonoBehaviour
         CurrentItem.drink.comp.Add(fuelType, initialPercent);
 
         // Add ingredient row to panel
-        var ingRow = Instantiate(IngredientRowPrefab, BasePanel.transform);
-        // TODO: harden this code against null errors
-        var textList = ingRow.GetComponentsInChildren<TextMeshProUGUI>();
-        textList[0].text = fuelType.ToString();
-        textList[1].text = initialPercent.ToString();
-        ingRows.Add(ingRow);
+        var ingRow = Instantiate(IngredientRowPrefab, BaseIngredientList.transform);
+        var ingRowScript = ingRow.GetComponent<IngredientRow>();
+        ingRowScript.LabelText.text = fuelType.ToString();
+        ingRowScript.PortionText.text = initialPercent.ToString();
+        ingRows.Add(ingRowScript);
 
         // Add segment and handle in Cup Slider
         NormalizeBaseIngredients();
@@ -148,7 +147,7 @@ public class DrinkEditorUI : MonoBehaviour
         for (int i = 0; i < keys.Count && i < segments.Count; i++)
         {
             SetBaseIngredientValue(keys[i], segments[i] * 100f);
-            UpdateIngredientRowPortion(ingRows[i], (segments[i] * 100f).ToString());
+            ingRows[i].PortionText.text = (segments[i] * 100f).ToString();
         }
     }
 
@@ -193,12 +192,6 @@ public class DrinkEditorUI : MonoBehaviour
     #endregion
 
     #region Helpers
-
-    void UpdateIngredientRowPortion(GameObject ingRow, string text)
-    {
-        ingRow.GetComponentsInChildren<TextMeshProUGUI>()[1].text = text;
-    }
-
     float GetDefaultSplitValue()
     {
         int count = CurrentItem.drink.comp.Count + 1;
