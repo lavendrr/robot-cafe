@@ -12,6 +12,6 @@ public class IngredientRow : MonoBehaviour
 
     public void RemoveIngredient()
     {
-        DrinkEditorUI.Instance.RemoveBaseIngredient((FuelType)Enum.Parse(typeof(FuelType), LabelText.text));
+        DrinkEditorUI.Instance.RemoveIngredient(LabelText.text);
     }
 }

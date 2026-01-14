@@ -120,6 +120,16 @@ public class DrinkEditorUI : MonoBehaviour
         OnDrinkChanged?.Invoke();
     }
 
+    public void RemoveIngredient(string ingName)
+    {
+        if (Enum.TryParse(typeof(FuelType), ingName, true, out object result))
+        {
+            RemoveBaseIngredient((FuelType)result);
+        } else {
+            Debug.LogWarning("Removing ingredients for any type other than Fuel not supported yet.");
+        }
+    }
+
     public void RemoveBaseIngredient(FuelType fuelType)
     {
         // Delete ingredient row
