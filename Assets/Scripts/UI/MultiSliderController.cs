@@ -68,6 +68,8 @@ public class MultiSliderController : MonoBehaviour
         }
 
         UpdateConstraints();
+        UpdateSegments();
+        OnMultiSliderChanged?.Invoke();
     }
 
     public void UpdateConstraints()
@@ -111,7 +113,7 @@ public class MultiSliderController : MonoBehaviour
                 upperBound = handles[i].currentValue;
             }
 
-            segmentPercentages[i] = upperBound - lowerBound;
+            segmentPercentages[i] = (float)Math.Round(upperBound - lowerBound, 1);
         }
     }
 

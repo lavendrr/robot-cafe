@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
+using UnityEditor.Overlays;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DrinkEditorUI : MonoBehaviour
 {
@@ -15,10 +18,6 @@ public class DrinkEditorUI : MonoBehaviour
     private GameObject IngredientRowPrefab, BaseIngredientList;
 
     private List<IngredientRow> ingRows = new();
-
-    public Action OnDrinkChanged;
-    public Action OnToppingsChanged;
-    public Action OnMetaChanged;
 
     #region Initialization
 
@@ -37,8 +36,6 @@ public class DrinkEditorUI : MonoBehaviour
     void Start()
     {
         CreateNewItem();
-        AddBaseIngredient(FuelType.Premium, 50f);
-        AddBaseIngredient(FuelType.Unleaded, 50f);
     }
 
     void OnEnable()
@@ -71,42 +68,33 @@ public class DrinkEditorUI : MonoBehaviour
             new Dictionary<FuelType, float>(),
             5
         );
-
-        NotifyAll();
     }
 
     public void LoadItem(MenuItem item)
     {
         CurrentItem = item;
-        NotifyAll();
     }
 
     #endregion
 
     #region Base Ingredients
 
-    public bool AddBaseIngredient(FuelType fuelType, float initialPercent = -1f)
+    public bool AddBaseIngredient(FuelType fuelType)
     {
         // Add to MenuItem
         if (CurrentItem.drink.comp.ContainsKey(fuelType))
             return false;
 
-        if (initialPercent < 0)
-            initialPercent = GetDefaultSplitValue();
-
-        CurrentItem.drink.comp.Add(fuelType, initialPercent);
+        CurrentItem.drink.comp.Add(fuelType, 10f);
 
         // Add ingredient row to panel
         var ingRow = Instantiate(IngredientRowPrefab, BaseIngredientList.transform);
         var ingRowScript = ingRow.GetComponent<IngredientRow>();
         ingRowScript.LabelText.text = fuelType.ToString();
-        ingRowScript.PortionText.text = initialPercent.ToString();
         ingRows.Add(ingRowScript);
 
         // Add segment and handle in Cup Slider
-        NormalizeBaseIngredients();
         UpdateCupSlider();
-        OnDrinkChanged?.Invoke();
         return true;
     }
 
@@ -117,7 +105,6 @@ public class DrinkEditorUI : MonoBehaviour
 
         CurrentItem.drink.comp[fuelType] = Mathf.Clamp(percent, 0f, 100f);
         NormalizeBaseIngredients();
-        OnDrinkChanged?.Invoke();
     }
 
     public void RemoveIngredient(string ingName)
@@ -144,10 +131,6 @@ public class DrinkEditorUI : MonoBehaviour
         // Update cup to rebuild slider
         NormalizeBaseIngredients();
         UpdateCupSlider();
-        OnDrinkChanged?.Invoke();
-
-        // Update remaining ingredient rows
-        UpdateRatios();
     }
 
     private void UpdateCupSlider()
@@ -168,6 +151,9 @@ public class DrinkEditorUI : MonoBehaviour
         {
             SetBaseIngredientValue(keys[i], segments[i] * 100f);
             ingRows[i].PortionText.text = (segments[i] * 100f).ToString();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(
+                ingRows[i].PortionText.rectTransform.parent as RectTransform
+            );
         }
     }
 
@@ -181,16 +167,12 @@ public class DrinkEditorUI : MonoBehaviour
             return false;
 
         CurrentItem.drink.toppings.Add(topping);
-        OnToppingsChanged?.Invoke();
         return true;
     }
 
     public void RemoveTopping(string topping)
     {
-        if (CurrentItem.drink.toppings.Remove(topping))
-        {
-            OnToppingsChanged?.Invoke();
-        }
+        CurrentItem.drink.toppings.Remove(topping);
     }
 
     #endregion
@@ -200,24 +182,16 @@ public class DrinkEditorUI : MonoBehaviour
     public void SetItemName(string name)
     {
         CurrentItem.name = name;
-        OnMetaChanged?.Invoke();
     }
 
     public void SetItemCost(int cost)
     {
         CurrentItem.cost = Mathf.Max(1, cost);
-        OnMetaChanged?.Invoke();
     }
 
     #endregion
 
     #region Helpers
-    float GetDefaultSplitValue()
-    {
-        int count = CurrentItem.drink.comp.Count + 1;
-        return 100f / count;
-    }
-
     void NormalizeBaseIngredients()
     {
         if (CurrentItem.drink.comp.Count == 0)
@@ -240,13 +214,21 @@ public class DrinkEditorUI : MonoBehaviour
         List<FuelType> normalizeKeys = new(CurrentItem.drink.comp.Keys);
         foreach (var k in normalizeKeys)
             CurrentItem.drink.comp[k] *= scale;
-    }
 
-    void NotifyAll()
-    {
-        OnDrinkChanged?.Invoke();
-        OnToppingsChanged?.Invoke();
-        OnMetaChanged?.Invoke();
+        // Round all values to integers
+        int roundedTotal = 0;
+        foreach (var k in normalizeKeys)
+        {
+            CurrentItem.drink.comp[k] = Mathf.Round(CurrentItem.drink.comp[k]);
+            roundedTotal += (int)CurrentItem.drink.comp[k];
+        }
+
+        // Redistribute rounding error to maintain 100% sum
+        int remainder = 100 - roundedTotal;
+        if (remainder != 0)
+        {
+            CurrentItem.drink.comp[normalizeKeys[0]] += remainder;
+        }
     }
 
     #endregion
