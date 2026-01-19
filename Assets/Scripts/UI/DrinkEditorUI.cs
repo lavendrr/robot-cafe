@@ -67,12 +67,7 @@ public class DrinkEditorUI : MonoBehaviour
         }
     }
 
-    void Open()
-    {
-        gameObject.SetActive(true);
-    }
-
-    void Close()
+    public void Close()
     {
         gameObject.SetActive(false);
     }

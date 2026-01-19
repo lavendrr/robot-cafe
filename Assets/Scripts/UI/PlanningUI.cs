@@ -1,15 +1,32 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class PlanningUI : MonoBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI dayCountText, moneyText, costText;
+    private TextMeshProUGUI titleText;
+    [SerializeField]
+    private LayoutEditorUI layoutEditorUI;
+    [SerializeField]
+    private DrinkEditorUI drinkEditorUI;
 
     private void Start()
     {
         UpdatePlanningUI();
+    }
+
+    public void B_EditMenu()
+    {
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.UIClick);
+        drinkEditorUI.gameObject.SetActive(true);
+    }
+
+    public void B_EditLayout()
+    {
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.UIClick);
+        layoutEditorUI.gameObject.SetActive(true);
     }
 
     public void B_StartShift()
@@ -52,13 +69,6 @@ public class PlanningUI : MonoBehaviour
 
     private void UpdatePlanningUI()
     {
-        dayCountText.text = $"Planning - Day {SaveManager.Instance.GetDayCount()}";
-        moneyText.text = $"{SaveManager.Instance.GetPlayerMoney()} Credits";
-    }
-
-    public void UpdateFurnitureCostText()
-    {
-        string colorTag = PlanningManager.Instance.furnitureCost > SaveManager.Instance.GetPlayerMoney() ? "red" : "white";
-        costText.text = $"Cost: <color={colorTag}>{PlanningManager.Instance.furnitureCost} Credits</color>";
+        titleText.text = $"Planning  Phase\nDay  {SaveManager.Instance.GetDayCount()}";
     }
 }

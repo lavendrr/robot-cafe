@@ -26,6 +26,8 @@ public class PlanningManager : MonoBehaviour
     public int furnitureCost { get; private set; }
     [SerializeField]
     PlanningUI planningUI;
+    [SerializeField]
+    LayoutEditorUI layoutEditorUI;
 
     [SerializeField]
     private Button startShiftButton;
@@ -225,7 +227,7 @@ public class PlanningManager : MonoBehaviour
             {
                 startShiftButton.interactable = true;
             }
-            planningUI.UpdateFurnitureCostText();
+            layoutEditorUI.UpdateFurnitureCostText();
             return;
         }
 
