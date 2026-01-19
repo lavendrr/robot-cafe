@@ -67,6 +67,16 @@ public class DrinkEditorUI : MonoBehaviour
         }
     }
 
+    void Open()
+    {
+        gameObject.SetActive(true);
+    }
+
+    void Close()
+    {
+        gameObject.SetActive(false);
+    }
+
     public void CreateNewItem()
     {
         CurrentItem = new MenuItem(
@@ -85,7 +95,7 @@ public class DrinkEditorUI : MonoBehaviour
     {
         if (CurrentItem == null)
         {
-            saveDrinkButton.FlashError("Error creating drink object.", 2f);
+            saveDrinkButton.FlashError("Error creating drink object!", 0.5f);
             return;
         }
 
@@ -94,7 +104,10 @@ public class DrinkEditorUI : MonoBehaviour
             return;
         }
 
-        //MenuManager.Instance.AddMenuItem(CloneMenuItem(CurrentItem));
+        MenuItem clonedDrink = CloneMenuItem(CurrentItem);
+        string[] furnitureNames = System.Array.ConvertAll<FurnitureObject, string>(clonedDrink.requiredFurniture.ToArray(), f => f.name);
+        MenuManager.Instance.AddItem(clonedDrink.name, clonedDrink.drink.comp, clonedDrink.cost, furnitureNames);
+        Close();
     }
 
 

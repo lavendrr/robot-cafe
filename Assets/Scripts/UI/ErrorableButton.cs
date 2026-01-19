@@ -75,7 +75,6 @@ public class ErrorableButton : MonoBehaviour
         {
             t += Time.unscaledDeltaTime;
             float lerp = Mathf.Clamp01(t / animDuration);
-            float alphaLerip = Mathf.Clamp01(t / (animDuration/2));
 
             rt.anchoredPosition = Vector2.Lerp(fromPos, toPos, lerp);
             errorCanvasGroup.alpha = Mathf.Lerp(fromAlpha, toAlpha, lerp);
