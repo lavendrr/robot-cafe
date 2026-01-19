@@ -16,6 +16,8 @@ public class DrinkEditorUI : MonoBehaviour
     public MultiSliderController CupSlider;
     [SerializeField]
     private GameObject IngredientRowPrefab, BaseIngredientList;
+    [SerializeField]
+    private ErrorableButton saveDrinkButton;
 
     private List<IngredientRow> ingRows = new();
 
@@ -35,6 +37,10 @@ public class DrinkEditorUI : MonoBehaviour
 
     void Start()
     {
+        if (CupSlider == null | IngredientRowPrefab == null | BaseIngredientList == null | saveDrinkButton == null)
+        {
+            Debug.LogError("[DrinkEditorUI] GameObject references not properly set. Please set all references in the inspector panel.");
+        }
         CreateNewItem();
     }
 
@@ -64,7 +70,7 @@ public class DrinkEditorUI : MonoBehaviour
     public void CreateNewItem()
     {
         CurrentItem = new MenuItem(
-            "New Drink",
+            "",
             new Dictionary<FuelType, float>(),
             5
         );
@@ -74,6 +80,23 @@ public class DrinkEditorUI : MonoBehaviour
     {
         CurrentItem = item;
     }
+
+    public void SaveCurrentItem()
+    {
+        if (CurrentItem == null)
+        {
+            saveDrinkButton.FlashError("Error creating drink object.", 2f);
+            return;
+        }
+
+        if (!IsValidDrink(CurrentItem))
+        {
+            return;
+        }
+
+        //MenuManager.Instance.AddMenuItem(CloneMenuItem(CurrentItem));
+    }
+
 
     #endregion
 
@@ -181,7 +204,7 @@ public class DrinkEditorUI : MonoBehaviour
 
     public void SetItemName(string name)
     {
-        CurrentItem.name = name;
+        CurrentItem.name = name.Trim();
     }
 
     public void SetItemCost(int cost)
@@ -192,6 +215,37 @@ public class DrinkEditorUI : MonoBehaviour
     #endregion
 
     #region Helpers
+
+    bool IsValidDrink(MenuItem item)
+    {
+        if (string.IsNullOrWhiteSpace(item.name))
+        {
+            saveDrinkButton.FlashError("Missing name!", 0.5f);
+            return false;
+        }
+
+        if (item.drink.comp.Count < 1)
+        {
+            saveDrinkButton.FlashError("No base ingredients!", 0.5f);
+            return false;
+        }
+
+        return true;
+    }
+
+    MenuItem CloneMenuItem(MenuItem source)
+{
+    var compCopy = new Dictionary<FuelType, float>(source.drink.comp);
+    var clone = new MenuItem(
+        source.name,
+        compCopy,
+        source.cost
+    );
+
+    clone.drink.toppings = new List<string>(source.drink.toppings);
+    return clone;
+}
+
     void NormalizeBaseIngredients()
     {
         if (CurrentItem.drink.comp.Count == 0)
