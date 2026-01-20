@@ -10,7 +10,7 @@ public class PlanningUI : MonoBehaviour
     [SerializeField]
     private LayoutEditorUI layoutEditorUI;
     [SerializeField]
-    private DrinkEditorUI drinkEditorUI;
+    private MenuEditorUI menuEditorUI;
 
     private void Start()
     {
@@ -20,7 +20,7 @@ public class PlanningUI : MonoBehaviour
     public void B_EditMenu()
     {
         AudioManager.Instance.PlaySFX(AudioManager.Instance.UIClick);
-        drinkEditorUI.gameObject.SetActive(true);
+        menuEditorUI.gameObject.SetActive(true);
     }
 
     public void B_EditLayout()
