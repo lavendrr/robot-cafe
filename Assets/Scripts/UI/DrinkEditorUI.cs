@@ -15,7 +15,11 @@ public class DrinkEditorUI : MonoBehaviour
     [SerializeField]
     public MultiSliderController CupSlider;
     [SerializeField]
+    private MenuEditorUI menuEditor;
+    [SerializeField]
     private GameObject IngredientRowPrefab, BaseIngredientList;
+    [SerializeField]
+    private TMP_InputField nameInputField;
     [SerializeField]
     private ErrorableButton saveDrinkButton;
 
@@ -41,7 +45,6 @@ public class DrinkEditorUI : MonoBehaviour
         {
             Debug.LogError("[DrinkEditorUI] GameObject references not properly set. Please set all references in the inspector panel.");
         }
-        CreateNewItem();
     }
 
     void OnEnable()
@@ -57,6 +60,13 @@ public class DrinkEditorUI : MonoBehaviour
     {
         if (CupSlider != null)
             CupSlider.OnMultiSliderChanged -= UpdateRatios;
+        
+        nameInputField.text = "";
+        foreach (var ingRow in ingRows)
+        {
+            Destroy(ingRow.gameObject);
+        }
+        ingRows.Clear();
     }
 
     void OnDestroy()
@@ -83,7 +93,13 @@ public class DrinkEditorUI : MonoBehaviour
 
     public void LoadItem(MenuItem item)
     {
-        CurrentItem = item;
+        CreateNewItem();
+        SetItemName(item.name);
+        CurrentItem.cost = item.cost;
+        foreach (var ing in item.drink.comp)
+        {
+            AddBaseIngredient(ing.Key, ing.Value);
+        }
     }
 
     public void SaveCurrentItem()
@@ -102,6 +118,7 @@ public class DrinkEditorUI : MonoBehaviour
         MenuItem clonedDrink = CloneMenuItem(CurrentItem);
         string[] furnitureNames = System.Array.ConvertAll<FurnitureObject, string>(clonedDrink.requiredFurniture.ToArray(), f => f.name);
         MenuManager.Instance.AddItem(clonedDrink.name, clonedDrink.drink.comp, clonedDrink.cost, furnitureNames);
+        menuEditor.PopulateMenu();
         Close();
     }
 
@@ -110,13 +127,13 @@ public class DrinkEditorUI : MonoBehaviour
 
     #region Base Ingredients
 
-    public bool AddBaseIngredient(FuelType fuelType)
+    public bool AddBaseIngredient(FuelType fuelType, float amount)
     {
         // Add to MenuItem
         if (CurrentItem.drink.comp.ContainsKey(fuelType))
             return false;
 
-        CurrentItem.drink.comp.Add(fuelType, 10f);
+        CurrentItem.drink.comp.Add(fuelType, amount);
 
         // Add ingredient row to panel
         var ingRow = Instantiate(IngredientRowPrefab, BaseIngredientList.transform);
@@ -213,6 +230,7 @@ public class DrinkEditorUI : MonoBehaviour
     public void SetItemName(string name)
     {
         CurrentItem.name = name.Trim();
+        nameInputField.text = name.Trim();
     }
 
     public void SetItemCost(int cost)

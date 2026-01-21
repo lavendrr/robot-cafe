@@ -12,6 +12,6 @@ public class AddIngredientButton : MonoBehaviour
 
     void OnIngredientPicked(FuelType ingredient)
     {
-        DrinkEditorUI.Instance.AddBaseIngredient(ingredient);
+        DrinkEditorUI.Instance.AddBaseIngredient(ingredient, 10f);
     }
 }

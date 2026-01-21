@@ -3112,8 +3112,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CupSlider: {fileID: 1551941896}
+  menuEditor: {fileID: 1055198634}
   IngredientRowPrefab: {fileID: 5439520827200201290, guid: be1d3ef127d7940d0b976ede60f7e862, type: 3}
   BaseIngredientList: {fileID: 366074235}
+  nameInputField: {fileID: 1900334571}
   saveDrinkButton: {fileID: 567265473}
 --- !u!1 &739021564
 GameObject:
@@ -3882,6 +3884,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 182a366d7137249a68bd99d7a17d18e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  drinkEditorUI: {fileID: 673472725}
   iconColumn: {fileID: 83022116}
   costColumn: {fileID: 156578794}
   nameColumn: {fileID: 256387930}
