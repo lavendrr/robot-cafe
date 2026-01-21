@@ -12,6 +12,7 @@ public class DrinkEditorUI : MonoBehaviour
 {
     public static DrinkEditorUI Instance { get; private set; }
     public MenuItem CurrentItem { get; private set; }
+    private string originalItemName = "";
     [SerializeField]
     public MultiSliderController CupSlider;
     [SerializeField]
@@ -62,6 +63,7 @@ public class DrinkEditorUI : MonoBehaviour
             CupSlider.OnMultiSliderChanged -= UpdateRatios;
         
         nameInputField.text = "";
+        originalItemName = "";
         foreach (var ingRow in ingRows)
         {
             Destroy(ingRow.gameObject);
@@ -95,6 +97,7 @@ public class DrinkEditorUI : MonoBehaviour
     {
         CreateNewItem();
         SetItemName(item.name);
+        originalItemName = item.name;
         CurrentItem.cost = item.cost;
         foreach (var ing in item.drink.comp)
         {
@@ -117,7 +120,14 @@ public class DrinkEditorUI : MonoBehaviour
 
         MenuItem clonedDrink = CloneMenuItem(CurrentItem);
         string[] furnitureNames = System.Array.ConvertAll<FurnitureObject, string>(clonedDrink.requiredFurniture.ToArray(), f => f.name);
-        MenuManager.Instance.AddItem(clonedDrink.name, clonedDrink.drink.comp, clonedDrink.cost, furnitureNames);
+        if (originalItemName != "")
+        {
+            MenuManager.Instance.OverwriteItem(originalItemName, clonedDrink);
+        } else
+        {
+            MenuManager.Instance.AddItem(clonedDrink.name, clonedDrink.drink.comp, clonedDrink.cost, furnitureNames);    
+        }
+        
         menuEditor.PopulateMenu();
         Close();
     }
@@ -244,15 +254,21 @@ public class DrinkEditorUI : MonoBehaviour
 
     bool IsValidDrink(MenuItem item)
     {
+        if (item.drink.comp.Count < 1)
+        {
+            saveDrinkButton.FlashError("No base ingredients!", 0.5f);
+            return false;
+        }
+
         if (string.IsNullOrWhiteSpace(item.name))
         {
             saveDrinkButton.FlashError("Missing name!", 0.5f);
             return false;
         }
 
-        if (item.drink.comp.Count < 1)
+        if (item.name != originalItemName && !MenuManager.Instance.IsNameUnique(item.name))
         {
-            saveDrinkButton.FlashError("No base ingredients!", 0.5f);
+            saveDrinkButton.FlashError("Name already exists!", 0.5f);
             return false;
         }
 

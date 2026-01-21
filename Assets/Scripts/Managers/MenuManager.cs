@@ -149,6 +149,31 @@ public class MenuManager : MonoBehaviour
             }
         }
     }
+
+    public bool IsNameUnique(string name)
+    {
+        foreach (MenuItem item in menu)
+        {
+            if (item.name == name)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void OverwriteItem(string originalItemName, MenuItem modifiedItem)
+    {
+        for (int i = 0; i < menu.Count; i++)
+        {
+            if (menu[i].name == originalItemName)
+            {
+                menu[i] = modifiedItem;
+                return;
+            }
+        }
+        Debug.LogError("[MenuManager] Original item not found-- modified item not added to menu.");
+    }
     
     // For now, add the default menu items on start
     void Start()
