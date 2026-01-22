@@ -5,12 +5,15 @@ using Unity.VisualScripting.AssemblyQualifiedNameParser;
 using Unity.VisualScripting;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEngine.Assertions.Must;
 
 public class MenuEditorUI : MonoBehaviour
 {
     [SerializeField]
-    private GameObject drinkEditorUI, iconColumn, costColumn, nameColumn, iconPrefab, costPrefab, namePrefab;
+    private GameObject drinkEditorUI, iconColumn, costColumn, nameColumn, iconPrefab, costPrefab, namePrefab, newDrinkButtonPrefab;
     private List<GameObject> menuGridElements = new List<GameObject>();
+    [SerializeField]
+    private ErrorableButton saveMenuButton;
 
     private void Start()
     {
@@ -19,6 +22,11 @@ public class MenuEditorUI : MonoBehaviour
 
     public void Close()
     {
+        if (MenuManager.Instance.ListItems().Count() < 1)
+        {
+            saveMenuButton.FlashError("Menu cannot be empty!", 0.5f);
+            return;
+        }
         gameObject.SetActive(false);
     }
 
@@ -46,6 +54,16 @@ public class MenuEditorUI : MonoBehaviour
                 menuGridElements.Add(SpawnCostText(item.cost));
                 menuGridElements.Add(SpawnNameText(item.name));
             }
+            if (menuItems.Length < 10)
+            {
+                var newDrinkButton = Instantiate(newDrinkButtonPrefab, nameColumn.transform);
+                newDrinkButton.GetComponent<Button>().onClick.AddListener(() => {
+                    drinkEditorUI.SetActive(true);
+                    DrinkEditorUI.Instance.CreateNewItem();
+                });
+                menuGridElements.Add(newDrinkButton);
+            }
+            LayoutRebuilder.ForceRebuildLayoutImmediate(iconColumn.transform.parent as RectTransform);
         }
     }
 
@@ -56,6 +74,10 @@ public class MenuEditorUI : MonoBehaviour
             {
                 drinkEditorUI.SetActive(true);
                 DrinkEditorUI.Instance.LoadItem(item);
+            }, () =>
+            {
+                MenuManager.Instance.RemoveItem(item.name);
+                PopulateMenu();
             });
         LayoutRebuilder.ForceRebuildLayoutImmediate(
             iconGroup.transform as RectTransform

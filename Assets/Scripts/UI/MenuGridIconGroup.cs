@@ -8,10 +8,12 @@ public class MenuGridIconGroup : MonoBehaviour
     [SerializeField] private Button deleteButton, editButton;
     public string itemName;
 
-    public void Initialize(string _itemName, Action editOnClick)
+    public void Initialize(string _itemName, Action editOnClick, Action deleteOnClick)
     {
         itemName = _itemName;
         editButton.onClick.RemoveAllListeners();
         editButton.onClick.AddListener(() => editOnClick());
+        deleteButton.onClick.RemoveAllListeners();
+        deleteButton.onClick.AddListener(() => deleteOnClick());
     }
 }

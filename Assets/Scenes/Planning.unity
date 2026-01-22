@@ -3891,6 +3891,8 @@ MonoBehaviour:
   iconPrefab: {fileID: 15875341113637333, guid: fa1949c9ec26b497984e81488ffd9ede, type: 3}
   costPrefab: {fileID: 7241723032717522961, guid: a9bcbbb84bc704dbca7ad0d179dcd933, type: 3}
   namePrefab: {fileID: 175264641481640489, guid: d70cc0a0fcbb9443f814bc44b78d0ff3, type: 3}
+  newDrinkButtonPrefab: {fileID: 5233585536046436720, guid: 8df3b6041213242329a11fb95ae839f5, type: 3}
+  saveMenuButton: {fileID: 274174972}
 --- !u!1 &1061468119
 GameObject:
   m_ObjectHideFlags: 0
@@ -7174,7 +7176,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2048403204}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -7186,8 +7188,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 60, y: 700}
+  m_AnchoredPosition: {x: 0, y: 325}
+  m_SizeDelta: {x: 60, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2048403206
 MonoBehaviour:
@@ -7223,11 +7225,11 @@ MonoBehaviour:
   m_ChildAlignment: 1
   m_Spacing: 30
   m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 1
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
+  m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
 --- !u!1 &2050089132
 GameObject:
