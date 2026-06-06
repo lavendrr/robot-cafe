@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311924, g: 0.38073963, b: 0.3587269, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2593,9 +2593,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 02a799651e88e48b4bb7f0b098f91cb4, type: 2}
   - {fileID: 11400000, guid: 9b5df3a53a88444238df3281afc92b25, type: 2}
   - {fileID: 11400000, guid: a41cc1258ec4a453a8fa064f96e24075, type: 2}
+  - {fileID: 11400000, guid: b8f400340f4e24ee8ba2efe81ff1558c, type: 2}
   currentItem: {fileID: 0}
   planningUI: {fileID: 764795412}
   startShiftButton: {fileID: 1045454135}
+  hoverCell: {fileID: 0}
+  numDiningTiles: 0
 --- !u!4 &2051206638
 Transform:
   m_ObjectHideFlags: 0

@@ -951,6 +951,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8dd6f5b67fcc497bb2d446c1ece146b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   cupPrefab: {fileID: 7634965264845135034, guid: 3f65b2f81b773fa4683e62c15f322193, type: 3}
   customerPrefab: {fileID: 4884984402640645004, guid: e4381c7901c024c1f892231e964eba3e, type: 3}
   customerList: []
@@ -1009,6 +1015,7 @@ MonoBehaviour:
   cornerWallPrefab: {fileID: 3286007604592690854, guid: 389e4f946085148be8114ae260ae8e13, type: 3}
   deliveryTileFO: {fileID: 11400000, guid: cdf9446ee9ebe4cc1ba6cd64dd8fd61b, type: 2}
   windowEndcapPrefab: {fileID: 8150292395417477140, guid: c72e77428e172492296bfb8a0bd11de0, type: 3}
+  deliveryWindowObject: {fileID: 0}
 --- !u!4 &741617578
 Transform:
   m_ObjectHideFlags: 0

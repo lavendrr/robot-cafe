@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Slot : MonoBehaviour
 {
+    [SerializeField]
     private GameObject slottedObj;
 
     public void InsertObj(GameObject obj)

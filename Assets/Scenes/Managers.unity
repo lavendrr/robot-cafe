@@ -167,13 +167,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b3d537f4466941b49de7769b075d9ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  saveData:
-    currentDay: 0
-    playerName: 
-    cafeName: 
-    highScore: 0
-    dayCount: 0
-    playerMoney: 0
 --- !u!1 &1960187477
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,6 +311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1c8e6ff4ce9a4fe4a1f0e3d71887aec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
 --- !u!4 &2001967800
 Transform:
   m_ObjectHideFlags: 0
