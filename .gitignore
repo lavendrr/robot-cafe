@@ -95,3 +95,8 @@ fmod_editor.log
 
 Assets/SaveData/saveData.json
 Assets/SaveData/saveData.json.meta
+
+# Claude
+.mcp.json
+/.claude/settings.json
+/.claude/settings.local.json
