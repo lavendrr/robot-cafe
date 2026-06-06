@@ -19,16 +19,16 @@ public class PlanningUI : MonoBehaviour
         bool validMenu = true;
 
         List<CafeElement> cafeElements = PlanningManager.Instance.GetFinalGrid();
-        List<FurnitureObject> furnitureList = new(); // Might be able to get this in one go with a lambda function?
-        Dictionary<MenuItem, FurnitureObject> invalidList = new();
+        List<FurnitureData> furnitureList = new(); // Might be able to get this in one go with a lambda function?
+        Dictionary<MenuItem, FurnitureData> invalidList = new();
         foreach (CafeElement element in cafeElements)
         {
-            furnitureList.Add(element.furnitureObject);
+            furnitureList.Add(element.furnitureData);
         }
 
         foreach (MenuItem item in MenuManager.Instance.ListItems())
         {
-            foreach (FurnitureObject requiredObject in item.requiredFurniture)
+            foreach (FurnitureData requiredObject in item.requiredFurniture)
             {
                 if (!furnitureList.Contains(requiredObject))
                 {

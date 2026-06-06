@@ -14,7 +14,7 @@ public class LevelLayout
     public GameObject floorPrefab;
     public GameObject straightWallPrefab;
     public GameObject cornerWallPrefab;
-    public FurnitureObject deliveryTileFO;
+    public FurnitureData deliveryTileData;
     public GameObject windowEndcapPrefab;
 }
 
@@ -35,7 +35,7 @@ public class CafeLayoutManager : MonoBehaviour
     public GameObject floorPrefab;
     public GameObject straightWallPrefab;
     public GameObject cornerWallPrefab;
-    public FurnitureObject deliveryTileFO;
+    public FurnitureData deliveryTileData;
     public GameObject windowEndcapPrefab;
     public List<CafeElement> elements = new List<CafeElement>();
     public GameObject deliveryWindowObject;
@@ -115,7 +115,7 @@ public class CafeLayoutManager : MonoBehaviour
 
     public void PopulateWalls(LevelLayout layout)
     {
-        if (layout.straightWallPrefab == null || layout.cornerWallPrefab == null || layout.deliveryTileFO.prefab == null
+        if (layout.straightWallPrefab == null || layout.cornerWallPrefab == null || layout.deliveryTileData.prefab == null
             || layout.windowEndcapPrefab == null)
         {
             Debug.LogError("Wall prefabs not assigned in CafeLayoutManager.");
@@ -126,7 +126,7 @@ public class CafeLayoutManager : MonoBehaviour
         int height = layout.dimensions.rows;
 
         (int col, int row) deliveryTileRoot = layout.deliveryTileCoords;
-        int deliveryTileWidth = layout.deliveryTileFO.gridOffsets.Count + 1;
+        int deliveryTileWidth = layout.deliveryTileData.gridOffsets.Count + 1;
 
         // Compute the two adjacent edge tiles beside the delivery tile (left and right along the edge)
         (int col, int row)? leftAdjacent = null;
@@ -219,7 +219,7 @@ public class CafeLayoutManager : MonoBehaviour
                     else if (isLeftEdge) deliveryRotation = Quaternion.Euler(0, 270, 0);
 
                     Vector3 deliveryPos = ConvertGridToWorldPosition(col, row);
-                    GameObject deliveryInstance = Instantiate(layout.deliveryTileFO.prefab, deliveryPos, deliveryRotation);
+                    GameObject deliveryInstance = Instantiate(layout.deliveryTileData.prefab, deliveryPos, deliveryRotation);
                     deliveryInstance.name = $"DeliveryTile{col}_{row}";
                     deliveryWindowObject = deliveryInstance;
                     if (CafeRoot != null)
@@ -306,20 +306,20 @@ public class CafeLayoutManager : MonoBehaviour
         // Iterate through the saved layout and instantiate the furniture objects
         foreach (var element in cafeLayout.elements)
         {
-            if (element.furnitureObject == null)
+            if (element.furnitureData == null)
             {
                 continue;
             }
-            GameObject furniturePrefab = element.furnitureObject.prefab;
+            GameObject furniturePrefab = element.furnitureData.prefab;
             if (furniturePrefab == null)
             {
-                Debug.LogError($"Furniture prefab for {element.furnitureObject.furnitureName} not found.");
+                Debug.LogError($"Furniture prefab for {element.furnitureData.furnitureName} not found.");
                 continue;
             }
 
             Vector3 spawnPosition = ConvertGridToWorldPosition(element.rootGridCoord.col, element.rootGridCoord.row);
             GameObject furnitureInstance = Instantiate(furniturePrefab, spawnPosition, Quaternion.Euler(0, element.rotation, 0));
-            furnitureInstance.name = element.furnitureObject.furnitureName;
+            furnitureInstance.name = element.furnitureData.furnitureName;
             if (CafeRoot != null)
             {
                 furnitureInstance.transform.SetParent(CafeRoot.transform);
@@ -351,7 +351,7 @@ public class CafeLayoutManager : MonoBehaviour
             floorPrefab = floorPrefab,
             straightWallPrefab = straightWallPrefab,
             cornerWallPrefab = cornerWallPrefab,
-            deliveryTileFO = deliveryTileFO,
+            deliveryTileData = deliveryTileData,
             windowEndcapPrefab = windowEndcapPrefab,
             elements = elements
         };
@@ -359,14 +359,14 @@ public class CafeLayoutManager : MonoBehaviour
 
     private bool IsDeliveryTile(LevelLayout layout, int col, int row)
     {
-        if (layout == null || layout.deliveryTileFO == null || layout.deliveryTileFO.gridOffsets == null)
+        if (layout == null || layout.deliveryTileData == null || layout.deliveryTileData.gridOffsets == null)
             return false;
 
         int width = layout.dimensions.cols;
         int height = layout.dimensions.rows;
 
         (int col, int row) root = layout.deliveryTileCoords;
-        int deliveryTileWidth = layout.deliveryTileFO.gridOffsets.Count + 1;
+        int deliveryTileWidth = layout.deliveryTileData.gridOffsets.Count + 1;
         if (deliveryTileWidth < 1) deliveryTileWidth = 1;
 
         // Exact root tile is always part of the delivery tile

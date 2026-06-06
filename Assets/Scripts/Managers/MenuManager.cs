@@ -23,24 +23,24 @@ public class MenuItem
     public string name;
     public Drink drink = new();
     public int cost;
-    public List<FurnitureObject> requiredFurniture;
+    public List<FurnitureData> requiredFurniture;
 
     public MenuItem(string _name, Dictionary<FuelType, float> _drinkComp, int _cost, string[] _requiredFurniture = null)
     {
         name = _name;
         drink.comp = _drinkComp;
         cost = _cost;
-        requiredFurniture = GenerateFOList(_requiredFurniture);
+        requiredFurniture = GenerateFurnitureDataList(_requiredFurniture);
     }
 
-    private List<FurnitureObject> GenerateFOList(string[] input)
+    private List<FurnitureData> GenerateFurnitureDataList(string[] input)
     {
-        List<FurnitureObject> output = new();
+        List<FurnitureData> output = new();
         if (input is not null)
         {
             foreach (string item in input)
             {
-                output.Add(MenuManager.Instance.GetFurnitureObject(item));
+                output.Add(MenuManager.Instance.GetFurnitureData(item));
             }
         }
         return output;
@@ -73,9 +73,9 @@ public class MenuManager : MonoBehaviour
 {
     public static MenuManager Instance { get; private set; }
     private List<MenuItem> menu = new List<MenuItem>();
-    string[] FO_names;
-    private Dictionary<string, FurnitureObject> FO_dictionary = new Dictionary<string, FurnitureObject>();
-    string prefix = "Prefabs/FurnitureObjects/";
+    string[] furnitureDataNames;
+    private Dictionary<string, FurnitureData> furnitureDataDictionary = new Dictionary<string, FurnitureData>();
+    string prefix = "Prefabs/FurnitureData/";
 
     void Awake()
     {
@@ -83,23 +83,23 @@ public class MenuManager : MonoBehaviour
         {
             Instance = this;
 
-            string folderPath = Path.Combine(Application.dataPath, "Resources/Prefabs/FurnitureObjects");
+            string folderPath = Path.Combine(Application.dataPath, "Resources/Prefabs/FurnitureData");
             if (Directory.Exists(folderPath))
             {
-                FO_names = Directory.GetFiles(folderPath, "*.asset", SearchOption.TopDirectoryOnly);
+                furnitureDataNames = Directory.GetFiles(folderPath, "*.asset", SearchOption.TopDirectoryOnly);
             }
             else
             {
-                FO_names = new string[0];
+                furnitureDataNames = new string[0];
             }
 
-            foreach (string file in FO_names)
+            foreach (string file in furnitureDataNames)
             {
-                FO_dictionary.Add(file.Split("Assets/Resources/Prefabs/FurnitureObjects/")[1].Split(".asset")[0], null);
+                furnitureDataDictionary.Add(file.Split("Assets/Resources/Prefabs/FurnitureData/")[1].Split(".asset")[0], null);
             }
 
-            // Test print of all located FurnitureObjects
-            // foreach (var key in FO_dictionary.Keys)
+            // Test print of all located FurnitureData
+            // foreach (var key in furnitureDataDictionary.Keys)
             // {
             //     Debug.Log(key);
             // }
@@ -118,14 +118,14 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public FurnitureObject GetFurnitureObject(string name)
+    public FurnitureData GetFurnitureData(string name)
     {
-        if (FO_dictionary[name] == null || !FO_dictionary.ContainsKey(name))
+        if (furnitureDataDictionary[name] == null || !furnitureDataDictionary.ContainsKey(name))
         {
-            FO_dictionary[name] = Resources.Load<FurnitureObject>(prefix + name);
+            furnitureDataDictionary[name] = Resources.Load<FurnitureData>(prefix + name);
         }
 
-        return FO_dictionary[name];
+        return furnitureDataDictionary[name];
     }
 
     public MenuItem[] ListItems()
@@ -153,13 +153,13 @@ public class MenuManager : MonoBehaviour
     // For now, add the default menu items on start
     void Start()
     {
-        AddItem("Unleaded", new Dictionary<FuelType, float>() {{FuelType.Unleaded, 100f}}, 2, new string[] {"FO_CoffeeMachine"});
+        AddItem("Unleaded", new Dictionary<FuelType, float>() {{FuelType.Unleaded, 100f}}, 2, new string[] {"FD_CoffeeMachine"});
         AddItem("Diesel", new Dictionary<FuelType, float>() {{FuelType.Diesel, 100f}},3);
         AddItem("Premium", new Dictionary<FuelType, float>() {{FuelType.Premium, 100f}}, 5);
 
         // foreach (MenuItem item in menu)
         // {
-        //     foreach (FurnitureObject obj in item.requiredFurniture)
+        //     foreach (FurnitureData obj in item.requiredFurniture)
         //     {
         //         Debug.Log($"{item.name} requires {obj.furnitureName}");
         //     }

@@ -45,10 +45,10 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             return false;
 
         List<GridCoord> offsets = gridItem.GetOffsets();
-        List<Sprite> gridSprites = gridItem.furnitureObject.gridSprites;
+        List<Sprite> gridSprites = gridItem.furnitureData.gridSprites;
 
         // Checks if the cell already has something slotted in
-        if (!GetOccupiedStatus(gridItem.furnitureObject.validAreas))
+        if (!GetOccupiedStatus(gridItem.furnitureData.validAreas))
         {
             // Call this next block if the item being slotted extends beyond one cell
             if (offsets != null)
@@ -61,7 +61,7 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     foreach (GridCoord offset in offsets)
                     {
                         GridSlot offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.row, coords.Item2 + offset.col].GetComponent<GridSlot>();
-                        if (offsetCell.GetOccupiedStatus(gridItem.furnitureObject.validAreas))
+                        if (offsetCell.GetOccupiedStatus(gridItem.furnitureData.validAreas))
                         {
                             return false;
                         }
@@ -164,7 +164,7 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void HoverColor(GridItem item)
     {
-        if (GetOccupiedStatus(item.furnitureObject.validAreas))
+        if (GetOccupiedStatus(item.furnitureData.validAreas))
         {
             image.color = Color.red;
         }
@@ -184,7 +184,7 @@ public class GridSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 foreach (GridCoord offset in offsets)
                 {
                     GameObject offsetCell = PlanningManager.Instance.gridArray[coords.Item1 + offset.row, coords.Item2 + offset.col];
-                    if (offsetCell.GetComponent<GridSlot>().GetOccupiedStatus(item.furnitureObject.validAreas))
+                    if (offsetCell.GetComponent<GridSlot>().GetOccupiedStatus(item.furnitureData.validAreas))
                     {
                         offsetCell.GetComponent<Image>().color = Color.red;
                     }

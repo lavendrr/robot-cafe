@@ -20,7 +20,7 @@ public class PlanningManager : MonoBehaviour
     private Sprite deliveryTileSprite;
     public GameObject[,] gridArray;
     [SerializeField]
-    public List<FurnitureObject> testFurniture;
+    public List<FurnitureData> testFurniture;
 
     public GridItem currentItem = null;
     public int furnitureCost { get; private set; }
@@ -105,14 +105,14 @@ public class PlanningManager : MonoBehaviour
             {
                 var cell = gridArray[row, col];
                 GameObject spawnedItem = Instantiate(gridItemPrefab, gridObj.transform);
-                spawnedItem.GetComponent<Image>().sprite = element.furnitureObject.catalogSprite;
+                spawnedItem.GetComponent<Image>().sprite = element.furnitureData.catalogSprite;
                 GridItem gridItem = spawnedItem.GetComponent<GridItem>();
-                gridItem.Init(element.furnitureObject, false);
+                gridItem.Init(element.furnitureData, false);
                 gridItem.SetRotation(element.rotation);
-                gridItem.image.sprite = element.furnitureObject.gridSprites[0];
+                gridItem.image.sprite = element.furnitureData.gridSprites[0];
                 if (!cell.GetComponent<GridSlot>().AttemptItemSlot(spawnedItem, element.rotation))
                 {
-                    Debug.LogError("Failed to slot " + element.furnitureObject.furnitureName + " into cell at (" + row + ", " + col + ")");
+                    Debug.LogError("Failed to slot " + element.furnitureData.furnitureName + " into cell at (" + row + ", " + col + ")");
                     Destroy(spawnedItem);
                 }
             }
@@ -121,13 +121,13 @@ public class PlanningManager : MonoBehaviour
 
     private void PopulateCatalogPanel()
     {
-        Dictionary<FurnitureObject, int> catalogFurniture = new Dictionary<FurnitureObject, int>();//SaveManager.Instance.GetCatalogList();
+        Dictionary<FurnitureData, int> catalogFurniture = new Dictionary<FurnitureData, int>();//SaveManager.Instance.GetCatalogList();
         // For each furniture object in the test list, add a value of 5 to the dictionary
-        foreach (FurnitureObject f in testFurniture)
+        foreach (FurnitureData f in testFurniture)
         {
             catalogFurniture.Add(f, f.cost);
         }
-        foreach (KeyValuePair<FurnitureObject, int> element in catalogFurniture)
+        foreach (KeyValuePair<FurnitureData, int> element in catalogFurniture)
         {
             // Spawn a CatalogItem prefab under the catalog grid Content object
             GameObject item = Instantiate(catalogIconPrefab, catalogGridContent.transform);
@@ -140,11 +140,11 @@ public class PlanningManager : MonoBehaviour
         }
     }
 
-    public void ShowTooltip(FurnitureObject furnitureObject)
+    public void ShowTooltip(FurnitureData furnitureData)
     {
         tooltipPanel.SetActive(true);
-        tooltipPanel.transform.Find("ToolTipTitle").GetComponent<TextMeshProUGUI>().text = furnitureObject.furnitureName;
-        tooltipPanel.transform.Find("ToolTipText").GetComponent<TextMeshProUGUI>().text = ParseText(furnitureObject.tooltipText);
+        tooltipPanel.transform.Find("ToolTipTitle").GetComponent<TextMeshProUGUI>().text = furnitureData.furnitureName;
+        tooltipPanel.transform.Find("ToolTipText").GetComponent<TextMeshProUGUI>().text = ParseText(furnitureData.tooltipText);
         LayoutRebuilder.ForceRebuildLayoutImmediate(tooltipPanel.GetComponent<RectTransform>());
     }
 
@@ -173,7 +173,7 @@ public class PlanningManager : MonoBehaviour
                 var coords = cell.GetComponent<GridSlot>().GetCoords();
                 output.Add(new CafeElement
                 {
-                    furnitureObject = cell.GetComponentInChildren<GridItem>().furnitureObject,
+                    furnitureData = cell.GetComponentInChildren<GridItem>().furnitureData,
                     rootGridCoord = new GridCoord { col = coords.Item2, row = coords.Item1 },
                     rotation = cell.GetComponentInChildren<GridItem>().rotation
                 });

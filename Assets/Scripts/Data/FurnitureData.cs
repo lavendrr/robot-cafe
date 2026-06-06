@@ -9,8 +9,8 @@ public struct GridCoord
     public int row;
 }
 
-[CreateAssetMenu(fileName = "FO_New", menuName = "Furniture Object")]
-public class FurnitureObject : ScriptableObject
+[CreateAssetMenu(fileName = "FD_New", menuName = "Furniture Data")]
+public class FurnitureData : ScriptableObject
 {
     public string furnitureName;
     public GameObject prefab;
