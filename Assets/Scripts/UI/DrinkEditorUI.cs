@@ -24,6 +24,8 @@ public class DrinkEditorUI : MonoBehaviour
     [SerializeField]
     private ErrorableButton saveDrinkButton;
 
+    public event Action OnIngredientsChanged;
+
     private List<IngredientRow> ingRows = new();
 
     #region Initialization
@@ -153,6 +155,7 @@ public class DrinkEditorUI : MonoBehaviour
 
         // Add segment and handle in Cup Slider
         UpdateCupSlider();
+        OnIngredientsChanged?.Invoke();
         return true;
     }
 
@@ -189,6 +192,7 @@ public class DrinkEditorUI : MonoBehaviour
         // Update cup to rebuild slider
         NormalizeBaseIngredients();
         UpdateCupSlider();
+        OnIngredientsChanged?.Invoke();
     }
 
     private void UpdateCupSlider()

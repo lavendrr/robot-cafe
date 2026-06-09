@@ -21,12 +21,25 @@ public class IngredientPickerPanel : MonoBehaviour
 
     void Awake()
     {
-        BuildList();
         Close();
     }
 
-    public void Open()
+    public bool HasEligibleIngredients(IEnumerable<FuelType> excludeIngredients = null)
     {
+        var excluded = excludeIngredients != null
+            ? new HashSet<FuelType>(excludeIngredients)
+            : new HashSet<FuelType>();
+
+        foreach (var ingredient in stubIngredients)
+            if (!excluded.Contains(ingredient))
+                return true;
+
+        return false;
+    }
+
+    public void Open(IEnumerable<FuelType> excludeIngredients = null)
+    {
+        BuildList(excludeIngredients);
         gameObject.SetActive(true);
     }
 
@@ -35,13 +48,20 @@ public class IngredientPickerPanel : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    void BuildList()
+    void BuildList(IEnumerable<FuelType> excludeIngredients = null)
     {
+        var excluded = excludeIngredients != null
+            ? new HashSet<FuelType>(excludeIngredients)
+            : new HashSet<FuelType>();
+
         foreach (Transform child in contentRoot)
             Destroy(child.gameObject);
 
         foreach (var ingredient in stubIngredients)
         {
+            if (excluded.Contains(ingredient))
+                continue;
+
             var button = Instantiate(buttonPrefab, contentRoot);
             button.Initialize(ingredient, () =>
             {
