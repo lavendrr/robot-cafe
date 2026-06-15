@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: db1f6e26d5e8d47d984fc3f52f07fcf8
+guid: e7efce19bf2e34a098e66654b81c99ae
 PluginImporter:
   externalObjects: {}
-  serializedVersion: 2
+  serializedVersion: 3
   iconMap: {}
   executionOrder: {}
   defineConstraints: []
@@ -11,23 +11,17 @@ PluginImporter:
   isExplicitlyReferenced: 0
   validateReferences: 1
   platformData:
-  - first:
-      Any: 
-    second:
+    Any:
       enabled: 0
       settings: {}
-  - first:
-      Editor: Editor
-    second:
+    Editor:
       enabled: 1
       settings:
         CPU: AnyCPU
         DefaultValueInitialized: true
         OS: OSX
-  - first:
-      Standalone: OSXUniversal
-    second:
-      enabled: 0
+    OSXUniversal:
+      enabled: 1
       settings:
         CPU: AnyCPU
   userData: 
