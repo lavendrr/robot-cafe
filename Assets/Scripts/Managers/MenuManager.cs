@@ -15,7 +15,8 @@ public enum FuelType
 public class Drink
 {
     public Dictionary<FuelType, float> comp = new();
-    public List<string> toppings = new();
+    public Dictionary<AddOnData, int> mixIns  = new();
+    public Dictionary<AddOnData, int> toppings = new();
 }
 
 public class MenuItem

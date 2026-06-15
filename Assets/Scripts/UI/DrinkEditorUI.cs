@@ -121,7 +121,7 @@ public class DrinkEditorUI : MonoBehaviour
         }
 
         MenuItem clonedDrink = CloneMenuItem(CurrentItem);
-        string[] furnitureNames = System.Array.ConvertAll<FurnitureObject, string>(clonedDrink.requiredFurniture.ToArray(), f => f.name);
+        string[] furnitureNames = System.Array.ConvertAll<FurnitureData, string>(clonedDrink.requiredFurniture.ToArray(), f => f.name);
         if (originalItemName != "")
         {
             MenuManager.Instance.OverwriteItem(originalItemName, clonedDrink);
@@ -221,21 +221,29 @@ public class DrinkEditorUI : MonoBehaviour
 
     #endregion
 
-    #region Toppings
+    #region Add-Ons
 
-    public bool AddTopping(string topping)
+    public bool AddAddOn(AddOnData addOn, AddOnCategory category, int quantity = 1)
     {
-        if (CurrentItem.drink.toppings.Contains(topping))
+        var dict = GetAddOnDict(category);
+        if (dict.ContainsKey(addOn))
             return false;
 
-        CurrentItem.drink.toppings.Add(topping);
+        dict[addOn] = quantity;
         return true;
     }
 
-    public void RemoveTopping(string topping)
+    public void RemoveAddOn(AddOnData addOn, AddOnCategory category)
     {
-        CurrentItem.drink.toppings.Remove(topping);
+        GetAddOnDict(category).Remove(addOn);
     }
+
+    private Dictionary<AddOnData, int> GetAddOnDict(AddOnCategory category) => category switch
+    {
+        AddOnCategory.MixIn  => CurrentItem.drink.mixIns,
+        AddOnCategory.Topping => CurrentItem.drink.toppings,
+        _ => throw new ArgumentOutOfRangeException(nameof(category))
+    };
 
     #endregion
 
@@ -280,17 +288,17 @@ public class DrinkEditorUI : MonoBehaviour
     }
 
     MenuItem CloneMenuItem(MenuItem source)
-{
-    var compCopy = new Dictionary<FuelType, float>(source.drink.comp);
-    var clone = new MenuItem(
-        source.name,
-        compCopy,
-        source.cost
-    );
+    {
+        var clone = new MenuItem(
+            source.name,
+            new Dictionary<FuelType, float>(source.drink.comp),
+            source.cost
+        );
 
-    clone.drink.toppings = new List<string>(source.drink.toppings);
-    return clone;
-}
+        clone.drink.mixIns  = new Dictionary<AddOnData, int>(source.drink.mixIns);
+        clone.drink.toppings = new Dictionary<AddOnData, int>(source.drink.toppings);
+        return clone;
+    }
 
     void NormalizeBaseIngredients()
     {
