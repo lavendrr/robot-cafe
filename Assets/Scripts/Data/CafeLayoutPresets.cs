@@ -14,27 +14,27 @@ public static class CafeLayoutPresets
                 floorPrefab = Resources.Load<GameObject>("Meshes/SM_floor"),
                 straightWallPrefab = Resources.Load<GameObject>("Prefabs/WallPlain"),
                 cornerWallPrefab = Resources.Load<GameObject>("Prefabs/WallCorner"),
-                deliveryTileFO = Resources.Load<FurnitureObject>("Prefabs/FurnitureObjects/FO_WindowDelivery"),
+                deliveryTileData = Resources.Load<FurnitureData>("Prefabs/FurnitureData/FD_WindowDelivery"),
                 windowEndcapPrefab = Resources.Load<GameObject>("Prefabs/WindowEndcap"),
                 elements = new List<CafeElement>
                 {
                     new() {
-                        furnitureObject = Resources.Load<FurnitureObject>("Prefabs/FurnitureObjects/FO_ChargingDock"),
+                        furnitureData = Resources.Load<FurnitureData>("Prefabs/FurnitureData/FD_ChargingDock"),
                         rootGridCoord = new GridCoord { col = 3, row = 2 },
                         rotation = 0
                     },
                     new() {
-                        furnitureObject = Resources.Load<FurnitureObject>("Prefabs/FurnitureObjects/FO_CoffeeMachine"),
+                        furnitureData = Resources.Load<FurnitureData>("Prefabs/FurnitureData/FD_CoffeeMachine"),
                         rootGridCoord = new GridCoord { col = 0, row = 4 },
                         rotation = 90
                     },
                     new() {
-                        furnitureObject = Resources.Load<FurnitureObject>("Prefabs/FurnitureObjects/FO_CupDispenser"),
+                        furnitureData = Resources.Load<FurnitureData>("Prefabs/FurnitureData/FD_CupDispenser"),
                         rootGridCoord = new GridCoord { col = 0, row = 5 },
                         rotation = -270
                     },
                     new() {
-                        furnitureObject = Resources.Load<FurnitureObject>("Prefabs/FurnitureObjects/FO_TrashBin"),
+                        furnitureData = Resources.Load<FurnitureData>("Prefabs/FurnitureData/FD_TrashBin"),
                         rootGridCoord = new GridCoord { col = 4, row = 5 },
                         rotation = 0
                     },

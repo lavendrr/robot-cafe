@@ -8,7 +8,7 @@ The cafe serves **fuel** (not coffee). Drinks are composed of **FuelTypes**: `Un
 
 ## Project Structure
 
-- `Assets/Scripts/Data/` — plain data types and constants (`FurnitureObject`, `GameConsts`, layout presets)
+- `Assets/Scripts/Data/` — plain data types and constants (`FurnitureData`, `GameConsts`, layout presets)
 - `Assets/Scripts/Managers/` — singleton game managers (state, save, audio, UI, menu, orders, layout, planning, camera)
 - `Assets/Scripts/Objects/` — in-world MonoBehaviours (player, customers, appliances, cups, delivery)
 - `Assets/Scripts/UI/` — UI MonoBehaviours (menu editor, drink editor, layout editor, planning, shift-end, pause)
@@ -29,7 +29,7 @@ State changes broadcast via `OnStateChanged` delegate. Pausability is per-state 
 
 - **Singletons** — all managers expose a static `Instance`; never use `FindObjectOfType` to reach them
 - **Event-driven coordination** — managers subscribe to `StateManager.OnStateChanged` and `StateManager.OnGamePausedChanged` rather than polling or calling each other directly
-- **ScriptableObjects** — `FurnitureObject` is a ScriptableObject asset; furniture data lives in assets, not in scene objects or code
+- **ScriptableObjects** — `FurnitureData` is a ScriptableObject asset; furniture data lives in assets, not in scene objects or code
 - **Serializable save types** — runtime types (e.g. `CafeElement`) have separate serializable counterparts for JSON; don't conflate the two
 
 ## Scene Structure

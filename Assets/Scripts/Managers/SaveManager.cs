@@ -18,7 +18,7 @@ public class SaveData
 
 public struct CafeElement
 {
-    public FurnitureObject furnitureObject;
+    public FurnitureData furnitureData;
     public GridCoord rootGridCoord;
     public int rotation; // 0, 90, 180, 270 degrees
 }
@@ -26,7 +26,7 @@ public struct CafeElement
     [System.Serializable]
     public struct SerializableCafeElement
     {
-        public string furnitureObjectName;
+        public string furnitureDataName;
         public GridCoord rootGridCoord;
         public int rotation;
     }
@@ -69,7 +69,7 @@ public class SaveManager : MonoBehaviour
     private SaveData saveData = new SaveData();
     private string path = "Assets/SaveData/saveData.json";
     // bump this when introducing breaking changes to the save data format
-    private const int CURRENT_SAVEDATA_VERSION = 1;
+    private const int CURRENT_SAVEDATA_VERSION = 2;
 
     void Awake()
     {
@@ -192,7 +192,7 @@ public class SaveManager : MonoBehaviour
             floorPrefabName = layout.floorPrefab != null ? "Meshes/" + layout.floorPrefab.name : "",
             straightWallPrefabName = layout.straightWallPrefab != null ? "Prefabs/" + layout.straightWallPrefab.name : "",
             cornerWallPrefabName = layout.cornerWallPrefab != null ? "Prefabs/" + layout.cornerWallPrefab.name : "",
-            deliveryTilePrefabName = layout.deliveryTileFO != null ? "Prefabs/FurnitureObjects/" + layout.deliveryTileFO.name : "",
+            deliveryTilePrefabName = layout.deliveryTileData != null ? "Prefabs/FurnitureData/" + layout.deliveryTileData.name : "",
             windowEndcapPrefabName = layout.windowEndcapPrefab != null ? "Prefabs/" + layout.windowEndcapPrefab.name : ""
         };
 
@@ -200,7 +200,7 @@ public class SaveManager : MonoBehaviour
         {
             serializable.elements.Add(new SerializableCafeElement
             {
-                furnitureObjectName = element.furnitureObject.prefab != null ? "Prefabs/FurnitureObjects/" + element.furnitureObject.name : "",
+                furnitureDataName = element.furnitureData.prefab != null ? "Prefabs/FurnitureData/" + element.furnitureData.name : "",
                 rootGridCoord = element.rootGridCoord,
                 rotation = element.rotation
             });
@@ -218,17 +218,17 @@ public class SaveManager : MonoBehaviour
             floorPrefab = !string.IsNullOrEmpty(serializable.floorPrefabName) ? Resources.Load<GameObject>(serializable.floorPrefabName) : null,
             straightWallPrefab = !string.IsNullOrEmpty(serializable.straightWallPrefabName) ? Resources.Load<GameObject>(serializable.straightWallPrefabName) : null,
             cornerWallPrefab = !string.IsNullOrEmpty(serializable.cornerWallPrefabName) ? Resources.Load<GameObject>(serializable.cornerWallPrefabName) : null,
-            deliveryTileFO = !string.IsNullOrEmpty(serializable.deliveryTilePrefabName) ? Resources.Load<FurnitureObject>(serializable.deliveryTilePrefabName) : null,
+            deliveryTileData = !string.IsNullOrEmpty(serializable.deliveryTilePrefabName) ? Resources.Load<FurnitureData>(serializable.deliveryTilePrefabName) : null,
             windowEndcapPrefab = !string.IsNullOrEmpty(serializable.windowEndcapPrefabName) ? Resources.Load<GameObject>(serializable.windowEndcapPrefabName) : null,
             elements = new List<CafeElement>()
         };
 
         foreach (var serializableElement in serializable.elements)
         {
-            var furnitureObj = Resources.Load<FurnitureObject>(serializableElement.furnitureObjectName);
+            var furnitureData = Resources.Load<FurnitureData>(serializableElement.furnitureDataName);
             layout.elements.Add(new CafeElement
             {
-                furnitureObject = furnitureObj,
+                furnitureData = furnitureData,
                 rootGridCoord = serializableElement.rootGridCoord,
                 rotation = serializableElement.rotation
             });

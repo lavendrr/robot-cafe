@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class GridItemSpawner : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField]
-    public FurnitureObject furnitureType;
+    public FurnitureData furnitureType;
     public GameObject gridItemPrefab;
     private GridItem gridItem;
 
