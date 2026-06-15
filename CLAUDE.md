@@ -63,12 +63,8 @@ Project key: `RC` on `fractalriver.atlassian.net`
 
 ## Obsidian Vault
 
-Design notes, feature specs, milestones, and systems documentation live in the project's Obsidian vault at:
+Design notes, feature specs, milestones, and systems documentation live in the project's Obsidian vault. Top-level sections: `Design/`, `Features/`, `Milestones/`, `Systems/`, plus `Cafe Planning Preview.md`.
 
-```
-/Users/izelmoctezuma/Library/Mobile Documents/com~apple~CloudDocs/Robot Cafe
-```
+The vault path is machine-specific — see `.claude/local.md` (gitignored). Copy `.claude/local.md.example` to get started.
 
-Top-level sections: `Design/`, `Features/`, `Milestones/`, `Systems/`, plus `Cafe Planning Preview.md`.
-
-Read access to this path is pre-authorized in `.claude/settings.json` — no permission prompt needed.
+@.claude/local.md

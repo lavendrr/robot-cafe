@@ -1,0 +1,9 @@
+## Local Paths
+
+Obsidian vault is at:
+
+```
+/Users/<yourname>/path/to/Robot Cafe
+```
+
+Read access to this path is pre-authorized in `.claude/settings.json` — no permission prompt needed.
