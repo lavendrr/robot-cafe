@@ -230,17 +230,22 @@ public class DrinkEditorUI : MonoBehaviour
             return false;
 
         dict[addOn] = quantity;
+        OnIngredientsChanged?.Invoke();
         return true;
     }
 
     public void RemoveAddOn(AddOnData addOn, AddOnCategory category)
     {
         GetAddOnDict(category).Remove(addOn);
+        OnIngredientsChanged?.Invoke();
     }
+
+    public IEnumerable<AddOnData> GetAddOns(AddOnCategory category) =>
+        CurrentItem != null ? GetAddOnDict(category).Keys : null;
 
     private Dictionary<AddOnData, int> GetAddOnDict(AddOnCategory category) => category switch
     {
-        AddOnCategory.MixIn  => CurrentItem.drink.mixIns,
+        AddOnCategory.MixIn   => CurrentItem.drink.mixIns,
         AddOnCategory.Topping => CurrentItem.drink.toppings,
         _ => throw new ArgumentOutOfRangeException(nameof(category))
     };

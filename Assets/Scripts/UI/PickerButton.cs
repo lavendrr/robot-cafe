@@ -1,16 +1,16 @@
+using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using System;
 
-public class IngredientPickerButton : MonoBehaviour
+public class PickerButton : MonoBehaviour
 {
     [SerializeField] private TMP_Text label;
     [SerializeField] private Button button;
 
-    public void Initialize(FuelType ingredient, Action onClick)
+    public void Initialize(string labelText, Action onClick)
     {
-        label.text = ingredient.ToString();
+        label.text = labelText;
         button.onClick.RemoveAllListeners();
         button.onClick.AddListener(() => onClick());
     }

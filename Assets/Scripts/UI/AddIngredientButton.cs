@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class AddIngredientButton : MonoBehaviour
 {
-    [SerializeField] private IngredientPickerPanel pickerPanel;
+    [SerializeField] private FuelPickerPanel pickerPanel;
     [SerializeField] private Button button;
 
     void OnEnable()
@@ -20,7 +20,7 @@ public class AddIngredientButton : MonoBehaviour
 
     public void OnPressed()
     {
-        pickerPanel.OnIngredientSelected = OnIngredientPicked;
+        pickerPanel.OnItemSelected = OnIngredientPicked;
         var added = DrinkEditorUI.Instance.CurrentItem?.drink.comp.Keys;
         pickerPanel.Open(added);
     }
@@ -33,6 +33,6 @@ public class AddIngredientButton : MonoBehaviour
     void RefreshInteractable()
     {
         var added = DrinkEditorUI.Instance.CurrentItem?.drink.comp.Keys;
-        button.interactable = pickerPanel.HasEligibleIngredients(added);
+        button.interactable = pickerPanel.HasEligibleItems(added);
     }
 }
