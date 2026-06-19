@@ -4,19 +4,11 @@ using System.IO;
 using System;
 using System.Linq;
 
-public enum FuelType
-{
-    None,
-    Unleaded,
-    Diesel,
-    Premium
-}
-
 public class Drink
 {
-    public Dictionary<FuelType, float> comp = new();
-    public Dictionary<AddOnData, int> mixIns  = new();
-    public Dictionary<AddOnData, int> toppings = new();
+    public Dictionary<IngredientData, int> bases    = new();
+    public Dictionary<IngredientData, int> mixIns   = new();
+    public Dictionary<IngredientData, int> toppings = new();
 }
 
 public class MenuItem
@@ -26,10 +18,10 @@ public class MenuItem
     public int cost;
     public List<FurnitureData> requiredFurniture;
 
-    public MenuItem(string _name, Dictionary<FuelType, float> _drinkComp, int _cost, string[] _requiredFurniture = null)
+    public MenuItem(string _name, Dictionary<IngredientData, int> _drinkComp, int _cost, string[] _requiredFurniture = null)
     {
         name = _name;
-        drink.comp = _drinkComp;
+        drink.bases = _drinkComp;
         cost = _cost;
         requiredFurniture = GenerateFurnitureDataList(_requiredFurniture);
     }
@@ -49,18 +41,18 @@ public class MenuItem
 
     public bool CompareDrink(Drink compare)
     {
-        if (drink.comp.Count != compare.comp.Count)
+        if (drink.bases.Count != compare.bases.Count)
         {
             return false;
         }
-        
-        foreach (var x in drink.comp)
+
+        foreach (var x in drink.bases)
         {
-            if (!compare.comp.Keys.Contains(x.Key))
+            if (!compare.bases.Keys.Contains(x.Key))
             {
                 return false;
             }
-            if (!(x.Value - 20f <= compare.comp[x.Key] && compare.comp[x.Key] <= x.Value + 20f))
+            if (!(x.Value - 20f <= compare.bases[x.Key] && compare.bases[x.Key] <= x.Value + 20f))
             {
                 return false;
             }
@@ -134,9 +126,9 @@ public class MenuManager : MonoBehaviour
         return menu.ToArray();
     }
 
-    public void AddItem(string name, Dictionary<FuelType, float> drinkComp, int cost, string[] requiredFurniture = null)
+    public void AddItem(string name, Dictionary<IngredientData, int> bases, int cost, string[] requiredFurniture = null)
     {
-        menu.Add(new MenuItem(name, drinkComp, cost, requiredFurniture));
+        menu.Add(new MenuItem(name, bases, cost, requiredFurniture));
     }
 
     public void RemoveItem(string itemName)
@@ -179,9 +171,9 @@ public class MenuManager : MonoBehaviour
     // For now, add the default menu items on start
     void Start()
     {
-        AddItem("Unleaded", new Dictionary<FuelType, float>() {{FuelType.Unleaded, 100f}}, 2, new string[] {"FD_CoffeeMachine"});
-        AddItem("Diesel", new Dictionary<FuelType, float>() {{FuelType.Diesel, 100f}},3);
-        AddItem("Premium", new Dictionary<FuelType, float>() {{FuelType.Premium, 100f}}, 5);
+        AddItem("Unleaded", new Dictionary<IngredientData, int>() {{ Resources.Load<IngredientData>("Prefabs/IngredientData/ING_Unleaded"), 100 }}, 2, new string[] {"FD_CoffeeMachine"});
+        AddItem("Diesel", new Dictionary<IngredientData, int>() {{ Resources.Load<IngredientData>("Prefabs/IngredientData/ING_Diesel"), 100 }}, 3);
+        AddItem("Premium", new Dictionary<IngredientData, int>() {{ Resources.Load<IngredientData>("Prefabs/IngredientData/ING_Premium"), 100 }}, 5);
 
         // foreach (MenuItem item in menu)
         // {

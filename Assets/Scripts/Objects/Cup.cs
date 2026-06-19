@@ -11,12 +11,12 @@ public class Cup : MonoBehaviour
     MeshRenderer drinkMeshRenderer;
     public Drink drink = new();
 
-    public Dictionary<FuelType, float> GetDrinkComp()
+    public Dictionary<IngredientData, int> GetDrinkComp()
     {
-        return drink.comp;
+        return drink.bases;
     }
 
-    public void ToggleFill(FuelType fillType, Vector3 position, Material fuelMaterial)
+    public void ToggleFill(IngredientData fillType, Vector3 position)
     {
         // Fill the cup if it's empty, or do nothing if it's already full
         var animator = transform.parent.parent.parent.gameObject.GetComponentInChildren<Animator>();
@@ -32,7 +32,7 @@ public class Cup : MonoBehaviour
 
             AudioManager.Instance.PlaySFX(AudioManager.Instance.pourCoffee, position);
 
-            drinkMeshRenderer.material = fuelMaterial;
+            drinkMeshRenderer.material = fillType.material;
             StartCoroutine(Fill(fillType, 1f));
         }
         else
@@ -49,28 +49,28 @@ public class Cup : MonoBehaviour
         Vector3 targetScale = Vector3.one;
 
         Transform drinkMeshTransform = drinkMeshRenderer.transform;
-        drinkMeshTransform.localScale = Vector3.Lerp(startScale, targetScale, Math.Clamp(drink.comp.Sum(x => x.Value)/100, 0, 1));
+        drinkMeshTransform.localScale = Vector3.Lerp(startScale, targetScale, Math.Clamp((float)drink.bases.Sum(x => x.Value)/100, 0, 1));
     }
 
     // Animation function for the drink mesh
-    private IEnumerator Fill(FuelType fuel, float fillAmount)
+    private IEnumerator Fill(IngredientData fuel, float fillAmount)
     {
-        if (!drink.comp.ContainsKey(fuel))
+        if (!drink.bases.ContainsKey(fuel))
         {
-            drink.comp[fuel] = 0f;
+            drink.bases[fuel] = 0;
         }
 
         while (filling)
         {
-            drink.comp[fuel] = drink.comp[fuel] + fillAmount;
+            drink.bases[fuel] += 1;
             UpdateCoffeeMesh();
 
-            foreach (KeyValuePair<FuelType, float> pair in drink.comp)
+            foreach (KeyValuePair<IngredientData, int> pair in drink.bases)
             {
                 Debug.Log($"Drink has {pair.Key} at {pair.Value}");
             }
 
-            if (drink.comp.Sum(x => x.Value) >= 100f)
+            if (drink.bases.Sum(x => x.Value) >= 100)
             {
                 Debug.Log("Overflowed");
             }
@@ -86,9 +86,9 @@ public class Cup : MonoBehaviour
     public bool Empty()
     {
         // Returns true if the cup was full then emptied, returns false if the cup was already empty
-        if (drink.comp.Count != 0)
+        if (drink.bases.Count != 0)
         {
-            drink.comp.Clear();
+            drink.bases.Clear();
             UpdateCoffeeMesh();
             return true;
         }

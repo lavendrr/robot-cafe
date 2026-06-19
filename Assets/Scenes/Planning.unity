@@ -2253,10 +2253,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 349783778}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b83286a836674e28b556663087bd2be, type: 3}
+  m_Script: {fileID: 11500000, guid: 15ef64bc035764f089e159998c13d9ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickerPanel: {fileID: 1587474108}
+  pickerPanel: {fileID: 1983641826}
   button: {fileID: 349783779}
   category: 1
 --- !u!1 &362693450
@@ -4892,6 +4892,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickerPanel: {fileID: 1983641826}
   button: {fileID: 1118034566}
+  category: 4
 --- !u!1 &1176984924
 GameObject:
   m_ObjectHideFlags: 0
@@ -6364,7 +6365,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4864480394628302561, guid: 8500f3e94ae53437f8510a780904f2b7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PickerPanel`1[[AddOnData, Assembly-CSharp
+      value: PickerPanel`1[[IngredientData, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5890918795582624763, guid: 8500f3e94ae53437f8510a780904f2b7, type: 3}
       propertyPath: m_text
@@ -6485,6 +6486,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 165774140}
     m_Modifications:
+    - target: {fileID: 2438991220610054598, guid: 8df3b6041213242329a11fb95ae839f5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1673377287}
+    - target: {fileID: 2438991220610054598, guid: 8df3b6041213242329a11fb95ae839f5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnPressed
+      objectReference: {fileID: 0}
+    - target: {fileID: 2438991220610054598, guid: 8df3b6041213242329a11fb95ae839f5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: AddAddOnButton, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 2574256792440207371, guid: 8df3b6041213242329a11fb95ae839f5, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -6607,10 +6620,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1673377285}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b83286a836674e28b556663087bd2be, type: 3}
+  m_Script: {fileID: 11500000, guid: 15ef64bc035764f089e159998c13d9ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickerPanel: {fileID: 1587474108}
+  pickerPanel: {fileID: 1983641826}
   button: {fileID: 1673377286}
   category: 2
 --- !u!1 &1721378768
@@ -7259,7 +7272,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f058580e8a8ba4f5cba31e6237b886ea, type: 3}
+  m_Script: {fileID: 11500000, guid: d2e428db352c14f3c84c35d02b0994c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2048403204

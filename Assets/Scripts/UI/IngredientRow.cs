@@ -9,9 +9,10 @@ public class IngredientRow : MonoBehaviour
 {
     [SerializeField]
     public TextMeshProUGUI LabelText, PortionText;
+    public IngredientData Ingredient;
 
     public void RemoveIngredient()
     {
-        DrinkEditorUI.Instance.RemoveIngredient(LabelText.text);
+        DrinkEditorUI.Instance.RemoveBaseIngredient(Ingredient);
     }
 }

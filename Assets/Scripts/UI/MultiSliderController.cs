@@ -22,7 +22,7 @@ public class MultiSliderController : MonoBehaviour
         handles.Clear();
         segmentPercentages = new List<float>();
 
-        int ingredientCount = DrinkEditorUI.Instance?.CurrentItem?.drink.comp.Count ?? 0;
+        int ingredientCount = DrinkEditorUI.Instance?.CurrentItem?.drink.bases.Count ?? 0;
 
         // Handle 0 ingredient case
         if (ingredientCount < 1)

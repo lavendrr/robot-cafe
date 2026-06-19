@@ -90,7 +90,7 @@ public class DrinkEditorUI : MonoBehaviour
     {
         CurrentItem = new MenuItem(
             "",
-            new Dictionary<FuelType, float>(),
+            new Dictionary<IngredientData, int>(),
             5
         );
     }
@@ -101,7 +101,7 @@ public class DrinkEditorUI : MonoBehaviour
         SetItemName(item.name);
         originalItemName = item.name;
         CurrentItem.cost = item.cost;
-        foreach (var ing in item.drink.comp)
+        foreach (var ing in item.drink.bases)
         {
             AddBaseIngredient(ing.Key, ing.Value);
         }
@@ -127,7 +127,7 @@ public class DrinkEditorUI : MonoBehaviour
             MenuManager.Instance.OverwriteItem(originalItemName, clonedDrink);
         } else
         {
-            MenuManager.Instance.AddItem(clonedDrink.name, clonedDrink.drink.comp, clonedDrink.cost, furnitureNames);    
+            MenuManager.Instance.AddItem(clonedDrink.name, clonedDrink.drink.bases, clonedDrink.cost, furnitureNames);
         }
         
         menuEditor.PopulateMenu();
@@ -139,18 +139,19 @@ public class DrinkEditorUI : MonoBehaviour
 
     #region Base Ingredients
 
-    public bool AddBaseIngredient(FuelType fuelType, float amount)
+    public bool AddBaseIngredient(IngredientData ingredient, int amount)
     {
         // Add to MenuItem
-        if (CurrentItem.drink.comp.ContainsKey(fuelType))
+        if (CurrentItem.drink.bases.ContainsKey(ingredient))
             return false;
 
-        CurrentItem.drink.comp.Add(fuelType, amount);
+        CurrentItem.drink.bases.Add(ingredient, amount);
 
         // Add ingredient row to panel
         var ingRow = Instantiate(IngredientRowPrefab, BaseIngredientList.transform);
         var ingRowScript = ingRow.GetComponent<IngredientRow>();
-        ingRowScript.LabelText.text = fuelType.ToString();
+        ingRowScript.LabelText.text = ingredient.ingredientName;
+        ingRowScript.Ingredient = ingredient;
         ingRows.Add(ingRowScript);
 
         // Add segment and handle in Cup Slider
@@ -159,34 +160,24 @@ public class DrinkEditorUI : MonoBehaviour
         return true;
     }
 
-    public void SetBaseIngredientValue(FuelType fuelType, float percent)
+    public void SetBaseIngredientValue(IngredientData ingredient, int percent)
     {
-        if (!CurrentItem.drink.comp.ContainsKey(fuelType))
+        if (!CurrentItem.drink.bases.ContainsKey(ingredient))
             return;
 
-        CurrentItem.drink.comp[fuelType] = Mathf.Clamp(percent, 0f, 100f);
+        CurrentItem.drink.bases[ingredient] = Mathf.Clamp(percent, 0, 100);
         NormalizeBaseIngredients();
     }
 
-    public void RemoveIngredient(string ingName)
-    {
-        if (Enum.TryParse(typeof(FuelType), ingName, true, out object result))
-        {
-            RemoveBaseIngredient((FuelType)result);
-        } else {
-            Debug.LogWarning("Removing ingredients for any type other than Fuel not supported yet.");
-        }
-    }
-
-    public void RemoveBaseIngredient(FuelType fuelType)
+    public void RemoveBaseIngredient(IngredientData ingredient)
     {
         // Delete ingredient row
-        int ingIndex = CurrentItem.drink.comp.Keys.ToList().IndexOf(fuelType);
+        int ingIndex = CurrentItem.drink.bases.Keys.ToList().IndexOf(ingredient);
         Destroy(ingRows[ingIndex].gameObject);
         ingRows.RemoveAt(ingIndex);
 
-        // Remove ingredient from drink comp
-        if (!CurrentItem.drink.comp.Remove(fuelType))
+        // Remove ingredient from drink bases
+        if (!CurrentItem.drink.bases.Remove(ingredient))
             return;
 
         // Update cup to rebuild slider
@@ -205,14 +196,14 @@ public class DrinkEditorUI : MonoBehaviour
         if (CurrentItem == null || CupSlider == null || CupSlider.segmentPercentages == null)
             return;
 
-        List<FuelType> keys = new(CurrentItem.drink.comp.Keys);
+        List<IngredientData> keys = new(CurrentItem.drink.bases.Keys);
         List<float> segments = CupSlider.segmentPercentages;
 
         // Map each segment percentage (0..1) to the corresponding ingredient (0..100)
         for (int i = 0; i < keys.Count && i < segments.Count; i++)
         {
-            SetBaseIngredientValue(keys[i], segments[i] * 100f);
-            ingRows[i].PortionText.text = (segments[i] * 100f).ToString();
+            SetBaseIngredientValue(keys[i], (int)(segments[i] * 100f));
+            ingRows[i].PortionText.text = ((int)(segments[i] * 100f)).ToString();
             LayoutRebuilder.ForceRebuildLayoutImmediate(
                 ingRows[i].PortionText.rectTransform.parent as RectTransform
             );
@@ -223,9 +214,9 @@ public class DrinkEditorUI : MonoBehaviour
 
     #region Add-Ons
 
-    public bool AddAddOn(AddOnData addOn, AddOnCategory category, int quantity = 1)
+    public bool AddAddOn(IngredientData addOn, IngredientCategory category, int quantity = 1)
     {
-        var dict = GetAddOnDict(category);
+        var dict = GetCategoryDict(category);
         if (dict.ContainsKey(addOn))
             return false;
 
@@ -234,19 +225,32 @@ public class DrinkEditorUI : MonoBehaviour
         return true;
     }
 
-    public void RemoveAddOn(AddOnData addOn, AddOnCategory category)
+    public void RemoveAddOn(IngredientData addOn, IngredientCategory category)
     {
-        GetAddOnDict(category).Remove(addOn);
+        GetCategoryDict(category).Remove(addOn);
         OnIngredientsChanged?.Invoke();
     }
 
-    public IEnumerable<AddOnData> GetAddOns(AddOnCategory category) =>
-        CurrentItem != null ? GetAddOnDict(category).Keys : null;
-
-    private Dictionary<AddOnData, int> GetAddOnDict(AddOnCategory category) => category switch
+    // Category-routed entry points shared by every AddIngredientButton (Base/MixIn/Topping).
+    // Reads are uniform — every category is the same dict shape. Only the *add* behavior
+    // differs: Base ingredients are normalized into a ratio and drive the cup slider, whereas
+    // add-ons are discrete counts.
+    public void AddIngredient(IngredientData ingredient, IngredientCategory category)
     {
-        AddOnCategory.MixIn   => CurrentItem.drink.mixIns,
-        AddOnCategory.Topping => CurrentItem.drink.toppings,
+        if (category == IngredientCategory.Base)
+            AddBaseIngredient(ingredient, 10);
+        else
+            AddAddOn(ingredient, category);
+    }
+
+    public IEnumerable<IngredientData> GetIngredients(IngredientCategory category) =>
+        CurrentItem != null ? GetCategoryDict(category).Keys : null;
+
+    private Dictionary<IngredientData, int> GetCategoryDict(IngredientCategory category) => category switch
+    {
+        IngredientCategory.Base    => CurrentItem.drink.bases,
+        IngredientCategory.MixIn   => CurrentItem.drink.mixIns,
+        IngredientCategory.Topping => CurrentItem.drink.toppings,
         _ => throw new ArgumentOutOfRangeException(nameof(category))
     };
 
@@ -271,7 +275,7 @@ public class DrinkEditorUI : MonoBehaviour
 
     bool IsValidDrink(MenuItem item)
     {
-        if (item.drink.comp.Count < 1)
+        if (item.drink.bases.Count < 1)
         {
             saveDrinkButton.FlashError("No base ingredients!", 0.5f);
             return false;
@@ -296,51 +300,49 @@ public class DrinkEditorUI : MonoBehaviour
     {
         var clone = new MenuItem(
             source.name,
-            new Dictionary<FuelType, float>(source.drink.comp),
+            new Dictionary<IngredientData, int>(source.drink.bases),
             source.cost
         );
 
-        clone.drink.mixIns  = new Dictionary<AddOnData, int>(source.drink.mixIns);
-        clone.drink.toppings = new Dictionary<AddOnData, int>(source.drink.toppings);
+        clone.drink.mixIns  = new Dictionary<IngredientData, int>(source.drink.mixIns);
+        clone.drink.toppings = new Dictionary<IngredientData, int>(source.drink.toppings);
         return clone;
     }
 
     void NormalizeBaseIngredients()
     {
-        if (CurrentItem.drink.comp.Count == 0)
+        if (CurrentItem.drink.bases.Count == 0)
             return;
 
         float total = 0f;
-        foreach (var v in CurrentItem.drink.comp.Values)
+        foreach (var v in CurrentItem.drink.bases.Values)
             total += v;
 
         if (Mathf.Approximately(total, 0f))
         {
-            float even = 100f / CurrentItem.drink.comp.Count;
-            List<FuelType> keys = new(CurrentItem.drink.comp.Keys);
+            int even = Mathf.RoundToInt(100f / CurrentItem.drink.bases.Count);
+            List<IngredientData> keys = new(CurrentItem.drink.bases.Keys);
             foreach (var k in keys)
-                CurrentItem.drink.comp[k] = even;
+                CurrentItem.drink.bases[k] = even;
             return;
         }
 
         float scale = 100f / total;
-        List<FuelType> normalizeKeys = new(CurrentItem.drink.comp.Keys);
-        foreach (var k in normalizeKeys)
-            CurrentItem.drink.comp[k] *= scale;
+        List<IngredientData> normalizeKeys = new(CurrentItem.drink.bases.Keys);
 
         // Round all values to integers
         int roundedTotal = 0;
         foreach (var k in normalizeKeys)
         {
-            CurrentItem.drink.comp[k] = Mathf.Round(CurrentItem.drink.comp[k]);
-            roundedTotal += (int)CurrentItem.drink.comp[k];
+            CurrentItem.drink.bases[k] = Mathf.RoundToInt(CurrentItem.drink.bases[k] * scale);
+            roundedTotal += CurrentItem.drink.bases[k];
         }
 
         // Redistribute rounding error to maintain 100% sum
         int remainder = 100 - roundedTotal;
         if (remainder != 0)
         {
-            CurrentItem.drink.comp[normalizeKeys[0]] += remainder;
+            CurrentItem.drink.bases[normalizeKeys[0]] += remainder;
         }
     }
 

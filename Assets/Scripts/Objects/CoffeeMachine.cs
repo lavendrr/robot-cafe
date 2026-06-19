@@ -3,9 +3,7 @@ using UnityEngine;
 public class CoffeeMachine : MonoBehaviour
 {
     [SerializeField]
-    private FuelType coffeeMachineType;
-    [SerializeField]
-    private Material fuelMaterial;
+    private IngredientData ingredient;
     private Slot slot;
     private BoxCollider slotCollider;
 
@@ -31,7 +29,7 @@ public class CoffeeMachine : MonoBehaviour
         var cupObj = slot.GetSlottedObj();
         if (cupObj != null)
         {
-            cupObj.GetComponent<Cup>().ToggleFill(coffeeMachineType, slot.gameObject.transform.position, fuelMaterial);
+            cupObj.GetComponent<Cup>().ToggleFill(ingredient, slot.gameObject.transform.position);
         }
     }
 }
