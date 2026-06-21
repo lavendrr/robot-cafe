@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour
     private int minutes;
     private float seconds;
     [SerializeField]
-    public Sprite crosshairIcon, grabIcon, slotIcon, useIcon, talkIcon;
+    public Sprite crosshairIcon, grabIcon, slotIcon, useIcon, talkIcon, focusIcon;
 
     void Awake()
     {
@@ -129,6 +129,10 @@ public class UIManager : MonoBehaviour
         else if (type == InteractableType.Usable)
         {
             crosshair.SetUse();
+        }
+        else if (type == InteractableType.Focusable)
+        {
+            crosshair.SetFocus();
         }
         else
         {
@@ -301,6 +305,14 @@ public class Crosshair
     {
         obj.SetActive(true);
         img.sprite = UIManager.Instance.useIcon;
+        tooltip.text = "(Q)";
+    }
+
+    public void SetFocus()
+    {
+        obj.SetActive(true);
+        // Fall back to the use icon until a dedicated focus icon is assigned.
+        img.sprite = UIManager.Instance.focusIcon != null ? UIManager.Instance.focusIcon : UIManager.Instance.useIcon;
         tooltip.text = "(Q)";
     }
 }

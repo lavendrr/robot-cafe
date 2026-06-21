@@ -98,6 +98,8 @@ public class Player : MonoBehaviour
 
     private void CameraRotation()
     {
+        if (FocusManager.Instance != null && FocusManager.Instance.IsFocused) return;
+
         // if there is an input
         if (_input.look.sqrMagnitude >= _threshold)
         {
@@ -120,6 +122,8 @@ public class Player : MonoBehaviour
 
     private void Move()
     {
+        if (FocusManager.Instance != null && FocusManager.Instance.IsFocused) return;
+
         // set target speed to maximum move speed
         float targetSpeed = MoveSpeed;
 

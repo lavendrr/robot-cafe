@@ -6,7 +6,8 @@ public enum InteractableType
     None,
     Grabbable,
     Slottable,
-    Usable
+    Usable,
+    Focusable
 }
 
 public class PlayerInteractions : MonoBehaviour
@@ -86,6 +87,10 @@ public class PlayerInteractions : MonoBehaviour
             else if (hit.collider.gameObject.CompareTag("Slottable"))
             {
                 return (InteractableType.Slottable, hit.collider.gameObject);
+            }
+            else if (hit.collider.gameObject.CompareTag("Focusable"))
+            {
+                return (InteractableType.Focusable, hit.collider.gameObject);
             }
             else if (hit.collider.gameObject.CompareTag("Usable"))
             {
@@ -167,8 +172,19 @@ public class PlayerInteractions : MonoBehaviour
 
     void UseAttempt()
     {
+        if (FocusManager.Instance != null && FocusManager.Instance.IsFocused)
+        {
+            FocusManager.Instance.ExitFocus();
+            return;
+        }
+
         var (type, obj) = InteractionCheck();
-        if (type == InteractableType.Usable)
+        if (type == InteractableType.Focusable)
+        {
+            if (FocusManager.Instance != null)
+                FocusManager.Instance.EnterFocus(obj.GetComponent<FocusInteractable>());
+        }
+        else if (type == InteractableType.Usable)
         {
             // Requires a receiver on the target GameObject
             obj.SendMessage("OnUse", grabbedObject);
