@@ -22,6 +22,13 @@ public class DrinkEditorUI : MonoBehaviour
 
     public event Action OnIngredientsChanged;
 
+    private const int MinAddOnQuantity = 1;
+    private const int MaxAddOnQuantity = 9;
+
+    // Minimum portion (0..100) any single base ingredient may hold. Doubles as the slider's
+    // handle padding (via MultiSliderController) and the +/- button step for base portions.
+    public const int minimumBasePortion = 10;
+
     private readonly Dictionary<IngredientData, IngredientRow> baseRows    = new();
     private readonly Dictionary<IngredientData, IngredientRow> mixInRows   = new();
     private readonly Dictionary<IngredientData, IngredientRow> toppingRows = new();
@@ -157,9 +164,9 @@ public class DrinkEditorUI : MonoBehaviour
         // Add ingredient row to panel
         var ingRow = Instantiate(IngredientRowPrefab, BaseIngredientList.transform);
         var ingRowScript = ingRow.GetComponent<IngredientRow>();
-        ingRowScript.LabelText.text = ingredient.ingredientName;
         ingRowScript.Ingredient = ingredient;
         ingRowScript.Category = IngredientCategory.Base;
+        ingRowScript.SetLabel(FormatRowLabel(ingredient, IngredientCategory.Base, amount));
         baseRows.Add(ingredient, ingRowScript);
 
         // Add segment and handle in Cup Slider
@@ -196,6 +203,20 @@ public class DrinkEditorUI : MonoBehaviour
         OnIngredientsChanged?.Invoke();
     }
 
+    // Nudge a base ingredient's portion by one step of minimumBasePortion in the given direction
+    // (+1 / -1). Routed through the cup slider so handle positions and base values stay in sync;
+    // the slider's padding constraint enforces the per-ingredient minimum. UpdateRatios (fired by
+    // the slider) writes the new values back into drink.bases and refreshes the row labels.
+    public void ChangeBasePortion(IngredientData ingredient, int direction)
+    {
+        List<IngredientData> keys = new(CurrentItem.drink.bases.Keys);
+        int index = keys.IndexOf(ingredient);
+        if (index < 0)
+            return;
+
+        CupSlider.AdjustSegment(index, Mathf.Sign(direction) * minimumBasePortion / 100f);
+    }
+
     private void UpdateCupSlider()
     {
         CupSlider.Build();
@@ -212,13 +233,13 @@ public class DrinkEditorUI : MonoBehaviour
         // Map each segment percentage (0..1) to the corresponding ingredient (0..100)
         for (int i = 0; i < keys.Count && i < segments.Count; i++)
         {
-            SetBaseIngredientValue(keys[i], (int)(segments[i] * 100f));
+            int percent = (int)(segments[i] * 100f);
+            SetBaseIngredientValue(keys[i], percent);
             if (!baseRows.TryGetValue(keys[i], out var row))
                 continue;
-            row.PortionText.text = ((int)(segments[i] * 100f)).ToString();
-            LayoutRebuilder.ForceRebuildLayoutImmediate(
-                row.PortionText.rectTransform.parent as RectTransform
-            );
+            row.SetLabel(FormatRowLabel(keys[i], IngredientCategory.Base, percent));
+            CupSlider.GetSegmentAdjustable(i, out bool canShrink, out bool canGrow);
+            row.SetQuantityButtonsInteractable(canShrink, canGrow);
         }
     }
 
@@ -234,21 +255,52 @@ public class DrinkEditorUI : MonoBehaviour
 
         dict[addOn] = quantity;
 
-        // Add-on row to the category's list. Add-ons are discrete counts, so PortionText shows
-        // the quantity rather than a ratio, and they don't participate in the cup slider.
+        // Add-on row to the category's list. Add-ons are discrete counts shown in the label
+        // (e.g. "Vanilla 3 shots"), and they don't participate in the cup slider.
         var ingRow = Instantiate(IngredientRowPrefab, GetListForCategory(category).transform);
         var ingRowScript = ingRow.GetComponent<IngredientRow>();
-        ingRowScript.LabelText.text = addOn.ingredientName;
-        ingRowScript.PortionText.text = quantity.ToString();
         ingRowScript.Ingredient = addOn;
         ingRowScript.Category = category;
+        ingRowScript.SetLabel(FormatRowLabel(addOn, category, quantity));
+        ingRowScript.SetQuantityButtonsInteractable(
+            quantity > MinAddOnQuantity, quantity < MaxAddOnQuantity);
         GetRowsForCategory(category).Add(addOn, ingRowScript);
 
         OnIngredientsChanged?.Invoke();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(
-            ingRowScript.PortionText.rectTransform.parent.parent as RectTransform
-        );
         return true;
+    }
+
+    // Adjust a discrete add-on count by delta (e.g. +1 / -1 from the row's buttons), clamped to
+    // [MinAddOnQuantity, MaxAddOnQuantity]. Removal to zero is handled by the row's remove button,
+    // not by decrementing past the minimum.
+    public void ChangeAddOnQuantity(IngredientData addOn, IngredientCategory category, int delta)
+    {
+        var dict = GetCategoryDict(category);
+        if (!dict.TryGetValue(addOn, out int current))
+            return;
+
+        int updated = Mathf.Clamp(current + delta, MinAddOnQuantity, MaxAddOnQuantity);
+        if (updated == current)
+            return;
+
+        dict[addOn] = updated;
+        if (GetRowsForCategory(category).TryGetValue(addOn, out var row))
+        {
+            row.SetLabel(FormatRowLabel(addOn, category, updated));
+            row.SetQuantityButtonsInteractable(
+                updated > MinAddOnQuantity, updated < MaxAddOnQuantity);
+        }
+    }
+
+    // Builds the consolidated row label: "<name> <amount><unit>". Base ingredients always use a
+    // bare "%" (no space) for the portion; add-ons use the ingredient's singular/plural unit.
+    private static string FormatRowLabel(IngredientData ingredient, IngredientCategory category, int amount)
+    {
+        if (category == IngredientCategory.Base)
+            return amount + " pct. " + ingredient.ingredientName;
+
+        string unit = (amount > 1) ? ingredient.unitPlural : ingredient.unitSingular;
+        return amount + " " + unit + " " + ingredient.ingredientName;
     }
 
     public void RemoveAddOn(IngredientData addOn, IngredientCategory category)

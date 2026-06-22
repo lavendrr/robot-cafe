@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 // [Flags] allows combining values with bitwise OR (e.g. MixIn | Topping).
@@ -21,4 +22,6 @@ public class IngredientData : ScriptableObject
     // Fill visual used when this ingredient is poured into a cup. Used by Base ingredients;
     // may be left unset for pure add-ons.
     public Material material;
+    public String unitSingular;
+    public String unitPlural;
 }

@@ -7,8 +7,6 @@ public class MultiSliderHandle : MonoBehaviour, IDragHandler, IBeginDragHandler
     public RectTransform track;
     public MultiSliderController sliderController;
     public float currentValue;
-    public float minValue;
-    public float maxValue;
 
     public float snapIncrement;
 
@@ -65,16 +63,8 @@ public class MultiSliderHandle : MonoBehaviour, IDragHandler, IBeginDragHandler
         y = Mathf.Clamp(y, 0, track.rect.height);
         float value = y / track.rect.height;
 
-        // snap to increments if enabled
-        if (snapIncrement > 0f)
-        {
-            value = Mathf.Round(value / snapIncrement) * snapIncrement;
-        }
-
-        value = Mathf.Clamp(value, minValue, maxValue);
-        SetNormalizedValue(value);
-
-        sliderController.UpdateConstraints();
-        sliderController.HandleMoved();  
+        // Hand the raw target to the controller; it snaps, clamps, and pushes neighbouring handles
+        // so the drag cascades past any segments already pinned at the minimum.
+        sliderController.MoveHandle(sliderController.handles.IndexOf(this), value);
     }
 }
