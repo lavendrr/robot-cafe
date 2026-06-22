@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -10,9 +6,13 @@ public class IngredientRow : MonoBehaviour
     [SerializeField]
     public TextMeshProUGUI LabelText, PortionText;
     public IngredientData Ingredient;
+    public IngredientCategory Category;
 
     public void RemoveIngredient()
     {
-        DrinkEditorUI.Instance.RemoveBaseIngredient(Ingredient);
+        if (Category == IngredientCategory.Base)
+            DrinkEditorUI.Instance.RemoveBaseIngredient(Ingredient);
+        else
+            DrinkEditorUI.Instance.RemoveAddOn(Ingredient, Category);
     }
 }

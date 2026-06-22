@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +14,7 @@ public class DrinkEditorUI : MonoBehaviour
     [SerializeField]
     private MenuEditorUI menuEditor;
     [SerializeField]
-    private GameObject IngredientRowPrefab, BaseIngredientList;
+    private GameObject IngredientRowPrefab, BaseIngredientList, MixInIngredientList, ToppingIngredientList;
     [SerializeField]
     private TMP_InputField nameInputField;
     [SerializeField]
@@ -26,7 +22,9 @@ public class DrinkEditorUI : MonoBehaviour
 
     public event Action OnIngredientsChanged;
 
-    private List<IngredientRow> ingRows = new();
+    private readonly Dictionary<IngredientData, IngredientRow> baseRows    = new();
+    private readonly Dictionary<IngredientData, IngredientRow> mixInRows   = new();
+    private readonly Dictionary<IngredientData, IngredientRow> toppingRows = new();
 
     #region Initialization
 
@@ -44,7 +42,7 @@ public class DrinkEditorUI : MonoBehaviour
 
     void Start()
     {
-        if (CupSlider == null | IngredientRowPrefab == null | BaseIngredientList == null | saveDrinkButton == null)
+        if (CupSlider == null | IngredientRowPrefab == null | BaseIngredientList == null | MixInIngredientList == null | ToppingIngredientList == null | saveDrinkButton == null)
         {
             Debug.LogError("[DrinkEditorUI] GameObject references not properly set. Please set all references in the inspector panel.");
         }
@@ -66,11 +64,12 @@ public class DrinkEditorUI : MonoBehaviour
         
         nameInputField.text = "";
         originalItemName = "";
-        foreach (var ingRow in ingRows)
+        foreach (var rows in new[] { baseRows, mixInRows, toppingRows })
         {
-            Destroy(ingRow.gameObject);
+            foreach (var ingRow in rows.Values)
+                Destroy(ingRow.gameObject);
+            rows.Clear();
         }
-        ingRows.Clear();
     }
 
     void OnDestroy()
@@ -104,6 +103,14 @@ public class DrinkEditorUI : MonoBehaviour
         foreach (var ing in item.drink.bases)
         {
             AddBaseIngredient(ing.Key, ing.Value);
+        }
+        foreach (var ing in item.drink.mixIns)
+        {
+            AddAddOn(ing.Key, IngredientCategory.MixIn, ing.Value);
+        }
+        foreach (var ing in item.drink.toppings)
+        {
+            AddAddOn(ing.Key, IngredientCategory.Topping, ing.Value);
         }
     }
 
@@ -152,7 +159,8 @@ public class DrinkEditorUI : MonoBehaviour
         var ingRowScript = ingRow.GetComponent<IngredientRow>();
         ingRowScript.LabelText.text = ingredient.ingredientName;
         ingRowScript.Ingredient = ingredient;
-        ingRows.Add(ingRowScript);
+        ingRowScript.Category = IngredientCategory.Base;
+        baseRows.Add(ingredient, ingRowScript);
 
         // Add segment and handle in Cup Slider
         UpdateCupSlider();
@@ -172,9 +180,11 @@ public class DrinkEditorUI : MonoBehaviour
     public void RemoveBaseIngredient(IngredientData ingredient)
     {
         // Delete ingredient row
-        int ingIndex = CurrentItem.drink.bases.Keys.ToList().IndexOf(ingredient);
-        Destroy(ingRows[ingIndex].gameObject);
-        ingRows.RemoveAt(ingIndex);
+        if (baseRows.TryGetValue(ingredient, out var row))
+        {
+            Destroy(row.gameObject);
+            baseRows.Remove(ingredient);
+        }
 
         // Remove ingredient from drink bases
         if (!CurrentItem.drink.bases.Remove(ingredient))
@@ -203,9 +213,11 @@ public class DrinkEditorUI : MonoBehaviour
         for (int i = 0; i < keys.Count && i < segments.Count; i++)
         {
             SetBaseIngredientValue(keys[i], (int)(segments[i] * 100f));
-            ingRows[i].PortionText.text = ((int)(segments[i] * 100f)).ToString();
+            if (!baseRows.TryGetValue(keys[i], out var row))
+                continue;
+            row.PortionText.text = ((int)(segments[i] * 100f)).ToString();
             LayoutRebuilder.ForceRebuildLayoutImmediate(
-                ingRows[i].PortionText.rectTransform.parent as RectTransform
+                row.PortionText.rectTransform.parent as RectTransform
             );
         }
     }
@@ -221,12 +233,33 @@ public class DrinkEditorUI : MonoBehaviour
             return false;
 
         dict[addOn] = quantity;
+
+        // Add-on row to the category's list. Add-ons are discrete counts, so PortionText shows
+        // the quantity rather than a ratio, and they don't participate in the cup slider.
+        var ingRow = Instantiate(IngredientRowPrefab, GetListForCategory(category).transform);
+        var ingRowScript = ingRow.GetComponent<IngredientRow>();
+        ingRowScript.LabelText.text = addOn.ingredientName;
+        ingRowScript.PortionText.text = quantity.ToString();
+        ingRowScript.Ingredient = addOn;
+        ingRowScript.Category = category;
+        GetRowsForCategory(category).Add(addOn, ingRowScript);
+
         OnIngredientsChanged?.Invoke();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(
+            ingRowScript.PortionText.rectTransform.parent.parent as RectTransform
+        );
         return true;
     }
 
     public void RemoveAddOn(IngredientData addOn, IngredientCategory category)
     {
+        var rows = GetRowsForCategory(category);
+        if (rows.TryGetValue(addOn, out var row))
+        {
+            Destroy(row.gameObject);
+            rows.Remove(addOn);
+        }
+
         GetCategoryDict(category).Remove(addOn);
         OnIngredientsChanged?.Invoke();
     }
@@ -251,6 +284,22 @@ public class DrinkEditorUI : MonoBehaviour
         IngredientCategory.Base    => CurrentItem.drink.bases,
         IngredientCategory.MixIn   => CurrentItem.drink.mixIns,
         IngredientCategory.Topping => CurrentItem.drink.toppings,
+        _ => throw new ArgumentOutOfRangeException(nameof(category))
+    };
+
+    private Dictionary<IngredientData, IngredientRow> GetRowsForCategory(IngredientCategory category) => category switch
+    {
+        IngredientCategory.Base    => baseRows,
+        IngredientCategory.MixIn   => mixInRows,
+        IngredientCategory.Topping => toppingRows,
+        _ => throw new ArgumentOutOfRangeException(nameof(category))
+    };
+
+    private GameObject GetListForCategory(IngredientCategory category) => category switch
+    {
+        IngredientCategory.Base    => BaseIngredientList,
+        IngredientCategory.MixIn   => MixInIngredientList,
+        IngredientCategory.Topping => ToppingIngredientList,
         _ => throw new ArgumentOutOfRangeException(nameof(category))
     };
 
