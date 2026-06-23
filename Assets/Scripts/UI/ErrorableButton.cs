@@ -1,7 +1,9 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
+[RequireComponent(typeof(Button))]
 public class ErrorableButton : MonoBehaviour
 {
     [Header("References")]
@@ -15,15 +17,24 @@ public class ErrorableButton : MonoBehaviour
     Coroutine flashRoutine;
     Vector2 hiddenPos;
     Vector2 shownPos;
+    Button button;
 
     void Awake()
     {
+        button = GetComponent<Button>();
+
         RectTransform rt = errorText.rectTransform;
         shownPos = rt.anchoredPosition;
         hiddenPos = shownPos + Vector2.up * slideDistance;
 
         errorText.gameObject.SetActive(false);
         errorCanvasGroup.alpha = 0f;
+    }
+
+    public void SetInteractable(bool value)
+    {
+        if (button != null)
+            button.interactable = value;
     }
 
     public void FlashError(string message, float duration)

@@ -19,8 +19,11 @@ public class DrinkEditorUI : MonoBehaviour
     private TMP_InputField nameInputField;
     [SerializeField]
     private ErrorableButton saveDrinkButton;
+    [SerializeField]
+    private SaveChangesModal saveChangesModal;
 
     public event Action OnIngredientsChanged;
+    private MenuItem baseline;
 
     private const int MinAddOnQuantity = 1;
     private const int MaxAddOnQuantity = 9;
@@ -89,7 +92,23 @@ public class DrinkEditorUI : MonoBehaviour
 
     public void Close()
     {
+        menuEditor.PopulateMenu();
         gameObject.SetActive(false);
+    }
+
+    public void RequestClose()
+    {
+        if (HasUnsavedChanges() && saveChangesModal != null)
+            saveChangesModal.Show(onSave: SaveAndClose, onDiscard: Close);
+        else
+            Close();
+    }
+
+    // Modal "Save" path
+    private void SaveAndClose()
+    {
+        if (TrySaveCurrentItem())
+            Close();
     }
 
     public void CreateNewItem()
@@ -99,6 +118,8 @@ public class DrinkEditorUI : MonoBehaviour
             new Dictionary<IngredientData, int>(),
             5
         );
+        baseline = CloneMenuItem(CurrentItem);
+        RefreshSaveButtonState();
     }
 
     public void LoadItem(MenuItem item)
@@ -119,19 +140,30 @@ public class DrinkEditorUI : MonoBehaviour
         {
             AddAddOn(ing.Key, IngredientCategory.Topping, ing.Value);
         }
+        baseline = CloneMenuItem(CurrentItem);
+        RefreshSaveButtonState();
     }
 
+    // Save button entry point. Kept void so it can bind to the Button's persistent onClick
+    // UnityEvent (which rejects non-void methods)
     public void SaveCurrentItem()
+    {
+        TrySaveCurrentItem();
+    }
+
+    // Writes the working item to the menu. Returns true on success, or false if validation failed,
+    // so callers like the save-changes modal can decide whether to go ahead and close.
+    public bool TrySaveCurrentItem()
     {
         if (CurrentItem == null)
         {
             saveDrinkButton.FlashError("Error creating drink object!", 0.5f);
-            return;
+            return false;
         }
 
         if (!IsValidDrink(CurrentItem))
         {
-            return;
+            return false;
         }
 
         MenuItem clonedDrink = CloneMenuItem(CurrentItem);
@@ -143,9 +175,12 @@ public class DrinkEditorUI : MonoBehaviour
         {
             MenuManager.Instance.AddItem(clonedDrink.name, clonedDrink.drink.bases, clonedDrink.cost, furnitureNames);
         }
-        
-        menuEditor.PopulateMenu();
-        Close();
+
+        originalItemName = clonedDrink.name;
+
+        baseline = CloneMenuItem(CurrentItem);
+        RefreshSaveButtonState();
+        return true;
     }
 
 
@@ -172,6 +207,7 @@ public class DrinkEditorUI : MonoBehaviour
         // Add segment and handle in Cup Slider
         UpdateCupSlider();
         OnIngredientsChanged?.Invoke();
+        RefreshSaveButtonState();
         return true;
     }
 
@@ -201,6 +237,7 @@ public class DrinkEditorUI : MonoBehaviour
         NormalizeBaseIngredients();
         UpdateCupSlider();
         OnIngredientsChanged?.Invoke();
+        RefreshSaveButtonState();
     }
 
     // Nudge a base ingredient's portion by one step of minimumBasePortion in the given direction
@@ -242,6 +279,8 @@ public class DrinkEditorUI : MonoBehaviour
             CupSlider.GetSegmentAdjustable(i, out bool canShrink, out bool canGrow);
             row.SetQuantityButtonsInteractable(canShrink, canGrow);
         }
+
+        RefreshSaveButtonState();
     }
 
     #endregion
@@ -268,6 +307,7 @@ public class DrinkEditorUI : MonoBehaviour
         GetRowsForCategory(category).Add(addOn, ingRowScript);
 
         OnIngredientsChanged?.Invoke();
+        RefreshSaveButtonState();
         return true;
     }
 
@@ -291,6 +331,7 @@ public class DrinkEditorUI : MonoBehaviour
             row.SetQuantityButtonsInteractable(
                 updated > MinAddOnQuantity, updated < MaxAddOnQuantity);
         }
+        RefreshSaveButtonState();
     }
 
     // Builds the consolidated row label: "<name> <amount><unit>". Base ingredients always use a
@@ -315,6 +356,7 @@ public class DrinkEditorUI : MonoBehaviour
 
         GetCategoryDict(category).Remove(addOn);
         OnIngredientsChanged?.Invoke();
+        RefreshSaveButtonState();
     }
 
     // Category-routed entry points shared by every AddIngredientButton (Base/MixIn/Topping).
@@ -364,11 +406,13 @@ public class DrinkEditorUI : MonoBehaviour
     {
         CurrentItem.name = name.Trim();
         nameInputField.text = name.Trim();
+        RefreshSaveButtonState();
     }
 
     public void SetItemCost(int cost)
     {
         CurrentItem.cost = Mathf.Max(1, cost);
+        RefreshSaveButtonState();
     }
 
     #endregion
@@ -395,6 +439,38 @@ public class DrinkEditorUI : MonoBehaviour
             return false;
         }
 
+        return true;
+    }
+
+    public bool HasUnsavedChanges()
+    {
+        if (CurrentItem == null || baseline == null)
+            return false;
+
+        return CurrentItem.name != baseline.name
+            || CurrentItem.cost != baseline.cost
+            || !DictEquals(CurrentItem.drink.bases,    baseline.drink.bases)
+            || !DictEquals(CurrentItem.drink.mixIns,   baseline.drink.mixIns)
+            || !DictEquals(CurrentItem.drink.toppings, baseline.drink.toppings);
+    }
+
+    // Disables the Save button when the working item matches its baseline (nothing to save) and
+    // enables it on any change. Called from every mutation entry point.
+    private void RefreshSaveButtonState()
+    {
+        if (saveDrinkButton != null)
+            saveDrinkButton.SetInteractable(HasUnsavedChanges());
+    }
+
+    private static bool DictEquals(Dictionary<IngredientData, int> a, Dictionary<IngredientData, int> b)
+    {
+        if (a.Count != b.Count)
+            return false;
+        foreach (var kv in a)
+        {
+            if (!b.TryGetValue(kv.Key, out int value) || value != kv.Value)
+                return false;
+        }
         return true;
     }
 
