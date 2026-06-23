@@ -238,6 +238,7 @@ public class DrinkEditorUI : MonoBehaviour
             if (!baseRows.TryGetValue(keys[i], out var row))
                 continue;
             row.SetLabel(FormatRowLabel(keys[i], IngredientCategory.Base, percent));
+            CupSlider.SetSegmentColor(i, keys[i].sliderColor);
             CupSlider.GetSegmentAdjustable(i, out bool canShrink, out bool canGrow);
             row.SetQuantityButtonsInteractable(canShrink, canGrow);
         }

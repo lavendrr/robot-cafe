@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MultiSliderController : MonoBehaviour
 {
     public Action OnMultiSliderChanged;
     public RectTransform track;
     public GameObject handlePrefab;
+    public GameObject segmentPrefab;
 
     public List<MultiSliderHandle> handles = new();
+    private readonly List<Image> segments = new();
     public float snapIncrement = 0.1f;
     public List<float> segmentPercentages;
 
@@ -22,6 +25,9 @@ public class MultiSliderController : MonoBehaviour
         foreach (var h in handles)
             Destroy(h.gameObject);
         handles.Clear();
+        foreach (var s in segments)
+            Destroy(s.gameObject);
+        segments.Clear();
         segmentPercentages = new List<float>();
 
         int ingredientCount = DrinkEditorUI.Instance?.CurrentItem?.drink.bases.Count ?? 0;
@@ -30,6 +36,18 @@ public class MultiSliderController : MonoBehaviour
         if (ingredientCount < 1)
         {
             return;
+        }
+
+        // Create the N segment fills first so they render beneath the handles. Sized/positioned
+        // later by UpdateSegments; recolored by DrinkEditorUI.
+        for (int i = 0; i < ingredientCount; i++)
+        {
+            var segment = Instantiate(segmentPrefab, track);
+            var rt = segment.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0f, 0f);
+            rt.anchorMax = new Vector2(1f, 0f);
+            rt.pivot = new Vector2(0.5f, 0f);
+            segments.Add(segment.GetComponent<Image>());
         }
 
         // Create N-1 handles
@@ -175,12 +193,25 @@ public class MultiSliderController : MonoBehaviour
 
     public void UpdateSegments()
     {
+        float height = track.rect.height;
         for (int i = 0; i < segmentPercentages.Count; i++)
         {
             float lowerBound = (i == 0) ? 0 : handles[i - 1].currentValue;
             float upperBound = (i == segmentPercentages.Count - 1) ? 1 : handles[i].currentValue;
             segmentPercentages[i] = (float)Math.Round(upperBound - lowerBound, 1);
+
+            // Position the fill between its two boundaries in the track's bottom-origin space.
+            var rt = segments[i].rectTransform;
+            rt.anchoredPosition = new Vector2(0f, lowerBound * height);
+            rt.sizeDelta = new Vector2(0f, (upperBound - lowerBound) * height);
         }
+    }
+
+    public void SetSegmentColor(int index, Color color)
+    {
+        if (index < 0 || index >= segments.Count)
+            return;
+        segments[index].color = color;
     }
 
     public List<float> GetPercentages()

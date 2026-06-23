@@ -11,7 +11,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5ce9964c7a9f49848eeed1aa455e938, type: 3}
   m_Name: ING_Diesel
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   ingredientName: Diesel
   validCategories: 4
   material: {fileID: 2100000, guid: 458721a0551142e469c5db811d1e81c0, type: 2}
+  sliderColor: {r: 0.21698111, g: 0.1224947, b: 0.070621215, a: 1}
+  unitSingular: 
+  unitPlural: 

@@ -11,7 +11,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5ce9964c7a9f49848eeed1aa455e938, type: 3}
   m_Name: ING_Premium
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   ingredientName: Premium
   validCategories: 4
   material: {fileID: 2100000, guid: aced1f829f3984849ad62e966e3ac60e, type: 2}
+  sliderColor: {r: 0.754717, g: 0.44932547, b: 0.19579923, a: 1}
+  unitSingular: 
+  unitPlural: 
