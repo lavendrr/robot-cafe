@@ -173,11 +173,6 @@ public class PlanningState : State
 
     public override void Exit()
     {
-        // Save game
-        LevelLayout newLayout = SaveManager.Instance.GetCafeLayout();
-        newLayout.elements = PlanningManager.Instance.GetFinalGrid();
-        SaveManager.Instance.SaveCafeLayout(newLayout);
-        SaveManager.Instance.AdjustPlayerMoney(-1 * PlanningManager.Instance.furnitureCost);
         SaveManager.Instance.Save();
         SceneManager.UnloadSceneAsync("Planning");
     }

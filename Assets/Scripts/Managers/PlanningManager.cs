@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,15 +24,14 @@ public class PlanningManager : MonoBehaviour
     public List<FurnitureData> testFurniture;
 
     public GridItem currentItem = null;
-    public int furnitureCost { get; private set; }
     [SerializeField]
     PlanningUI planningUI;
-
     [SerializeField]
-    private Button startShiftButton;
+    LayoutEditorUI layoutEditorUI;
 
     public GridSlot hoverCell;
     public int numDiningTiles = 0;
+    public event Action OnLayoutChanged;
 
     // Start is called before the first frame update
     void Start()
@@ -97,17 +97,24 @@ public class PlanningManager : MonoBehaviour
 
     public void LoadFurnitureIntoGrid(LevelLayout layout)
     {
-        foreach (var element in layout.elements)
+        LoadElements(layout.elements);
+    }
+
+    private void LoadElements(List<CafeElement> elements)
+    {
+        int rows = gridArray.GetLength(0);
+        int cols = gridArray.GetLength(1);
+        foreach (var element in elements)
         {
             int row = element.rootGridCoord.row;
             int col = element.rootGridCoord.col;
-            if (row >= 0 && row < layout.dimensions.rows && col >= 0 && col < layout.dimensions.cols)
+            if (row >= 0 && row < rows && col >= 0 && col < cols)
             {
                 var cell = gridArray[row, col];
                 GameObject spawnedItem = Instantiate(gridItemPrefab, gridObj.transform);
                 spawnedItem.GetComponent<Image>().sprite = element.furnitureData.catalogSprite;
                 GridItem gridItem = spawnedItem.GetComponent<GridItem>();
-                gridItem.Init(element.furnitureData, false);
+                gridItem.Init(element.furnitureData);
                 gridItem.SetRotation(element.rotation);
                 gridItem.image.sprite = element.furnitureData.gridSprites[0];
                 if (!cell.GetComponent<GridSlot>().AttemptItemSlot(spawnedItem, element.rotation))
@@ -117,6 +124,30 @@ public class PlanningManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void ClearPlacedFurniture()
+    {
+        foreach (GridItem item in gridObj.GetComponentsInChildren<GridItem>())
+        {
+            Transform parent = item.transform.parent;
+            if (parent != null && parent.TryGetComponent<GridSlot>(out var slot))
+                slot.OnRemove(item);
+
+            item.transform.SetParent(null);
+            Destroy(item.gameObject);
+        }
+    }
+
+    public void RevertLayout(List<CafeElement> elements)
+    {
+        if (gridArray == null)
+            return;
+
+        ClearPlacedFurniture();
+        LoadElements(elements);
+
+        OnLayoutChanged?.Invoke();
     }
 
     private void PopulateCatalogPanel()
@@ -211,24 +242,43 @@ public class PlanningManager : MonoBehaviour
         }
     }
 
-    public void AdjustFurnitureCost(int adjustment, bool isNew)
+    public void NotifyLayoutChanged()
     {
-        if (isNew)
-        {
-            furnitureCost += adjustment;
-            Debug.Log($"Adjusted furniture cost by {adjustment} to a total of {furnitureCost}");
-            if(SaveManager.Instance.GetPlayerMoney() - furnitureCost < 0)
-            {
-                startShiftButton.interactable = false;
-            }
-            else
-            {
-                startShiftButton.interactable = true;
-            }
-            planningUI.UpdateFurnitureCostText();
-            return;
-        }
+        OnLayoutChanged?.Invoke();
+    }
 
-        Debug.Log($"Item isn't new, cost remains the same at {furnitureCost}");
+    public int GetUnsavedFurnitureCost()
+    {
+        if (gridArray == null)
+            return 0;
+
+        Dictionary<FurnitureData, int> savedCounts = CountByFurniture(SaveManager.Instance.GetCafeLayout()?.elements);
+        Dictionary<FurnitureData, int> currentCounts = CountByFurniture(GetFinalGrid());
+
+        int cost = 0;
+        foreach (var entry in currentCounts)
+        {
+            int savedCount = savedCounts.TryGetValue(entry.Key, out int c) ? c : 0;
+            int added = entry.Value - savedCount;
+            if (added > 0)
+                cost += added * entry.Key.cost;
+        }
+        return cost;
+    }
+
+    private static Dictionary<FurnitureData, int> CountByFurniture(List<CafeElement> elements)
+    {
+        Dictionary<FurnitureData, int> counts = new();
+        if (elements == null)
+            return counts;
+
+        foreach (CafeElement element in elements)
+        {
+            if (element.furnitureData == null)
+                continue;
+            counts.TryGetValue(element.furnitureData, out int c);
+            counts[element.furnitureData] = c + 1;
+        }
+        return counts;
     }
 }
