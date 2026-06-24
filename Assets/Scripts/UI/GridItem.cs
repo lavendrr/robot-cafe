@@ -13,11 +13,10 @@ public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     private List<GridCoord> beginDragItemCoords;
     private int beginDragRotation = 0;
     public int rotation = 0;
-    public bool isNew = false;
     public bool isSeating;
 
     // Needs to pull a seating type from furnitureData at some point
-    public void Init(FurnitureData f, bool isNew, bool isSeating = false)
+    public void Init(FurnitureData f, bool isSeating = false)
     {
         if (f == null)
         {
@@ -26,7 +25,6 @@ public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         }
         furnitureData = f;
         itemCoords = new List<GridCoord>(furnitureData.gridOffsets);
-        this.isNew = isNew;
         this.isSeating = isSeating;
     }
 
@@ -125,7 +123,7 @@ public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         {
             previousParent = transform.parent;
             transform.parent.GetComponent<GridSlot>().OnRemove(this);
-            PlanningManager.Instance.AdjustFurnitureCost(-1 * furnitureData.cost, isNew);
+            PlanningManager.Instance.NotifyLayoutChanged();
         }
         // Unparent the cell, set it as last sibling so it's on top of the rest of the UI, and turn raycasting off so it doesn't obscure the cursor's detection
         transform.SetParent(transform.root);
@@ -227,7 +225,7 @@ public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
                 if (previousParent != transform.root)
                 {
                     ReturnToPreviousSlotAndRotation();
-                    PlanningManager.Instance.AdjustFurnitureCost(furnitureData.cost, isNew);
+                    PlanningManager.Instance.NotifyLayoutChanged();
                     return;
                 }
             }
@@ -235,7 +233,7 @@ public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             else
             {
                 previousHoverCell = null;
-                PlanningManager.Instance.AdjustFurnitureCost(furnitureData.cost, isNew);
+                PlanningManager.Instance.NotifyLayoutChanged();
                 return;
             }
         }
@@ -245,13 +243,13 @@ public class GridItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             if (!previousParent.GetComponent<GridSlot>().AttemptItemSlot(gameObject, rotation))
             {
                 ReturnToPreviousSlotAndRotation();
-                PlanningManager.Instance.AdjustFurnitureCost(furnitureData.cost, isNew);
+                PlanningManager.Instance.NotifyLayoutChanged();
                 return;
             }
             // Slotting succeeded
             else
             {
-                PlanningManager.Instance.AdjustFurnitureCost(furnitureData.cost, isNew);
+                PlanningManager.Instance.NotifyLayoutChanged();
                 return;
             }
         }
