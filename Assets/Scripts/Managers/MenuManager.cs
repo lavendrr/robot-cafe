@@ -41,18 +41,25 @@ public class MenuItem
 
     public bool CompareDrink(Drink compare)
     {
-        if (drink.bases.Count != compare.bases.Count)
+        return CompareComponent(drink.bases, compare.bases, tolerance: 20)
+            && CompareComponent(drink.mixIns, compare.mixIns, tolerance: 0)
+            && CompareComponent(drink.toppings, compare.toppings, tolerance: 0);
+    }
+
+    private bool CompareComponent(Dictionary<IngredientData, int> expected, Dictionary<IngredientData, int> actual, int tolerance)
+    {
+        if (expected.Count != actual.Count)
         {
             return false;
         }
 
-        foreach (var x in drink.bases)
+        foreach (var x in expected)
         {
-            if (!compare.bases.Keys.Contains(x.Key))
+            if (!actual.Keys.Contains(x.Key))
             {
                 return false;
             }
-            if (!(x.Value - 20f <= compare.bases[x.Key] && compare.bases[x.Key] <= x.Value + 20f))
+            if (!(x.Value - tolerance <= actual[x.Key] && actual[x.Key] <= x.Value + tolerance))
             {
                 return false;
             }
