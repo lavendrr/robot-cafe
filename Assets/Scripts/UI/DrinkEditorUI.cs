@@ -21,12 +21,19 @@ public class DrinkEditorUI : MonoBehaviour
     private ErrorableButton saveDrinkButton;
     [SerializeField]
     private SaveChangesModal saveChangesModal;
+    [SerializeField]
+    private TMP_Text costLabel;
+    [SerializeField]
+    private Button increaseCostButton, decreaseCostButton;
 
     public event Action OnIngredientsChanged;
     private MenuItem baseline;
 
     private const int MinAddOnQuantity = 1;
     private const int MaxAddOnQuantity = 9;
+
+    private const int MinCost = 1;
+    private const int MaxCost = 99;
 
     // Minimum portion (0..100) any single base ingredient may hold. Doubles as the slider's
     // handle padding (via MultiSliderController) and the +/- button step for base portions.
@@ -52,7 +59,7 @@ public class DrinkEditorUI : MonoBehaviour
 
     void Start()
     {
-        if (CupSlider == null | IngredientRowPrefab == null | BaseIngredientList == null | MixInIngredientList == null | ToppingIngredientList == null | saveDrinkButton == null)
+        if (CupSlider == null | IngredientRowPrefab == null | BaseIngredientList == null | MixInIngredientList == null | ToppingIngredientList == null | saveDrinkButton == null | costLabel == null | increaseCostButton == null | decreaseCostButton == null)
         {
             Debug.LogError("[DrinkEditorUI] GameObject references not properly set. Please set all references in the inspector panel.");
         }
@@ -119,6 +126,7 @@ public class DrinkEditorUI : MonoBehaviour
             5
         );
         baseline = CloneMenuItem(CurrentItem);
+        RefreshCostDisplay();
         RefreshSaveButtonState();
     }
 
@@ -127,7 +135,7 @@ public class DrinkEditorUI : MonoBehaviour
         CreateNewItem();
         SetItemName(item.name);
         originalItemName = item.name;
-        CurrentItem.cost = item.cost;
+        SetItemCost(item.cost);
         foreach (var ing in item.drink.bases)
         {
             AddBaseIngredient(ing.Key, ing.Value);
@@ -411,8 +419,26 @@ public class DrinkEditorUI : MonoBehaviour
 
     public void SetItemCost(int cost)
     {
-        CurrentItem.cost = Mathf.Max(1, cost);
+        CurrentItem.cost = Mathf.Clamp(cost, MinCost, MaxCost);
+        RefreshCostDisplay();
         RefreshSaveButtonState();
+    }
+
+    public void IncrementCost() => SetItemCost(CurrentItem.cost + 1);
+
+    public void DecrementCost() => SetItemCost(CurrentItem.cost - 1);
+
+    private void RefreshCostDisplay()
+    {
+        if (CurrentItem == null)
+            return;
+
+        if (costLabel != null)
+            costLabel.text = CurrentItem.cost + "c";
+        if (increaseCostButton != null)
+            increaseCostButton.interactable = CurrentItem.cost < MaxCost;
+        if (decreaseCostButton != null)
+            decreaseCostButton.interactable = CurrentItem.cost > MinCost;
     }
 
     #endregion
