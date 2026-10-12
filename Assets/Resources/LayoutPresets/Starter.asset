@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e1bbebfbe8024eceabefe3db5e10059, type: 3}
+  m_Name: Starter
+  m_EditorClassIdentifier: Assembly-CSharp::CafeLayoutPreset
+  rows: 6
+  cols: 6
+  deliveryTileCoords:
+    col: 3
+    row: 5
+  floorPrefab: {fileID: 919132149155446097, guid: 0f24dc610091e4075b5827916221be03, type: 3}
+  ceilingPrefab: {fileID: 7890392757440482860, guid: 974e6f76946af4d46a97e2028cd41ce5, type: 3}
+  straightWallPrefab: {fileID: 8150292395417477140, guid: 5dde754d95371450ba1e83ed1da0899f, type: 3}
+  cornerWallPrefab: {fileID: 3286007604592690854, guid: 389e4f946085148be8114ae260ae8e13, type: 3}
+  deliveryTileData: {fileID: 11400000, guid: cdf9446ee9ebe4cc1ba6cd64dd8fd61b, type: 2}
+  windowEndcapPrefab: {fileID: 8150292395417477140, guid: c72e77428e172492296bfb8a0bd11de0, type: 3}
+  elements:
+  - furnitureData: {fileID: 11400000, guid: 102107007972c42f595e1ba47ffbad28, type: 2}
+    rootGridCoord:
+      col: 3
+      row: 0
+    rotation: 0
+  - furnitureData: {fileID: 11400000, guid: 02a799651e88e48b4bb7f0b098f91cb4, type: 2}
+    rootGridCoord:
+      col: 0
+      row: 4
+    rotation: 90
+  - furnitureData: {fileID: 11400000, guid: 9b5df3a53a88444238df3281afc92b25, type: 2}
+    rootGridCoord:
+      col: 0
+      row: 5
+    rotation: -270
+  - furnitureData: {fileID: 11400000, guid: a41cc1258ec4a453a8fa064f96e24075, type: 2}
+    rootGridCoord:
+      col: 4
+      row: 5
+    rotation: 0

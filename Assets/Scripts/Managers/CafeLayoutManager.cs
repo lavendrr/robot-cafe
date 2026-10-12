@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-[System.Serializable] // TODO: Make these properties serializable (no GameObjects, no tuples)
+[System.Serializable]
 public class LevelLayout
 {
     public List<CafeElement> elements = new List<CafeElement>();
@@ -31,15 +32,7 @@ public class CafeLayoutManager : MonoBehaviour
     public GameObject CafeRoot;
     public float GridCellSize = 1.0f;
     public bool TestInEditor = false;
-    public Vector2 dimensions = new Vector2(6, 10);
-    public Vector2 deliveryTileCoords;
-    public GameObject floorPrefab;
-    public GameObject ceilingPrefab;
-    public GameObject straightWallPrefab;
-    public GameObject cornerWallPrefab;
-    public FurnitureData deliveryTileData;
-    public GameObject windowEndcapPrefab;
-    public List<CafeElement> elements = new List<CafeElement>();
+    public CafeLayoutPreset activePreset;
     public GameObject deliveryWindowObject;
 
     void Start()
@@ -326,6 +319,27 @@ public class CafeLayoutManager : MonoBehaviour
 
     public void PopulateCafeLevel(LevelLayout cafeLayout)
     {
+        if (cafeLayout == null)
+        {
+            Debug.LogError("Cannot populate cafe level: layout is null.");
+            return;
+        }
+
+        // Validate only at runtime. The editor preview (DebouncedRebuild) already validates
+        // before calling this, so gating on isPlaying avoids re-running the same checks in-editor.
+        if (Application.isPlaying)
+        {
+            List<LayoutIssue> issues = CafeLayoutValidator.Validate(cafeLayout);
+            if (CafeLayoutValidator.HasErrors(issues))
+            {
+                string details = string.Join("\n  - ", issues
+                    .Where(i => i.severity == LayoutIssueSeverity.Error)
+                    .Select(i => i.message));
+                Debug.LogError($"Cannot populate cafe level; layout has errors:\n  - {details}");
+                return;
+            }
+        }
+
         PopulateFloorTiles(cafeLayout);
         PopulateCeilingTiles(cafeLayout);
         PopulateWalls(cafeLayout);
@@ -371,17 +385,7 @@ public class CafeLayoutManager : MonoBehaviour
 
     private void UpdateTestLayout()
     {
-        TestLayout = new LevelLayout
-        {
-            dimensions = ((int)dimensions.x, (int)dimensions.y),
-            deliveryTileCoords = ((int)deliveryTileCoords.x, (int)deliveryTileCoords.y),
-            floorPrefab = floorPrefab,
-            straightWallPrefab = straightWallPrefab,
-            cornerWallPrefab = cornerWallPrefab,
-            deliveryTileData = deliveryTileData,
-            windowEndcapPrefab = windowEndcapPrefab,
-            elements = elements
-        };
+        TestLayout = activePreset != null ? activePreset.ToLevelLayout() : new LevelLayout();
     }
 
     private bool IsDeliveryTile(LevelLayout layout, int col, int row)
@@ -419,10 +423,113 @@ public class CafeLayoutManager : MonoBehaviour
         return false;
     }
 
+#if UNITY_EDITOR
+    private CafeLayoutPreset _subscribedPreset;
+
+    // Debounce so a drag-scrub (which streams many intermediate values) rebuilds only once,
+    // from the final settled value
+    private const double RebuildDebounceSeconds = 0.1;
+    private double _rebuildDueAt;
+    private bool _rebuildScheduled;
+
+    private void OnEnable()
+    {
+        SubscribeToPreset();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromPreset();
+        if (_rebuildScheduled)
+        {
+            EditorApplication.update -= DebouncedRebuild;
+            _rebuildScheduled = false;
+        }
+    }
+
+    // Keep the preview rebuilding whenever the active preset is edited (either in this
+    // manager's inspector or directly in the Project window)
+    private void SubscribeToPreset()
+    {
+        if (_subscribedPreset == activePreset)
+            return;
+
+        UnsubscribeFromPreset();
+        if (activePreset != null)
+        {
+            activePreset.Changed += RebuildPreview;
+            _subscribedPreset = activePreset;
+        }
+    }
+
+    private void UnsubscribeFromPreset()
+    {
+        if (_subscribedPreset != null)
+        {
+            _subscribedPreset.Changed -= RebuildPreview;
+            _subscribedPreset = null;
+        }
+    }
+
+    // Requests a preview rebuild, debounced
+    private void RebuildPreview()
+    {
+        _rebuildDueAt = EditorApplication.timeSinceStartup + RebuildDebounceSeconds;
+        if (_rebuildScheduled)
+            return;
+
+        _rebuildScheduled = true;
+        EditorApplication.update += DebouncedRebuild;
+    }
+
+    private void DebouncedRebuild()
+    {
+        // Wait until changes have stopped for the debounce window
+        if (EditorApplication.timeSinceStartup < _rebuildDueAt)
+            return;
+
+        EditorApplication.update -= DebouncedRebuild;
+        _rebuildScheduled = false;
+
+        if (!Application.isPlaying && this != null && CafeRoot != null && TestInEditor)
+        {
+            UpdateTestLayout();
+            // Keep the last good geometry when the layout has errors, but continue on warnings
+            if (CafeLayoutValidator.HasErrors(CafeLayoutValidator.Validate(TestLayout)))
+                return;
+
+            DestroyCafeFurniture();
+            PopulateCafeLevel(TestLayout);
+            MarkPreviewGeometryTransient();
+        }
+    }
+
+    // Flags every spawned preview instance so it is never serialized into the scene when the
+    // user saves. The preview is parented under CafeRoot and regenerated on demand, so it should
+    // never live in the committed scene asset. Done as a single sweep (rather than at each
+    // Instantiate site) to keep the shared, runtime Populate* methods free of editor-only code.
+    // The flag is per-object and doesn't propagate, so we apply it to every object in each
+    // instance's hierarchy. These objects are still destroyed normally by DestroyCafeFurniture.
+    private void MarkPreviewGeometryTransient()
+    {
+        if (CafeRoot == null)
+            return;
+
+        foreach (Transform child in CafeRoot.transform)
+        {
+            foreach (Transform t in child.GetComponentsInChildren<Transform>(true))
+            {
+                t.gameObject.hideFlags = HideFlags.DontSaveInEditor;
+            }
+        }
+    }
+
     private void OnValidate()
     {
-#if UNITY_EDITOR
-        // If TestInEditor was just set to false, destroy all children
+        // Re-point the Changed subscription if the active preset was swapped
+        SubscribeToPreset();
+
+        // TestInEditor was just turned off: clear the preview
         if (_prevTestInEditor && !TestInEditor && CafeRoot != null)
         {
             EditorApplication.delayCall += () =>
@@ -433,36 +540,13 @@ public class CafeLayoutManager : MonoBehaviour
                 }
             };
         }
-        else if (!_prevTestInEditor && TestInEditor && CafeRoot != null)
+        else if (TestInEditor && CafeRoot != null)
         {
-            // If TestInEditor was just set to true, populate the cafe level
-            EditorApplication.delayCall += () =>
-            {
-                if (!Application.isPlaying && this != null && CafeRoot != null)
-                {
-                    DestroyCafeFurniture(); // CafeRoot shouldn't have children, but run just in case
-                    UpdateTestLayout();
-                    PopulateCafeLevel(TestLayout);
-                }
-            };
-        }
-
-        if (TestInEditor)
-        {
-            // Defer execution to avoid Unity's internal restrictions
-            EditorApplication.delayCall += () =>
-            {
-                // Only run if not in play mode and this object still exists
-                if (!Application.isPlaying && this != null && CafeRoot != null)
-                {
-                    DestroyCafeFurniture();
-                    UpdateTestLayout();
-                    PopulateCafeLevel(TestLayout);
-                }
-            };
+            // Turned on, or any inspector change while on: rebuild
+            RebuildPreview();
         }
 
         _prevTestInEditor = TestInEditor;
-#endif
     }
+#endif
 }
