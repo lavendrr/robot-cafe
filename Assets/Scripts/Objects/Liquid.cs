@@ -1,6 +1,8 @@
 using UnityEngine;
-
 [ExecuteInEditMode]
+
+[RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(Renderer))]
 public class Liquid : MonoBehaviour
 {
     public enum UpdateMode { Normal, UnscaledTime }
@@ -36,12 +38,24 @@ public class Liquid : MonoBehaviour
     [SerializeField]
     Renderer rend;
 
+    // Must match MAX_LAYERS in LiquidEffect.shader.
+    public const int MaxLayers = 10;
+
     static readonly int WobbleXID = Shader.PropertyToID("_WobbleX");
     static readonly int WobbleZID = Shader.PropertyToID("_WobbleZ");
     static readonly int FillAmountID = Shader.PropertyToID("_FillAmount");
     static readonly int AmplitudeID = Shader.PropertyToID("_Amplitude");
+    static readonly int LayerCountID = Shader.PropertyToID("_LayerCount");
+    static readonly int LayerColorsID = Shader.PropertyToID("_LayerColors");
+    static readonly int LayerHeightsID = Shader.PropertyToID("_LayerHeights");
 
     MaterialPropertyBlock mpb;
+
+    // Drink layer bands, bottom -> top. Always kept at MaxLayers length (unused tail padded) so the
+    // property-block array setters never change length. Liquid is the sole owner of these writes.
+    int layerCount;
+    readonly Vector4[] layerColors = new Vector4[MaxLayers];
+    readonly float[] layerHeights = new float[MaxLayers];
 
     Vector3 pos;
     Vector3 lastPos;
@@ -237,7 +251,44 @@ public class Liquid : MonoBehaviour
         mpb.SetFloat(WobbleZID, wobbleAmountZ);
         mpb.SetVector(FillAmountID, pos);
         mpb.SetFloat(AmplitudeID, SurfaceWave ? SurfaceWaveAmplitude : 0f);
+        mpb.SetInteger(LayerCountID, layerCount);
+        mpb.SetVectorArray(LayerColorsID, layerColors);
+        mpb.SetFloatArray(LayerHeightsID, layerHeights);
         rend.SetPropertyBlock(mpb);
+    }
+
+    // Sets the drink's colour layers, bottom -> top. `colors` are the per-band colours and
+    // `fractions` each band's share of the fill (0..1, in the same order); they need not sum to
+    // exactly 1 (they're normalized here). Liquid owns the property block, so this is the only
+    // entry point callers use to drive the layers.
+    public void SetLayers(System.Collections.Generic.IReadOnlyList<Color> colors,
+                          System.Collections.Generic.IReadOnlyList<float> fractions)
+    {
+        int count = Mathf.Min(colors.Count, fractions.Count, MaxLayers);
+
+        float total = 0f;
+        for (int i = 0; i < count; i++)
+            total += Mathf.Max(0f, fractions[i]);
+
+        float cumulative = 0f;
+        for (int i = 0; i < count; i++)
+        {
+            // Colours are passed unmanaged via SetVectorArray (no auto gamma conversion), so
+            // convert to linear here to match how URP treats material colours.
+            layerColors[i] = (Vector4)colors[i].linear;
+            cumulative += (total > 0f ? Mathf.Max(0f, fractions[i]) / total : 0f);
+            layerHeights[i] = cumulative;   // cumulative top of this band in 0..1
+        }
+        // Pad the unused tail so stale bands can't bleed in and the array length stays fixed.
+        for (int i = count; i < MaxLayers; i++)
+        {
+            layerColors[i] = Vector4.zero;
+            layerHeights[i] = 1f;
+        }
+        layerCount = count;
+
+        // Push immediately so it takes effect even on a frame where the sim is idle.
+        ApplyToRenderer();
     }
 
     void UpdatePos(float deltaTime)
