@@ -15,6 +15,6 @@ MonoBehaviour:
   ingredientName: Diesel
   validCategories: 4
   material: {fileID: 2100000, guid: 458721a0551142e469c5db811d1e81c0, type: 2}
-  sliderColor: {r: 0.21698111, g: 0.1224947, b: 0.070621215, a: 1}
+  sliderColor: {r: 0.21568628, g: 0.12156863, b: 0.07058824, a: 1}
   unitSingular: 
   unitPlural: 

@@ -19,8 +19,8 @@ Shader "RobotCafe/Liquid"
         [HideInInspector] _WobbleX ("Wobble X", Float) = 0
         [HideInInspector] _WobbleZ ("Wobble Z", Float) = 0
         [HideInInspector] _FillAmount ("Fill Amount", Vector) = (0, 0, 0, 0)
-
-        _LiquidDepth ("Liquid Depth (layer span)", Float) = 1.0
+        [HideInInspector] _LiquidDepth ("Liquid Depth", Float) = 1.0
+        
         _Tint ("Body Tint", Color) = (1, 1, 1, 1)
 
         _LayerSoftness ("Layer Softness", Range(0, 0.5)) = 0.02
