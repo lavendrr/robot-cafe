@@ -67,6 +67,41 @@ public class CafeLayoutManagerEditor : Editor
                 EditorGUIUtility.PingObject(manager.activePreset);
             }
         }
+
+        DrawReflectionProbeBake(manager);
+    }
+
+    // Performs a one-shot reflection probe capture once a layout is populated
+    private static void DrawReflectionProbeBake(CafeLayoutManager manager)
+    {
+        bool layoutPopulated = manager.CafeRoot != null && manager.CafeRoot.transform.childCount > 0;
+        if (!layoutPopulated)
+        {
+            return;
+        }
+
+        var bakers = Object.FindObjectsByType<CafeReflectionProbeBaker>(
+            FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Lighting", EditorStyles.boldLabel);
+
+        if (bakers.Length == 0)
+        {
+            EditorGUILayout.HelpBox(
+                "No CafeReflectionProbeBaker found in the loaded scenes. Open the Shift scene to bake the reflection probe.",
+                MessageType.Info);
+            return;
+        }
+
+        string label = bakers.Length > 1 ? $"Bake Reflection Probe ({bakers.Length})" : "Bake Reflection Probe";
+        if (GUILayout.Button(label))
+        {
+            foreach (CafeReflectionProbeBaker baker in bakers)
+            {
+                baker.BakeImmediate();
+            }
+        }
     }
 
     private SerializedObject GetPresetSerializedObject(CafeLayoutPreset preset)
