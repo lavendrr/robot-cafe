@@ -16,6 +16,7 @@ public class SaveData
 }
 
 
+[System.Serializable]
 public struct CafeElement
 {
     public FurnitureData furnitureData;
@@ -67,9 +68,9 @@ public class SaveManager : MonoBehaviour
     public static SaveManager Instance { get; private set; }
 
     [SerializeField]
-    private SaveData saveData = new SaveData();
-    private string path = "Assets/SaveData/saveData.json";
-    // bump this when introducing breaking changes to the save data format
+    private SaveData saveData = new();
+    private readonly string path = "Assets/SaveData/saveData.json";
+    // Bump this when introducing breaking changes to the save data format
     private const int CURRENT_SAVEDATA_VERSION = 3;
 
     void Awake()
@@ -121,7 +122,7 @@ public class SaveManager : MonoBehaviour
     public void Save()
     {
         // Convert to serializable form
-        SerializableSaveData serializable = new SerializableSaveData
+        SerializableSaveData serializable = new()
         {
             saveDataVersion = saveData.saveDataVersion,
             currentDay = saveData.currentDay,
