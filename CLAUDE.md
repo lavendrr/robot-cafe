@@ -1,6 +1,6 @@
 # Robot Cafe
 
-A Unity 2022.3.17f1 cozy cafe tycoon sim. The player is a robot running a space cafe — customizing the menu, arranging the layout, and serving robot customers each shift.
+A Unity 6 cozy cafe tycoon sim. The player is a robot running a space cafe — customizing the menu, arranging the layout, and serving robot customers each shift.
 
 ## Theme & Terminology
 
@@ -43,6 +43,13 @@ State changes broadcast via `OnStateChanged` delegate. Pausability is per-state 
 | `Pause` | Overlay loaded during Shift |
 
 `LevelGeo` is loaded once and persists across Planning and Shift. `Shift` is loaded additively on top of it.
+
+## Lighting
+
+The cafe is spawned programmatically at runtime, so lighting is **dynamic-only** — no baked GI, and Enlighten realtime GI is unavailable (it needs a precompute pass over static geometry, which runtime-spawned meshes don't have). Consequences:
+
+- Emissive materials (neon strips) do **not** illuminate other meshes. The neon "glow" read comes from HDR emissive + Bloom (URP Volume); actual light spill comes from real-time point/spot lights placed at the strips.
+- Reflections use a "bake once at level-gen" approach: the `Shift` scene's reflection probe is Realtime + Refresh Mode = Via Scripting, rendered a single time by `CafeReflectionProbeBaker` once the cafe geometry is populated, then left static.
 
 ## Save File
 
