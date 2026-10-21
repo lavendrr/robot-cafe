@@ -170,8 +170,8 @@ public class PlayerInteractions : MonoBehaviour
         var (type, obj) = InteractionCheck();
         if (type == InteractableType.Usable)
         {
-            // Requires a receiver on the target GameObject
-            obj.SendMessage("OnUse", grabbedObject);
+            // Walks up from the Usable collider so a handler can live on a parent
+            obj.SendMessageUpwards("OnUse", grabbedObject, SendMessageOptions.DontRequireReceiver);
         }
     }
 
