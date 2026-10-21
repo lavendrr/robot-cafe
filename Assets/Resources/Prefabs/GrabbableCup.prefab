@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 7634965264845135034}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0204, y: 0, z: 0.0282}
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -72,7 +72,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: dc39f75ca291bd147854d0bbc5677e2e, type: 2}
-  - {fileID: 2100000, guid: 7d230d05151854429914522df4a40844, type: 2}
+  - {fileID: 2100000, guid: dc39f75ca291bd147854d0bbc5677e2e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -138,6 +138,8 @@ MonoBehaviour:
   drinkMeshRenderer: {fileID: 7361759667532069413}
   liquidMaterial: {fileID: 2100000, guid: 730923b3d29ee46509a70ffa6ce923b3, type: 2}
   liquid: {fileID: 1838230911645190546}
+  previewComposition: 0
+  testComposition: []
 --- !u!65 &2424460452018399801
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -256,7 +258,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 2d47e601091e5d04e81329ebbce94188, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 2d47e601091e5d04e81329ebbce94188, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -334,14 +336,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Liquid
   updateMode: 0
-  MaxWobble: 0.3
+  MaxWobble: 0.2
   WobbleSpeedMove: 1.2
   Recovery: 2.5
   WobbleStrength: 0.5
   Thickness: 0.5
+  PulseStrength: 2.5
   SurfaceWave: 1
-  SurfaceWaveAmplitude: 0.2
-  fillAmount: 0.5
+  SurfaceWaveAmplitude: 0.02
+  fillLevel: 0
   CompensateShapeAmount: 0
   mesh: {fileID: 7591503566589240239, guid: 2d47e601091e5d04e81329ebbce94188, type: 3}
   rend: {fileID: 7361759667532069413}
+  pulseTest: 0

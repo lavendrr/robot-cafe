@@ -23,14 +23,21 @@ public class Liquid : MonoBehaviour
     [Tooltip("Liquid inertia. Higher = thicker, sluggish liquid that smooths out sharp acceleration spikes.")]
     [SerializeField]
     float Thickness = 0.5f;
+    [Tooltip("Base slosh velocity a pulse injects (e.g. a topping dropped in). AddPulse(strength) " +
+             "multiplies this; higher = bigger splash.")]
+    [SerializeField]
+    float PulseStrength = 2.5f;
     [Tooltip("Adds the shader's rippling sine wave to the surface. Turn off to see a clean flat tilt while tuning direction.")]
     [SerializeField]
     bool SurfaceWave = true;
     [Tooltip("Height of the surface ripple when SurfaceWave is on (the shader's _Amplitude).")]
     [SerializeField]
     float SurfaceWaveAmplitude = 0.2f;
+    [Tooltip("Liquid level, 0 = empty (surface at the mesh floor) to 1 = full (surface at the mesh top). " +
+             "Scale-independent; derives the shader's _FillAmount from the mesh geometry.")]
+    [Range(0, 1)]
     [SerializeField]
-    float fillAmount = 0.56f;
+    float fillLevel = 0.5f;
     [Range(0, 1)]
     public float CompensateShapeAmount;
     [SerializeField]
@@ -48,6 +55,7 @@ public class Liquid : MonoBehaviour
     static readonly int LayerCountID = Shader.PropertyToID("_LayerCount");
     static readonly int LayerColorsID = Shader.PropertyToID("_LayerColors");
     static readonly int LayerHeightsID = Shader.PropertyToID("_LayerHeights");
+    static readonly int LiquidDepthID = Shader.PropertyToID("_LiquidDepth");
 
     MaterialPropertyBlock mpb;
 
@@ -85,13 +93,41 @@ public class Liquid : MonoBehaviour
     private void OnValidate()
     {
         GetMeshAndRend();
+#if UNITY_EDITOR
+        // Treat any toggle of pulseTest as a button press -> one test pulse. Defer out of
+        // OnValidate before touching SceneView / running the sim.
+        if (pulseTrackerSeeded && pulseTest != lastPulseTest)
+        {
+            lastPulseTest = pulseTest;
+            UnityEditor.EditorApplication.delayCall += () =>
+            {
+                if (this != null)
+                {
+                    AddPulse();
+                }
+            };
+        }
+#endif
     }
 
 #if UNITY_EDITOR
     double lastEditorTime;
 
+    [Header("Pulse Testing")]
+    [Tooltip("Toggle this checkbox (either direction) to fire a test pulse. Click it repeatedly to " +
+             "stack pulses and watch them add up.")]
+    [SerializeField]
+    bool pulseTest;
+    bool lastPulseTest;
+    bool pulseTrackerSeeded;
+
     void OnEnable()
     {
+        // Seed the toggle tracker from the serialized value so a scene/domain reload doesn't read a
+        // state change and fire a phantom pulse.
+        lastPulseTest = pulseTest;
+        pulseTrackerSeeded = true;
+
         // Drive the sim off a continuous editor clock so it animates while editing,
         // instead of relying on Update's sporadic edit-mode ticks.
         if (!Application.isPlaying)
@@ -242,6 +278,20 @@ public class Liquid : MonoBehaviour
         {
             return;
         }
+
+        // An empty drink should be fully invisible. At fillLevel 0 the surface sits exactly on the
+        // mesh floor, so the bottom cap lands on the shader's cut plane and renders a flat disc.
+        // Just hide the renderer instead; nothing meaningful draws below the first pour increment.
+        bool visible = fillLevel > 1e-4f;
+        if (rend.enabled != visible)
+        {
+            rend.enabled = visible;
+        }
+        if (!visible)
+        {
+            return;
+        }
+
         if (mpb == null)
         {
             mpb = new MaterialPropertyBlock();
@@ -254,6 +304,17 @@ public class Liquid : MonoBehaviour
         mpb.SetInteger(LayerCountID, layerCount);
         mpb.SetVectorArray(LayerColorsID, layerColors);
         mpb.SetFloatArray(LayerHeightsID, layerHeights);
+        if (mesh != null)
+        {
+            // Surface sits at fill coord 0.5; the floor's fill coord follows from the mesh bounds
+            // and the fill offset (pos). depth = 0.5 - floorFillY maps t to [0,1] over the real
+            // liquid column, so layers stay correct as the cup scales / fills. Uses bounds (no
+            // per-vertex alloc) and includes lossyScale via TransformPoint.
+            Vector3 floorWorld = transform.TransformPoint(
+                new Vector3(mesh.bounds.center.x, mesh.bounds.min.y, mesh.bounds.center.z));
+            float floorFillY = floorWorld.y - transform.position.y - pos.y;
+            mpb.SetFloat(LiquidDepthID, Mathf.Max(0.5f - floorFillY, 1e-3f));
+        }
         rend.SetPropertyBlock(mpb);
     }
 
@@ -291,27 +352,77 @@ public class Liquid : MonoBehaviour
         ApplyToRenderer();
     }
 
+    // Sends a one-shot slosh impulse through the drink, e.g. a topping dropped in. For now every
+    // impact is treated as centered, so the kick goes in a random horizontal direction. `strength`
+    // scales PulseStrength (1 = a normal drop). Successive calls are additive: because the slosh is
+    // a linear oscillator and an impulse adds to velocity, the kicks superpose and ring down from
+    // the combined energy rather than overwriting each other.
+    public void AddPulse(float strength = 1f)
+    {
+        float v = strength * PulseStrength;
+        float angle = Random.value * Mathf.PI * 2f;
+        springVelX += Mathf.Cos(angle) * v;
+        springVelZ += Mathf.Sin(angle) * v;
+
+#if UNITY_EDITOR
+        // So a pulse animates immediately when fired from the inspector at edit time.
+        if (!Application.isPlaying)
+        {
+            UnityEditor.SceneView.RepaintAll();
+        }
+#endif
+    }
+
+
+    // Sets the liquid level, 0 (empty) .. 1 (full). Cup drives this from the drink's fuel total
+    // instead of scaling the drink mesh. Applies immediately so it shows even on an idle frame.
+    public void SetFillLevel(float level)
+    {
+        fillLevel = Mathf.Clamp01(level);
+        if (mesh == null || rend == null)
+        {
+            GetMeshAndRend();
+        }
+        if (mesh != null)
+        {
+            UpdatePos(0f);
+            ApplyToRenderer();
+        }
+    }
+
     void UpdatePos(float deltaTime)
     {
-        Vector3 worldPos = transform.TransformPoint(new Vector3(mesh.bounds.center.x, mesh.bounds.center.y, mesh.bounds.center.z));
+        // The liquid surface spans the mesh floor (fillLevel 0) to the mesh top (fillLevel 1),
+        // in world space so it stays correct at any scale. bounds.min/max.y give the extents.
+        Vector3 center = mesh.bounds.center;
+        Vector3 worldPos = transform.TransformPoint(center);
+        float floorWorldY = transform.TransformPoint(new Vector3(center.x, mesh.bounds.min.y, center.z)).y;
+        float topWorldY = transform.TransformPoint(new Vector3(center.x, mesh.bounds.max.y, center.z)).y;
+        float surfaceWorldY = Mathf.Lerp(floorWorldY, topWorldY, fillLevel);
+
         if (CompensateShapeAmount > 0)
         {
+            Vector3 target = worldPos - new Vector3(0, GetLowestPoint(), 0);
             // only lerp if not paused/normal update
             if (deltaTime != 0)
             {
-                comp = Vector3.Lerp(comp, (worldPos - new Vector3(0, GetLowestPoint(), 0)), deltaTime * 10);
+                comp = Vector3.Lerp(comp, target, deltaTime * 10);
             }
             else
             {
-                comp = (worldPos - new Vector3(0, GetLowestPoint(), 0));
+                comp = target;
             }
 
-            pos = worldPos - transform.position - new Vector3(0, fillAmount - (comp.y * CompensateShapeAmount), 0);
+            // Keep the surface level as a shaped glass tilts.
+            surfaceWorldY += comp.y * CompensateShapeAmount;
         }
-        else
-        {
-            pos = worldPos - transform.position - new Vector3(0, fillAmount, 0);
-        }
+
+        // Back-solve the shader's _FillAmount so its fixed 0.5 cut plane lands at surfaceWorldY.
+        // x/z stay centered on the bounds so the wave and wobble tilt pivot there.
+        pos = new Vector3(
+            worldPos.x - transform.position.x,
+            surfaceWorldY - transform.position.y - 0.5f,
+            worldPos.z - transform.position.z);
     }
 
     //https://forum.unity.com/threads/manually-calculate-angular-velocity-of-gameobject.289462/#post-4302796
