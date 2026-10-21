@@ -9,7 +9,17 @@ public class Cup : MonoBehaviour
     bool filling = false;
     [SerializeField]
     MeshRenderer drinkMeshRenderer;
+    [SerializeField]
+    Material liquidMaterial;
+    [SerializeField]
+    Liquid liquid;
     public Drink drink = new();
+
+    // Order bases were first poured in; drives bottom -> top layer stacking.
+    readonly List<IngredientData> pourOrder = new();
+    // Reused each refresh so filling (every ~15ms) doesn't allocate.
+    readonly List<Color> layerColorScratch = new();
+    readonly List<float> layerFractionScratch = new();
 
     public Dictionary<IngredientData, int> GetDrinkComp()
     {
@@ -32,7 +42,10 @@ public class Cup : MonoBehaviour
 
             AudioManager.Instance.PlaySFX(AudioManager.Instance.pourCoffee, position);
 
-            drinkMeshRenderer.material = fillType.material;
+            // All bases share one liquid material; per-cup colour comes from the layer bands,
+            // so assign the shared material (no per-fuel material swap, no cloning).
+            if (liquidMaterial != null && drinkMeshRenderer.sharedMaterial != liquidMaterial)
+                drinkMeshRenderer.sharedMaterial = liquidMaterial;
             StartCoroutine(Fill(fillType, 1f));
         }
         else
@@ -52,18 +65,44 @@ public class Cup : MonoBehaviour
         drinkMeshTransform.localScale = Vector3.Lerp(startScale, targetScale, Math.Clamp((float)drink.bases.Sum(x => x.Value)/100, 0, 1));
     }
 
+    // Pushes the current base composition to the liquid shader as colour layers (bottom -> top
+    // in pour order). Liquid owns the material property block, so we only hand it the bands.
+    private void RefreshLayers()
+    {
+        if (liquid == null && drinkMeshRenderer != null)
+            liquid = drinkMeshRenderer.GetComponent<Liquid>();
+        if (liquid == null)
+            return;
+
+        layerColorScratch.Clear();
+        layerFractionScratch.Clear();
+
+        int total = drink.bases.Values.Sum();
+        foreach (IngredientData ing in pourOrder)
+        {
+            if (!drink.bases.TryGetValue(ing, out int pct) || pct <= 0)
+                continue;
+            layerColorScratch.Add(ing.sliderColor);
+            layerFractionScratch.Add(total > 0 ? (float)pct / total : 0f);
+        }
+
+        liquid.SetLayers(layerColorScratch, layerFractionScratch);
+    }
+
     // Animation function for the drink mesh
     private IEnumerator Fill(IngredientData fuel, float fillAmount)
     {
         if (!drink.bases.ContainsKey(fuel))
         {
             drink.bases[fuel] = 0;
+            pourOrder.Add(fuel);
         }
 
         while (filling)
         {
             drink.bases[fuel] += 1;
             UpdateCoffeeMesh();
+            RefreshLayers();
 
             foreach (KeyValuePair<IngredientData, int> pair in drink.bases)
             {
@@ -89,6 +128,8 @@ public class Cup : MonoBehaviour
         if (drink.bases.Count != 0)
         {
             drink.bases.Clear();
+            pourOrder.Clear();
+            RefreshLayers();
             UpdateCoffeeMesh();
             return true;
         }
