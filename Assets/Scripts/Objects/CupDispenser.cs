@@ -27,14 +27,72 @@ public class CupDispenser : MonoBehaviour
     private int cupsDispensed;
     const string CUPS_DISPENSED_TEXT = "Cups Dispensed:<br>";
 
+    private bool referencesValid;
+
+    private void Awake()
+    {
+        referencesValid = ValidateReferences();
+    }
+
+    // Logs a clear error for any serialized reference the dispenser needs but
+    // that was left unassigned, so misconfiguration shows up at scene load
+    // instead of as a bare NullReferenceException later. Returns false if any
+    // required reference is missing.
+    private bool ValidateReferences()
+    {
+        bool valid = true;
+
+        if (cupPrefab == null)
+        {
+            Debug.LogError($"{nameof(CupDispenser)}: {nameof(cupPrefab)} is not assigned.", this);
+            valid = false;
+        }
+        else if (cupPrefab.GetComponent<Rigidbody>() == null)
+        {
+            Debug.LogError($"{nameof(CupDispenser)}: {nameof(cupPrefab)} root has no Rigidbody; cups cannot be launched.", this);
+            valid = false;
+        }
+        if (spawnPoint == null)
+        {
+            Debug.LogError($"{nameof(CupDispenser)}: {nameof(spawnPoint)} is not assigned.", this);
+            valid = false;
+        }
+        if (apexPoint == null)
+        {
+            Debug.LogError($"{nameof(CupDispenser)}: {nameof(apexPoint)} is not assigned.", this);
+            valid = false;
+        }
+        if (spawnCollider == null)
+        {
+            Debug.LogError($"{nameof(CupDispenser)}: {nameof(spawnCollider)} is not assigned.", this);
+            valid = false;
+        }
+        if (statText == null)
+        {
+            Debug.LogError($"{nameof(CupDispenser)}: {nameof(statText)} is not assigned.", this);
+            valid = false;
+        }
+        if (useButton == null)
+        {
+            Debug.LogError($"{nameof(CupDispenser)}: {nameof(useButton)} is not assigned.", this);
+            valid = false;
+        }
+        if (animator == null)
+        {
+            Debug.LogError($"{nameof(CupDispenser)}: {nameof(animator)} is not assigned.", this);
+            valid = false;
+        }
+
+        return valid;
+    }
+
     private void Start()
     {
+        if (!referencesValid) return;
+
         cupsDispensed = 0;
         statText.text = CUPS_DISPENSED_TEXT + cupsDispensed.ToString();
-        if (cupPrefab != null && spawnPoint != null)
-        {
-            Instantiate(cupPrefab, apexPoint.position, apexPoint.rotation);
-        }
+        Instantiate(cupPrefab, apexPoint.position, apexPoint.rotation);
     }
 
     private Boolean DispenserBlocked()
@@ -64,6 +122,8 @@ public class CupDispenser : MonoBehaviour
 
     public IEnumerator LaunchCup()
     {
+        if (!referencesValid) yield break;
+
         Rigidbody cup = Instantiate(cupPrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Rigidbody>();
         cup.isKinematic = true;
         Collider[] cupColliders = cup.GetComponentsInChildren<Collider>();
