@@ -1,6 +1,8 @@
 using UnityEngine;
-
 [ExecuteInEditMode]
+
+[RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(Renderer))]
 public class Liquid : MonoBehaviour
 {
     public enum UpdateMode { Normal, UnscaledTime }
