@@ -16,7 +16,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2450
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -48,15 +48,15 @@ Material:
     m_Floats:
     - _Amplitude: 0.5
     - _FoamLighten: 0.5
-    - _FoamWidth: 0.04
-    - _Foam_Smoothness: 0
-    - _Frequency: 3
-    - _LayerSoftness: 0.02
+    - _FoamWidth: 0.005
+    - _Foam_Smoothness: 0.004
+    - _Frequency: 25
+    - _LayerSoftness: 0.03
     - _LiquidDepth: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Rim_Power: 5
-    - _SurfaceLighten: 0.2
+    - _SurfaceLighten: 0.25
     - _WobbleX: -1.1069327e-11
     - _WobbleZ: 3.519241e-10
     m_Colors:
