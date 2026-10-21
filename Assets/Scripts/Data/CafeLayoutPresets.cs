@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using Mono.Cecil;
 using UnityEngine;
 
 public static class CafeLayoutPresets
@@ -12,6 +13,7 @@ public static class CafeLayoutPresets
                 dimensions = (6, 6),
                 deliveryTileCoords = (3, 5),
                 floorPrefab = Resources.Load<GameObject>("Meshes/SM_floor"),
+                ceilingPrefab = Resources.Load<GameObject>("Prefabs/CeilingTile"),
                 straightWallPrefab = Resources.Load<GameObject>("Prefabs/WallPlain"),
                 cornerWallPrefab = Resources.Load<GameObject>("Prefabs/WallCorner"),
                 deliveryTileData = Resources.Load<FurnitureData>("Prefabs/FurnitureData/FD_WindowDelivery"),

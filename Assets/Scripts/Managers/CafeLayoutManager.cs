@@ -12,6 +12,7 @@ public class LevelLayout
     public (int rows, int cols) dimensions = (6, 10);
     public (int col, int row) deliveryTileCoords;
     public GameObject floorPrefab;
+    public GameObject ceilingPrefab;
     public GameObject straightWallPrefab;
     public GameObject cornerWallPrefab;
     public FurnitureData deliveryTileData;
@@ -33,6 +34,7 @@ public class CafeLayoutManager : MonoBehaviour
     public Vector2 dimensions = new Vector2(6, 10);
     public Vector2 deliveryTileCoords;
     public GameObject floorPrefab;
+    public GameObject ceilingPrefab;
     public GameObject straightWallPrefab;
     public GameObject cornerWallPrefab;
     public FurnitureData deliveryTileData;
@@ -108,6 +110,30 @@ public class CafeLayoutManager : MonoBehaviour
                 if (CafeRoot != null)
                 {
                     floorInstance.transform.SetParent(CafeRoot.transform);
+                }
+            }
+        }
+    }
+
+    public void PopulateCeilingTiles(LevelLayout layout)
+    {
+        // Instantiate ceilings to cover the entire area
+        if (layout.ceilingPrefab == null)
+        {
+            Debug.LogError("CeilingPrefab not assigned in CafeLayoutManager.");
+            return;
+        }
+
+        for (int row = 0; row < layout.dimensions.rows; row++)
+        {
+            for (int col = 0; col < layout.dimensions.cols; col++)
+            {
+                Vector3 ceilingPosition = ConvertGridToWorldPosition(col, row);
+                GameObject ceilingInstance = Instantiate(layout.ceilingPrefab, ceilingPosition, Quaternion.identity);
+                ceilingInstance.name = $"Ceiling_{row}_{col}";
+                if (CafeRoot != null)
+                {
+                    ceilingInstance.transform.SetParent(CafeRoot.transform);
                 }
             }
         }
@@ -301,6 +327,7 @@ public class CafeLayoutManager : MonoBehaviour
     public void PopulateCafeLevel(LevelLayout cafeLayout)
     {
         PopulateFloorTiles(cafeLayout);
+        PopulateCeilingTiles(cafeLayout);
         PopulateWalls(cafeLayout);
 
         // Iterate through the saved layout and instantiate the furniture objects

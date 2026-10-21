@@ -40,6 +40,7 @@ public struct CafeElement
         public int deliveryTileCol;
         public int deliveryTileRow;
         public string floorPrefabName;
+        public string ceilingPrefabName;
         public string straightWallPrefabName;
         public string cornerWallPrefabName;
         public string deliveryTilePrefabName;
@@ -69,7 +70,7 @@ public class SaveManager : MonoBehaviour
     private SaveData saveData = new SaveData();
     private string path = "Assets/SaveData/saveData.json";
     // bump this when introducing breaking changes to the save data format
-    private const int CURRENT_SAVEDATA_VERSION = 2;
+    private const int CURRENT_SAVEDATA_VERSION = 3;
 
     void Awake()
     {
@@ -190,6 +191,7 @@ public class SaveManager : MonoBehaviour
             deliveryTileCol = layout.deliveryTileCoords.col,
             deliveryTileRow = layout.deliveryTileCoords.row,
             floorPrefabName = layout.floorPrefab != null ? "Meshes/" + layout.floorPrefab.name : "",
+            ceilingPrefabName = layout.ceilingPrefab != null ? "Prefabs/" + layout.ceilingPrefab.name : "",
             straightWallPrefabName = layout.straightWallPrefab != null ? "Prefabs/" + layout.straightWallPrefab.name : "",
             cornerWallPrefabName = layout.cornerWallPrefab != null ? "Prefabs/" + layout.cornerWallPrefab.name : "",
             deliveryTilePrefabName = layout.deliveryTileData != null ? "Prefabs/FurnitureData/" + layout.deliveryTileData.name : "",
@@ -216,6 +218,7 @@ public class SaveManager : MonoBehaviour
             dimensions = (serializable.rows, serializable.cols),
             deliveryTileCoords = (serializable.deliveryTileCol, serializable.deliveryTileRow),
             floorPrefab = !string.IsNullOrEmpty(serializable.floorPrefabName) ? Resources.Load<GameObject>(serializable.floorPrefabName) : null,
+            ceilingPrefab = !string.IsNullOrEmpty(serializable.ceilingPrefabName) ? Resources.Load<GameObject>(serializable.ceilingPrefabName) : null,
             straightWallPrefab = !string.IsNullOrEmpty(serializable.straightWallPrefabName) ? Resources.Load<GameObject>(serializable.straightWallPrefabName) : null,
             cornerWallPrefab = !string.IsNullOrEmpty(serializable.cornerWallPrefabName) ? Resources.Load<GameObject>(serializable.cornerWallPrefabName) : null,
             deliveryTileData = !string.IsNullOrEmpty(serializable.deliveryTilePrefabName) ? Resources.Load<FurnitureData>(serializable.deliveryTilePrefabName) : null,
