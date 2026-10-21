@@ -15,6 +15,6 @@ MonoBehaviour:
   ingredientName: Unleaded
   validCategories: 4
   material: {fileID: 2100000, guid: 83988b3f505978a478b4a6b45100baab, type: 2}
-  sliderColor: {r: 0.38679248, g: 0.19864443, b: 0.034665354, a: 1}
+  sliderColor: {r: 0.4245283, g: 0.22267713, b: 0.046057325, a: 1}
   unitSingular: 
   unitPlural: 

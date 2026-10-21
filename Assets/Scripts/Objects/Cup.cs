@@ -55,14 +55,17 @@ public class Cup : MonoBehaviour
         }
     }
 
-    // Static update function for the drink mesh
-    private void UpdateCoffeeMesh()
+    // Drives the shader's liquid level from the drink's total fuel (0..100 -> 0..1). Replaces the
+    // old drink-mesh scaling: the mesh stays full-size and the shader's fill cut shows the level.
+    private void UpdateFillLevel()
     {
-        Vector3 startScale = new Vector3(0.81f, 0.094f, 0.81f);
-        Vector3 targetScale = Vector3.one;
+        if (liquid == null && drinkMeshRenderer != null)
+            liquid = drinkMeshRenderer.GetComponent<Liquid>();
+        if (liquid == null)
+            return;
 
-        Transform drinkMeshTransform = drinkMeshRenderer.transform;
-        drinkMeshTransform.localScale = Vector3.Lerp(startScale, targetScale, Math.Clamp((float)drink.bases.Sum(x => x.Value)/100, 0, 1));
+        float total = drink.bases.Sum(x => x.Value);
+        liquid.SetFillLevel(Mathf.Clamp01(total / 100f));
     }
 
     // Pushes the current base composition to the liquid shader as colour layers (bottom -> top
@@ -89,6 +92,61 @@ public class Cup : MonoBehaviour
         liquid.SetLayers(layerColorScratch, layerFractionScratch);
     }
 
+#if UNITY_EDITOR
+    [System.Serializable]
+    struct TestLayer
+    {
+        public IngredientData ingredient;
+        [Range(0, 100)] public int percent;
+    }
+
+    [Header("Editor Composition Preview")]
+    [Tooltip("When on, edits to the test composition below are previewed live on the liquid in the editor.")]
+    [SerializeField]
+    bool previewComposition;
+    [Tooltip("Bands bottom -> top. Percents are relative (normalized), so they need not sum to 100.")]
+    [SerializeField]
+    List<TestLayer> testComposition = new();
+
+    void OnValidate()
+    {
+        if (!previewComposition)
+            return;
+
+        // Defer out of OnValidate before touching renderer state / property blocks.
+        UnityEditor.EditorApplication.delayCall += () =>
+        {
+            if (this != null && previewComposition)
+                ApplyTestComposition();
+        };
+    }
+
+    [ContextMenu("Apply Test Composition")]
+    void ApplyTestComposition()
+    {
+        if (liquid == null && drinkMeshRenderer != null)
+            liquid = drinkMeshRenderer.GetComponent<Liquid>();
+        if (liquid == null)
+            return;
+
+        if (liquidMaterial != null && drinkMeshRenderer != null &&
+            drinkMeshRenderer.sharedMaterial != liquidMaterial)
+            drinkMeshRenderer.sharedMaterial = liquidMaterial;
+
+        layerColorScratch.Clear();
+        layerFractionScratch.Clear();
+        foreach (TestLayer layer in testComposition)
+        {
+            if (layer.ingredient == null || layer.percent <= 0)
+                continue;
+            layerColorScratch.Add(layer.ingredient.sliderColor);
+            layerFractionScratch.Add(layer.percent);   // SetLayers normalizes
+        }
+
+        liquid.SetLayers(layerColorScratch, layerFractionScratch);
+    }
+#endif
+
     // Animation function for the drink mesh
     private IEnumerator Fill(IngredientData fuel, float fillAmount)
     {
@@ -101,7 +159,7 @@ public class Cup : MonoBehaviour
         while (filling)
         {
             drink.bases[fuel] += 1;
-            UpdateCoffeeMesh();
+            UpdateFillLevel();
             RefreshLayers();
 
             foreach (KeyValuePair<IngredientData, int> pair in drink.bases)
@@ -130,7 +188,7 @@ public class Cup : MonoBehaviour
             drink.bases.Clear();
             pourOrder.Clear();
             RefreshLayers();
-            UpdateCoffeeMesh();
+            UpdateFillLevel();
             return true;
         }
         else
